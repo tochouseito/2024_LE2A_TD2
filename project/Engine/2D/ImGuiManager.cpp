@@ -27,7 +27,7 @@ void ImGuiManager::Initialize(
 
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
 	// 標準フォントを追加する
 	io.Fonts->AddFontDefault();
@@ -49,7 +49,7 @@ void ImGuiManager::Initialize(
 void ImGuiManager::Finalize() {
 #ifdef _DEBUG
 	// 後始末
-	ImGui::DestroyPlatformWindows();
+	//ImGui::DestroyPlatformWindows();
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
@@ -71,8 +71,8 @@ void ImGuiManager::End() {
 	// 描画前準備
 	ImGui::Render();
 
-	ImGui::UpdatePlatformWindows();
-	ImGui::RenderPlatformWindowsDefault();
+	//ImGui::UpdatePlatformWindows();
+	//ImGui::RenderPlatformWindowsDefault();
 #endif
 }
 
