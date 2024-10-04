@@ -41,6 +41,9 @@
 #include <fstream>
 #include <sstream>
 
+// CSVLoader
+#include"CSVLoader/CSVLoader.h"
+
 class GameScene :
 	public BaseScene {
 public:
@@ -97,6 +100,10 @@ private:
 
 	// カメラ
 	ViewProjection viewProjection_;
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 };
 

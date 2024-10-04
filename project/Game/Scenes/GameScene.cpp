@@ -16,7 +16,6 @@ GameScene::GameScene() {
 }
 
 GameScene::~GameScene() {
-	//delete mainCamera_;
 	delete sprite_;
 	delete particles_;
 	delete primitive_;
