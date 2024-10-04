@@ -14,7 +14,7 @@ ImGuiManager* ImGuiManager::GetInstance() {
 }
 
 void ImGuiManager::Initialize(
-	[[maybe_unused]] WinApp* winApp, [[maybe_unused]] DirectXCommon* dxCommon,SrvManager* srvManager) {
+	[[maybe_unused]] WinApp* winApp, [[maybe_unused]] DirectXCommon* dxCommon, SrvManager* srvManager) {
 #ifdef _DEBUG
 
 	dxCommon_ = dxCommon;
@@ -24,6 +24,14 @@ void ImGuiManager::Initialize(
 	IMGUI_CHECKVERSION();
 	// ImGuiのコンテキストを生成
 	ImGui::CreateContext();
+
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+	// 標準フォントを追加する
+	io.Fonts->AddFontDefault();
+
 	// ImGuiのスタイルを設定
 	ImGui::StyleColorsDark();
 	// プラットフォームとレンダラーのバックエンドを設定する
@@ -33,17 +41,15 @@ void ImGuiManager::Initialize(
 		DXGI_FORMAT_R8G8B8A8_UNORM, srvManager_->GetDescriptorHeap(),
 		srvManager_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart(),
 		srvManager_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
-	
 
-	ImGuiIO& io = ImGui::GetIO();
-	// 標準フォントを追加する
-	io.Fonts->AddFontDefault();
+
 #endif
 }
 
 void ImGuiManager::Finalize() {
 #ifdef _DEBUG
 	// 後始末
+	ImGui::DestroyPlatformWindows();
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
@@ -64,6 +70,9 @@ void ImGuiManager::End() {
 #ifdef _DEBUG
 	// 描画前準備
 	ImGui::Render();
+
+	ImGui::UpdatePlatformWindows();
+	ImGui::RenderPlatformWindowsDefault();
 #endif
 }
 
