@@ -56,10 +56,15 @@ void GameScene::Initialize() {
 	mainCamera_ = std::make_unique<MainCamera>();
 	mainCamera_->Initialize(Vector3(0.0f, 0.0f, 30.0f), &viewProjection_);
 
+	// MapChip
+	mapChipField_ = std::make_unique<MapChipField>();
+	mapChipField_->LoadMapChipCsv("Resources/Map1.csv");
+
 	// Player
 	playerModel_.reset(Model::LordModel("Player"));
 	player_ = std::make_unique<Player>();
 	player_->Initialize(playerModel_.get(), &viewProjection_, Vector3(0.0f, 0.0f, 0.0f));
+	player_->SetMapChipField(mapChipField_.get());
 
 }
 void GameScene::Update() {
@@ -94,4 +99,31 @@ void GameScene::Draw() {
 
 	// Player
 	player_->Draw();
+}
+
+void GameScene::GenerateBlocks()
+{
+	// 要素数
+	uint32_t numBlockVertical = mapChipField_->GetNumBlockVertical();
+	uint32_t numBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
+
+	// 要素数を変更する
+	// 列数を設定（縦方向のブロック）
+	worldTransformBlocks_.resize(numBlockVertical);
+	for (uint32_t i = 0; i < numBlockVertical; ++i) {
+		// 1列の要素数を設定（横方向のブロック数）
+		worldTransformBlocks_[i].resize(numBlockHorizontal);
+	}
+	// ブロックの生成
+	for (uint32_t i = 0; i < numBlockVertical; ++i) {
+
+		for (uint32_t j = 0; j < numBlockHorizontal; ++j) {
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+				WorldTransform* worldTransform = new WorldTransform();
+				worldTransform->Initialize();
+				worldTransformBlocks_[i][j] = worldTransform;
+				worldTransformBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
+			}
+		}
+	}
 }

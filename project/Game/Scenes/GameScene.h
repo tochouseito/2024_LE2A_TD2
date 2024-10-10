@@ -43,6 +43,7 @@
 
 // CSVLoader
 #include"CSVLoader/CSVLoader.h"
+#include"Game/MapChipField/MapChipField.h"
 
 /*Objects*/
 #include"Objects/Player/Player.h"
@@ -65,6 +66,8 @@ public:
 	void SetSceneManager(SceneManager* sceneManager) override {
 		sceneManager_ = sceneManager;
 	}
+
+	void GenerateBlocks();
 
 private:
 	DirectXCommon* dxCommon_ = nullptr;
@@ -106,11 +109,14 @@ private:
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 
+	/*MapChip*/
+	std::unique_ptr<MapChipField> mapChipField_ = nullptr;
+
 	/*Objects*/
 
 	// Player
-	std::unique_ptr<Player> player_;
-	std::unique_ptr<Model> playerModel_;
+	std::unique_ptr<Player> player_=nullptr;
+	std::unique_ptr<Model> playerModel_=nullptr;
 
 };
 

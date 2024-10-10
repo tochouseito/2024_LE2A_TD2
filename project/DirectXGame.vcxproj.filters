@@ -145,6 +145,7 @@
     <None Include="Resources\Shader\Skybox.PS.hlsl" />
     <None Include="Resources\Shader\Skybox.VS.hlsl" />
     <None Include="Resources\Shader\Sprite.hlsli" />
+    <None Include="Resources\Map1.csv" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />
