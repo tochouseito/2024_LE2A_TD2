@@ -76,6 +76,7 @@
     <ClCompile Include="Game\Scenes\SceneFactory.cpp" />
     <ClCompile Include="Game\CSVLoader\CSVLoader.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
+    <ClCompile Include="Game\MapChipField\MapChipField.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Scenes\AbstractSceneFactory.h" />
@@ -130,6 +131,7 @@
     <ClInclude Include="Game\Scenes\SceneFactory.h" />
     <ClInclude Include="Game\CSVLoader\CSVLoader.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
+    <ClInclude Include="Game\MapChipField\MapChipField.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shader\FullScreen.hlsli" />

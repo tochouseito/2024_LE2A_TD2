@@ -131,6 +131,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\3D\Material.cpp" />
     <ClCompile Include="Engine\3D\Mesh.cpp" />
     <ClCompile Include="Engine\3D\Model.cpp" />
+    <ClCompile Include="Game\MapChipField\MapChipField.cpp" />
     <ClCompile Include="math\Mymath.cpp" />
     <ClCompile Include="Engine\base\TextureManager.cpp" />
     <ClCompile Include="Engine\3D\ViewProjection.cpp" />
@@ -177,6 +178,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\3D\Material.h" />
     <ClInclude Include="Engine\Input\Input.h" />
     <ClInclude Include="Engine\3D\LightGroup.h" />
+    <ClInclude Include="Game\MapChipField\MapChipField.h" />
     <ClInclude Include="math\mathShapes.h" />
     <ClInclude Include="math\Matrix4x4.h" />
     <ClInclude Include="Engine\3D\Mesh.h" />
