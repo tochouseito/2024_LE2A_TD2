@@ -9,6 +9,10 @@
 #include"Game/MapChipField/MapChipField.h"
 //#include"DebugText.h"
 
+//-----------------------------------------------------------------------------
+// TODO : 重力反転した際にプレイヤーが正しい方向を向くようにする 
+//-----------------------------------------------------------------------------
+
 Player::Player() {
 
 }
@@ -32,6 +36,9 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 
 	viewProjection_ = viewProjection;
 }
+
+float targetRotZ = 0.0f;
+
 void Player::Update() {
 	// 衝突判定を初期化
 	CollisionMapInfo collisionMapInfo;
@@ -53,6 +60,14 @@ void Player::Update() {
 	OnGround(collisionMapInfo);
 	// 旋回制御
 	TurnControl();
+
+	if (isGravityInvert) {
+		targetRotZ = std::numbers::pi;
+	} else {
+		targetRotZ = 0.0f;
+	}
+
+	worldTransform_.rotation_.z = std::lerp(worldTransform_.rotation_.z, targetRotZ, 1.0f / 60 * 16.0f);
 
 	ImGui::Begin("Player");
 	ImGui::Checkbox("isJumping", &isJumping);

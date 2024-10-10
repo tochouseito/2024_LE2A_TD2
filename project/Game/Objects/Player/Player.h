@@ -97,6 +97,8 @@ public: // メンバ関数
 
 	bool GetIsAlive() { return isAlive; }
 
+	bool GetIsGravityInvert() const { return isGravityInvert; }
+
 private: // メンバ変数
 
 	// マップチップフィールドによるフィールド
@@ -139,11 +141,11 @@ private: // メンバ変数
 	float kTimeTurn = 0.2f;
 
 	// 重力加速度（下方向）
-	float kGravityAcceleration = 0.03f;
+	float kGravityAcceleration = 0.01f;
 	// 最大落下速度（下方向）
 	float kLimitFallSpeed = 0.3f;
 	// ジャンプ速度（上方向）
-	float kJumpAcceleration = 0.25f;
+	float kJumpAcceleration = 0.15f;
 	// 壁に接触時速度
 	float kAttenuationWall = 0.6f;
 	// キャラクターの当たり判定サイズ

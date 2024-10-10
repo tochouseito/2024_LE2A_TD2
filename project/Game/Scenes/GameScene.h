@@ -129,6 +129,6 @@ private:
 	std::unique_ptr<Model> downNeedleModel_ = nullptr;
 
 	std::unique_ptr<GravityArrow> gravityArrow_ = nullptr;
-	std::unique_ptr<Model> gravityArrowModel_ = nullptr;
+	std::vector<std::unique_ptr<Model>> gravityArrowModel_;
 };
 

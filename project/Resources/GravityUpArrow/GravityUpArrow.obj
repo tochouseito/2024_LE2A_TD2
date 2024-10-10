@@ -1,6 +1,6 @@
-# Blender 4.2.2 LTS
+# Blender 4.2.1 LTS
 # www.blender.org
-mtllib GravityArrow.mtl
+mtllib GravityUpArrow.mtl
 o GravityArrow
 v 20.000000 -10.000000 0.000000
 v -20.000000 -10.000000 0.000000

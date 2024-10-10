@@ -61,16 +61,18 @@ void GameScene::Initialize() {
 	mapChipField_->LoadMapChipCsv("Resources/Map1.csv");
 
 	// Blocks
-	blocksModel_.reset(Model::LordModel("Player"));
+	blocksModel_.reset(Model::LordModel("Block"));
 	upNeedleModel_.reset(Model::LordModel("UpNeedle"));
 	downNeedleModel_.reset(Model::LordModel("DownNeedle"));
 	GenerateBlocks();
 
 	// 矢印の生成
-	gravityArrowModel_.reset(Model::LordModel("GravityArrow"));
+	gravityArrowModel_.resize(2);
+	gravityArrowModel_[0].reset(Model::LordModel("GravityDownArrow"));
+	gravityArrowModel_[1].reset(Model::LordModel("GravityUpArrow"));
 	gravityArrow_ = std::make_unique<GravityArrow>();
 	Vector3 pos = Vector3(0.0f, 0.0f, 30.0f);
-	gravityArrow_->Initialize(gravityArrowModel_.get(), &viewProjection_, pos);
+	gravityArrow_->Initialize(gravityArrowModel_[0].get(), gravityArrowModel_[1].get(), &viewProjection_, pos);
 
 	// Player
 	playerModel_.reset(Model::LordModel("Player"));
@@ -79,17 +81,13 @@ void GameScene::Initialize() {
 	player_->SetMapChipField(mapChipField_.get());
 }
 void GameScene::Update() {
-	static Vector2 test = Vector2(0.0f, 0.0f);
-	test.y += 0.01f;
-	gravityArrow_->SetUVPos(test);
+	// 矢印
 	gravityArrow_->Update();
-
-	ImGui::Begin("Test");
-	ImGui::DragFloat2("test##uv", &test.x, 0.01f);
-	ImGui::End();
 
 	// player
 	player_->Update();
+
+	gravityArrow_->SetGravityDir(player_->GetIsGravityInvert());
 
 	mainCamera_->translation_ = Lerp(mainCamera_->translation_, player_->GetWorldPosition() + player_->GetVelocity(), 1.0f / 60.0f * 5.0f);
 	mainCamera_->translation_.z = -15.0f;
@@ -127,6 +125,7 @@ void GameScene::Update() {
 }
 
 void GameScene::Draw() {
+	// 矢印
 	gravityArrow_->Draw();
 
 	// Player

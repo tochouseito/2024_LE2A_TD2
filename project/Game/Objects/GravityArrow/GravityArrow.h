@@ -7,13 +7,17 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model, ViewProjection* viewProjection, Vector3& pos);
+	void Initialize(Model* upModel, Model* downModel, ViewProjection* viewProjection, Vector3& pos);
 
-	void Update();
+	void Update() const;
 
 	void Draw();
 
-	void SetPos(const Vector3 newPos) {
+	void SetGravityDir(const bool up) {
+		isUp_ = up;
+	}
+
+	/*void SetPos(const Vector3 newPos) {
 		worldTransform_.translation_ = newPos;
 	}
 
@@ -23,17 +27,20 @@ public:
 
 	void SetRot(const Vector3 newRot) {
 		worldTransform_.rotation_ = newRot;
-	}
+	}*/
 
-	void SetUVPos(const Vector2 newUVPos) {
-		model_->SetUVPos(newUVPos);
-	}
 
 private:
-	WorldTransform worldTransform_;
+	//WorldTransform worldTransform_;
+	std::vector<WorldTransform> worldTransforms_;
 	ViewProjection* viewProjection_ = nullptr;
 
-	Model* model_ = nullptr;
+	Model* upModel_ = nullptr;
+	Model* downModel_ = nullptr;
+
+	bool isUp_ = false;
+
+	std::string upTextureHandle;
 };
 
 
