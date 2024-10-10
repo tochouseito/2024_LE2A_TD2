@@ -105,6 +105,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\Blocks\Blocks.cpp" />
     <ClCompile Include="Game\CSVLoader\CSVLoader.cpp" />
     <ClCompile Include="Game\Scenes\BaseScene.cpp" />
     <ClCompile Include="Engine\3D\DebugCamera.cpp" />
@@ -153,6 +154,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\Blocks\Blocks.h" />
     <ClInclude Include="Game\CSVLoader\CSVLoader.h" />
     <ClInclude Include="Game\Scenes\AbstractSceneFactory.h" />
     <ClInclude Include="Game\Scenes\BaseScene.h" />

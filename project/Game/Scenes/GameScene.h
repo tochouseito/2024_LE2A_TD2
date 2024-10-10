@@ -47,6 +47,7 @@
 
 /*Objects*/
 #include"Objects/Player/Player.h"
+#include"Objects/Blocks/Blocks.h"
 
 class GameScene :
 	public BaseScene {
@@ -118,5 +119,9 @@ private:
 	std::unique_ptr<Player> player_=nullptr;
 	std::unique_ptr<Model> playerModel_=nullptr;
 
+	// Blocks
+	std::vector<std::vector<std::unique_ptr<Blocks>>> blocks_;
+	//std::unique_ptr<Blocks> blocks_ = nullptr;
+	std::unique_ptr<Model> blocksModel_ = nullptr;
 };
 

@@ -45,6 +45,7 @@ void MyGame::Update()
 	/*基底クラスの更新処理*/
 	Framework::Update();
 	/*シーンマネージャの更新*/
+	lightGroup_->Update();
 	sceneManager->Update();
 	//titleScene->Update();
 	//gameScene->Update();

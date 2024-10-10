@@ -60,7 +60,7 @@ void Player::Update() {
 	//worldTransform_.translation_.z += velocity_.z;
 
 	// 行列を定数バッファに転送
-	worldTransform_.TransferMatrix();
+	//worldTransform_.TransferMatrix();
 	worldTransform_.UpdateMatrix();
 }
 void Player::Draw() {
