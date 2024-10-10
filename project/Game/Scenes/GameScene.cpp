@@ -12,8 +12,7 @@
 
 #include"Mymath.h"
 
-GameScene::GameScene() {
-}
+GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 	delete sprite_;
@@ -54,7 +53,8 @@ void GameScene::Initialize() {
 
 	// メインカメラの生成
 	mainCamera_ = std::make_unique<MainCamera>();
-	mainCamera_->Initialize(Vector3(0.0f, 0.0f, 30.0f), &viewProjection_);
+	mainCamera_->Initialize(Vector3(4.5f, 17.0f, -15.0f), &viewProjection_); // HACK : 動画提出用
+	mainCamera_->rotation_ = Vector3(0.0f, 0.0f, 0.0f); // HACK : 動画提出用
 
 	// MapChip
 	mapChipField_ = std::make_unique<MapChipField>();
@@ -62,21 +62,37 @@ void GameScene::Initialize() {
 
 	// Blocks
 	blocksModel_.reset(Model::LordModel("Player"));
+	upNeedleModel_.reset(Model::LordModel("UpNeedle"));
+	downNeedleModel_.reset(Model::LordModel("DownNeedle"));
 	GenerateBlocks();
+
+	// 矢印の生成
+	gravityArrowModel_.reset(Model::LordModel("GravityArrow"));
+	gravityArrow_ = std::make_unique<GravityArrow>();
+	Vector3 pos = Vector3(0.0f, 0.0f, 30.0f);
+	gravityArrow_->Initialize(gravityArrowModel_.get(), &viewProjection_, pos);
 
 	// Player
 	playerModel_.reset(Model::LordModel("Player"));
 	player_ = std::make_unique<Player>();
-	player_->Initialize(playerModel_.get(), &viewProjection_, Vector3(0.0f, 0.0f, 0.0f));
+	player_->Initialize(playerModel_.get(), &viewProjection_, mapChipField_->GetMapChipPositionByIndex(1, 1));
 	player_->SetMapChipField(mapChipField_.get());
-
-
-
 }
 void GameScene::Update() {
+	static Vector2 test = Vector2(0.0f, 0.0f);
+	test.y += 0.01f;
+	gravityArrow_->SetUVPos(test);
+	gravityArrow_->Update();
+
+	ImGui::Begin("Test");
+	ImGui::DragFloat2("test##uv", &test.x, 0.01f);
+	ImGui::End();
 
 	// player
 	player_->Update();
+
+	mainCamera_->translation_ = Lerp(mainCamera_->translation_, player_->GetWorldPosition() + player_->GetVelocity(), 1.0f / 60.0f * 5.0f);
+	mainCamera_->translation_.z = -15.0f;
 
 	// ブロックの更新
 	for (std::vector<std::unique_ptr<Blocks>>& blockLine : blocks_) {
@@ -87,7 +103,6 @@ void GameScene::Update() {
 			block->Update();
 		}
 	}
-
 
 #ifdef _DEBUG
 	// スペースキーでデバッグカメラの切り替え
@@ -112,6 +127,7 @@ void GameScene::Update() {
 }
 
 void GameScene::Draw() {
+	gravityArrow_->Draw();
 
 	// Player
 	player_->Draw();
@@ -127,8 +143,7 @@ void GameScene::Draw() {
 	}
 }
 
-void GameScene::GenerateBlocks()
-{
+void GameScene::GenerateBlocks() {
 	// 要素数
 	uint32_t numBlockVertical = mapChipField_->GetNumBlockVertical();
 	uint32_t numBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
@@ -146,8 +161,20 @@ void GameScene::GenerateBlocks()
 		for (uint32_t j = 0; j < numBlockHorizontal; ++j) {
 			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
 				blocks_[i][j] = std::make_unique<Blocks>();
-				Vector3 pos=mapChipField_->GetMapChipPositionByIndex(j, i);
+				Vector3 pos = mapChipField_->GetMapChipPositionByIndex(j, i);
 				blocks_[i][j]->Initialize(blocksModel_.get(), &viewProjection_, pos);
+			}
+
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kUpNeedle) {
+				blocks_[i][j] = std::make_unique<Blocks>();
+				Vector3 pos = mapChipField_->GetMapChipPositionByIndex(j, i);
+				blocks_[i][j]->Initialize(upNeedleModel_.get(), &viewProjection_, pos);
+			}
+
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kDownNeedle) {
+				blocks_[i][j] = std::make_unique<Blocks>();
+				Vector3 pos = mapChipField_->GetMapChipPositionByIndex(j, i);
+				blocks_[i][j]->Initialize(downNeedleModel_.get(), &viewProjection_, pos);
 			}
 		}
 	}

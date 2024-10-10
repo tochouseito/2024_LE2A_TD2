@@ -9,6 +9,8 @@
 enum class MapChipType {
 	kBlank, // 空白
 	kBlock, // ブロック
+	kUpNeedle, // 上向き針
+	kDownNeedle, // 下向き針
 };
 
 class MapChipField {

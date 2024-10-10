@@ -123,31 +123,33 @@ private: // メンバ変数
 	bool isAlive = true;
 	LRDirection lrDirection_ = LRDirection::kRight;
 
+	bool isGravityInvert = false;
+	bool isJumping = false;
+
 	// 旋回開始時の角度
 	float turnFirstRotationY_ = 0.0f;
 	// 旋回タイマー
 	float turnTimer_ = 0.0f;
 
 
-
-	static inline const float kAcceleration = 0.03f;
-	static inline const float kLimitRunSpeed = 0.2f;
-	static inline const float kAttenuation = 0.3f;
-	static inline const float kAttenuationLanding = 0.3f;
-	static inline const float kTimeTurn = 0.3f;
+	float kLimitRunSpeed = 0.125f;
+	float kAcceleration = 0.03f;
+	float kAttenuation = 0.3f;
+	float kAttenuationLanding = 0.3f;
+	float kTimeTurn = 0.2f;
 
 	// 重力加速度（下方向）
-	static inline const float kGravityAcceleration = 0.03f;
+	float kGravityAcceleration = 0.03f;
 	// 最大落下速度（下方向）
-	static inline const float kLimitFallSpeed = 0.3f;
+	float kLimitFallSpeed = 0.3f;
 	// ジャンプ速度（上方向）
-	static inline const float kJumpAcceleration = 0.4f;
+	float kJumpAcceleration = 0.25f;
 	// 壁に接触時速度
-	static inline const float kAttenuationWall = 0.6f;
+	float kAttenuationWall = 0.6f;
 	// キャラクターの当たり判定サイズ
-	static inline const float kWidth = 0.8f;
-	static inline const float kHeight = 0.8f;
-	static inline const float kBlank = 0.1f;
-	static inline const float kCorrectBlank = 0.5f;
+	float kWidth = 0.8f;
+	float kHeight = 0.8f;
+	float kBlank = 0.1f;
+	float kCorrectBlank = 0.5f;
 };
 
