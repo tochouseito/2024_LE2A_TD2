@@ -56,20 +56,28 @@ void GameScene::Initialize() {
 	mainCamera_ = std::make_unique<MainCamera>();
 	mainCamera_->Initialize(Vector3(0.0f, 0.0f, 30.0f), &viewProjection_);
 
+	// Player
+	playerModel_.reset(Model::LordModel("Player"));
+	player_ = std::make_unique<Player>();
+	player_->Initialize(playerModel_.get(), &viewProjection_, Vector3(0.0f, 0.0f, 0.0f));
+
 }
 void GameScene::Update() {
+
+	// player
+	player_->Update();
 
 
 #ifdef _DEBUG
 	// スペースキーでデバッグカメラの切り替え
 	ImGui::Begin("EngineDebug");
+	if (ImGui::Button("DebugCamera")) {
+		useDebugCamera_ = !useDebugCamera_;
+	}
 	if (ImGui::Button("ChangeScene")) {
 		/*シーン切り替え依頼*/
 		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
-	ImGui::DragFloat("hue", &DirectXCommon::GetInstance()->GetHSVData()->hue, 0.01f);
-	ImGui::DragFloat("saturation", &DirectXCommon::GetInstance()->GetHSVData()->saturation, 0.01f);
-	ImGui::DragFloat("value", &DirectXCommon::GetInstance()->GetHSVData()->value, 0.01f);
 	ImGui::End();
 #endif // _DEBUG
 	if (useDebugCamera_) {
@@ -84,4 +92,6 @@ void GameScene::Update() {
 
 void GameScene::Draw() {
 
+	// Player
+	player_->Draw();
 }

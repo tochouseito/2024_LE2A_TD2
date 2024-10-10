@@ -241,24 +241,26 @@ void Model::Draw(WorldTransform& worldTransform,const ViewProjection& viewProjec
 	// 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけばいい
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	// Roosignatureを設定。PSOに設定しているけど別途設定が必要
-	if (modelData_->bone) {/*ボーンあり*/
-		commandList->SetGraphicsRootSignature(GraphicsPipelineState::GetRootSignatureSkinning());
-		commandList->SetPipelineState(GraphicsPipelineState::GetPipelineStateSkinning(current_blend));// PSOを設定
-		if (objectColor) {
-			commandList->SetGraphicsRootConstantBufferView(9, objectColor->GetResource()->GetGPUVirtualAddress());
-		} else
+	if (modelData_) {
+		if (modelData_->bone) {/*ボーンあり*/
+			commandList->SetGraphicsRootSignature(GraphicsPipelineState::GetRootSignatureSkinning());
+			commandList->SetPipelineState(GraphicsPipelineState::GetPipelineStateSkinning(current_blend));// PSOを設定
+			if (objectColor) {
+				commandList->SetGraphicsRootConstantBufferView(9, objectColor->GetResource()->GetGPUVirtualAddress());
+			} else
+			{
+				commandList->SetGraphicsRootConstantBufferView(9, objectColor_->GetResource()->GetGPUVirtualAddress());
+			}
+		} else/*ボーンなし*/
 		{
-			commandList->SetGraphicsRootConstantBufferView(9, objectColor_->GetResource()->GetGPUVirtualAddress());
-		}
-	} else/*ボーンなし*/
-	{
-		commandList->SetGraphicsRootSignature(GraphicsPipelineState::GetRootSignature());
-		commandList->SetPipelineState(GraphicsPipelineState::GetPipelineState(current_blend));// PSOを設定
-		if (objectColor) {
-			commandList->SetGraphicsRootConstantBufferView(8, objectColor->GetResource()->GetGPUVirtualAddress());
-		} else
-		{
-			commandList->SetGraphicsRootConstantBufferView(8, objectColor_->GetResource()->GetGPUVirtualAddress());
+			commandList->SetGraphicsRootSignature(GraphicsPipelineState::GetRootSignature());
+			commandList->SetPipelineState(GraphicsPipelineState::GetPipelineState(current_blend));// PSOを設定
+			if (objectColor) {
+				commandList->SetGraphicsRootConstantBufferView(8, objectColor->GetResource()->GetGPUVirtualAddress());
+			} else
+			{
+				commandList->SetGraphicsRootConstantBufferView(8, objectColor_->GetResource()->GetGPUVirtualAddress());
+			}
 		}
 	}
 	if (modelData_) {

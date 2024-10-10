@@ -44,6 +44,9 @@
 // CSVLoader
 #include"CSVLoader/CSVLoader.h"
 
+/*Objects*/
+#include"Objects/Player/Player.h"
+
 class GameScene :
 	public BaseScene {
 public:
@@ -103,7 +106,11 @@ private:
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 
+	/*Objects*/
 
+	// Player
+	std::unique_ptr<Player> player_;
+	std::unique_ptr<Model> playerModel_;
 
 };
 
