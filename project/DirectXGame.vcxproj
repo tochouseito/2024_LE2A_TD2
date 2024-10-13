@@ -127,6 +127,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="externals\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Engine\Input\Input.cpp" />
     <ClCompile Include="Engine\3D\LightGroup.cpp" />
+    <ClCompile Include="Game\Objects\GravityArrow\GravityArrow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\3D\MainCamera.cpp" />
     <ClCompile Include="Engine\3D\Material.cpp" />
@@ -181,6 +182,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Input\Input.h" />
     <ClInclude Include="Engine\3D\LightGroup.h" />
     <ClInclude Include="Game\MapChipField\MapChipField.h" />
+    <ClInclude Include="Game\Objects\GravityArrow\GravityArrow.h" />
     <ClInclude Include="math\Easing.h" />
     <ClInclude Include="math\mathShapes.h" />
     <ClInclude Include="math\Matrix4x4.h" />

@@ -46,6 +46,7 @@
 #include"Game/MapChipField/MapChipField.h"
 
 /*Objects*/
+#include "GravityArrow/GravityArrow.h"
 #include"Objects/Player/Player.h"
 #include"Objects/Blocks/Blocks.h"
 
@@ -62,8 +63,7 @@ public:
 	void Draw()override;
 
 	// シーンの切り替え依頼
-	void ChangeScene()override {
-	}
+	void ChangeScene()override {}
 	void SetSceneManager(SceneManager* sceneManager) override {
 		sceneManager_ = sceneManager;
 	}
@@ -97,7 +97,7 @@ private:
 	//MainCamera* mainCamera_ = nullptr;
 	/*エミッターマネージャ*/
 	//std::unique_ptr<EmitterManager> emitterManager_;
-	
+
 
 	// デバッグカメラ
 	std::unique_ptr < DebugCamera> debugCamera_;
@@ -116,12 +116,19 @@ private:
 	/*Objects*/
 
 	// Player
-	std::unique_ptr<Player> player_=nullptr;
-	std::unique_ptr<Model> playerModel_=nullptr;
+	std::unique_ptr<Player> player_ = nullptr;
+	std::unique_ptr<Model> playerModel_ = nullptr;
 
 	// Blocks
 	std::vector<std::vector<std::unique_ptr<Blocks>>> blocks_;
 	//std::unique_ptr<Blocks> blocks_ = nullptr;
 	std::unique_ptr<Model> blocksModel_ = nullptr;
+
+	// 動画提出用
+	std::unique_ptr<Model> upNeedleModel_ = nullptr;
+	std::unique_ptr<Model> downNeedleModel_ = nullptr;
+
+	std::unique_ptr<GravityArrow> gravityArrow_ = nullptr;
+	std::vector<std::unique_ptr<Model>> gravityArrowModel_;
 };
 
