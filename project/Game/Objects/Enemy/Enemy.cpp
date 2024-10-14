@@ -26,6 +26,11 @@ void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vecto
 
 void Enemy::Update() {
 
+	// 移動処理
+	Move();
+
+	// 攻撃処理
+	Attack();
 
 	// 行列更新
 	worldTransform_.UpdateMatrix();
@@ -35,3 +40,16 @@ void Enemy::Draw() {
 	// 3Dモデルを描画
 	model_->Draw(worldTransform_, *viewProjection_);
 }
+
+void Enemy::Move() {
+
+	if (velocity_.x < kMaxSpeed_) {
+		// 移動量が最大速度を超えていない場合
+		// 加速量を加速量に加算
+		velocity_.x += acceleration_;
+	}
+	// 移動量を加算
+	worldTransform_.translation_ += velocity_;
+}
+
+void Enemy::Attack() {}
