@@ -12,6 +12,8 @@ namespace {
 		{"1", MapChipType::kBlock},
 		{"2", MapChipType::kUpNeedle},
 		{"3", MapChipType::kDownNeedle},
+		{"4", MapChipType::kPlayer},
+		{"5", MapChipType::kEnemy},
 	};
 }
 void MapChipField::ResetMapChipData() {

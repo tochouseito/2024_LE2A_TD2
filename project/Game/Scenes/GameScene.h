@@ -47,10 +47,11 @@
 
 /*Objects*/
 #include "GravityArrow/GravityArrow.h"
-#include"Objects/Player/Player.h"
-#include"Objects/Blocks/Blocks.h"
+#include "Objects/Player/Player.h"
+#include "Objects/Enemy/Enemy.h"
+#include "Objects/Blocks/Blocks.h"
 
-class GameScene :
+class GameScene:
 	public BaseScene {
 public:
 	GameScene();
@@ -118,6 +119,10 @@ private:
 	// Player
 	std::unique_ptr<Player> player_ = nullptr;
 	std::unique_ptr<Model> playerModel_ = nullptr;
+
+	// Enemy
+	std::unique_ptr<Enemy> enemy_ = nullptr;
+	std::unique_ptr<Model> enemyModel_ = nullptr;
 
 	// Blocks
 	std::vector<std::vector<std::unique_ptr<Blocks>>> blocks_;
