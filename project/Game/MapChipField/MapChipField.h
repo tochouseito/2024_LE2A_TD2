@@ -13,6 +13,7 @@ enum class MapChipType {
 	kDownNeedle, // 下向き針
 	kPlayer,	 // プレイヤー初期位置
 	kEnemy,		 // エネミー初期位置
+	kGoal,		 // ゴール
 };
 
 class MapChipField {
