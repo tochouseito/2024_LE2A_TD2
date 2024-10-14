@@ -3,14 +3,14 @@
 #include "TextureManager.h"
 #include <DirectXTex.h>
 #include <cassert>
-#include"LightGroup.h"
-#include<fstream>
+#include "LightGroup.h"
+#include <fstream>
 #include <algorithm>
 #ifdef _DEBUG
-#include"imgui.h"
+#include "imgui.h"
 #endif
 
-#include"Mymath.h"
+#include "Mymath.h"
 
 GameScene::GameScene() {}
 
