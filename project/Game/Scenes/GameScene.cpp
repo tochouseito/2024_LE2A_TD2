@@ -3,14 +3,14 @@
 #include "TextureManager.h"
 #include <DirectXTex.h>
 #include <cassert>
-#include"LightGroup.h"
-#include<fstream>
+#include "LightGroup.h"
+#include <fstream>
 #include <algorithm>
 #ifdef _DEBUG
-#include"imgui.h"
+#include "imgui.h"
 #endif
 
-#include"Mymath.h"
+#include "Mymath.h"
 
 GameScene::GameScene() {}
 
@@ -81,8 +81,35 @@ void GameScene::Initialize() {
 	// Player
 	playerModel_.reset(Model::LordModel("Player"));
 	player_ = std::make_unique<Player>();
-	player_->Initialize(playerModel_.get(), &viewProjection_, mapChipField_->GetMapChipPositionByIndex(1, 1));
+	// CSVからプレイヤーの開始位置を見つける
+	Vector3 playerPosition{};
+	for (uint32_t i = 0; i < mapChipField_->GetNumBlockVertical(); i++) {
+		for (uint32_t j = 0; j < mapChipField_->GetNumBlockHorizontal(); j++) {
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kPlayer) {
+				playerPosition = mapChipField_->GetMapChipPositionByIndex(j, i);
+				break;
+			}
+		}
+	}
+
+	player_->Initialize(playerModel_.get(), &viewProjection_, playerPosition);
 	player_->SetMapChipField(mapChipField_.get());
+
+	// Enemy
+	enemyModel_.reset(Model::CreateSphere());
+	enemy_ = std::make_unique<Enemy>();
+	// CSVからエネミーの開始位置を見つける
+	Vector3 enemyPosition{};
+	for (uint32_t i = 0; i < mapChipField_->GetNumBlockVertical(); i++) {
+		for (uint32_t j = 0; j < mapChipField_->GetNumBlockHorizontal(); j++) {
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kEnemy) {
+				enemyPosition = mapChipField_->GetMapChipPositionByIndex(j, i);
+				break;
+			}
+		}
+	}
+	enemy_->Initialize(enemyModel_.get(), &viewProjection_, enemyPosition);
+
 }
 void GameScene::Update() {
 	// 矢印
@@ -90,6 +117,9 @@ void GameScene::Update() {
 
 	// player
 	player_->Update();
+
+	// Enemy
+	enemy_->Update();
 
 	gravityArrow_->SetGravityDir(player_->GetIsGravityInvert());
 
@@ -138,6 +168,9 @@ void GameScene::Draw() {
 
 	// Player
 	player_->Draw();
+
+	// エネミー
+	enemy_->Draw();
 
 	// ブロックの更新
 	for (std::vector<std::unique_ptr<Blocks>>& blockLine : blocks_) {

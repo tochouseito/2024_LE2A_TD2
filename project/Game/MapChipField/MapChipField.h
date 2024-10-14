@@ -11,6 +11,8 @@ enum class MapChipType {
 	kBlock, // ブロック
 	kUpNeedle, // 上向き針
 	kDownNeedle, // 下向き針
+	kPlayer,	 // プレイヤー初期位置
+	kEnemy,		 // エネミー初期位置
 };
 
 class MapChipField {
@@ -58,5 +60,5 @@ private:
 	static inline const float kBlockHeight = 1.0f;
 	// ブロックの個数
 	static inline const uint32_t kNumBlockVertical = 20;
-	static inline const uint32_t kNumBlockHorizontal = 100;
+	static inline const uint32_t kNumBlockHorizontal = 125;
 };
