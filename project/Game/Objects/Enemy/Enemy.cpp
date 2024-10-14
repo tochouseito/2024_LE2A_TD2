@@ -42,9 +42,8 @@ void Enemy::Draw() {
 }
 
 void Enemy::Move() {
-
+	// 移動量が最大速度を超えていない場合
 	if (velocity_.x < kMaxSpeed_) {
-		// 移動量が最大速度を超えていない場合
 		// 加速量を加速量に加算
 		velocity_.x += acceleration_;
 	}
