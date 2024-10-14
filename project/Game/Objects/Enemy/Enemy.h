@@ -12,6 +12,9 @@ public:
 	void Update();
 	void Draw();
 
+	void Move();
+	void Attack();
+
 private:
 
 	// ワールドトランスフォーム
@@ -29,7 +32,10 @@ private:
 	// 移動量
 	Vector3 velocity_ = {};
 
-	// 速度
-	float speed_ = 0.125f;
+	// 加速度
+	const float acceleration_ = 0.0002f;
+
+	// 最大速度
+	const float kMaxSpeed_ = 0.12f;
 
 };
