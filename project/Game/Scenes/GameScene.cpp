@@ -74,6 +74,10 @@ void GameScene::Initialize() {
 	Vector3 pos = Vector3(0.0f, 0.0f, 30.0f);
 	gravityArrow_->Initialize(gravityArrowModel_[0].get(), gravityArrowModel_[1].get(), &viewProjection_, pos);
 
+	// 衝突マネージャの生成
+	collisionManager_ = std::make_unique<CollisionManager>();
+	collisionManager_->Initialize();
+
 	// Player
 	playerModel_.reset(Model::LordModel("Player"));
 	player_ = std::make_unique<Player>();
@@ -132,6 +136,10 @@ void GameScene::Update() {
 		}
 	}
 
+	// 衝突判定と応答
+	CheckAllCollisions();
+	collisionManager_->UpdateWorldTransform();
+
 #ifdef _DEBUG
 	// スペースキーでデバッグカメラの切り替え
 	ImGui::Begin("EngineDebug");
@@ -173,6 +181,8 @@ void GameScene::Draw() {
 			block->Draw();
 		}
 	}
+
+	collisionManager_->Draw(viewProjection_);
 }
 
 void GameScene::GenerateBlocks() {
@@ -210,4 +220,19 @@ void GameScene::GenerateBlocks() {
 			}
 		}
 	}
+}
+
+void GameScene::CheckAllCollisions() {
+	// 衝突マネージャのリセット
+	collisionManager_->Reset();
+
+	// コライダーをリストに登録
+	collisionManager_->AddCollider(player_.get());
+	// 針全てについて
+	/*for (const std::unique_ptr<Enemy>& enemy : enemies_) {
+
+	}*/
+
+	// 衝突判定と応答
+	collisionManager_->CheckAllCollision();
 }
