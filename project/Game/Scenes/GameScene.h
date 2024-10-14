@@ -46,6 +46,8 @@
 #include"Game/MapChipField/MapChipField.h"
 
 /*Objects*/
+#include "CollisionManager/CollisionManager.h"
+
 #include "GravityArrow/GravityArrow.h"
 #include"Objects/Player/Player.h"
 #include"Objects/Blocks/Blocks.h"
@@ -69,6 +71,8 @@ public:
 	}
 
 	void GenerateBlocks();
+
+	void CheckAllCollisions();
 
 private:
 	DirectXCommon* dxCommon_ = nullptr;
@@ -130,5 +134,8 @@ private:
 
 	std::unique_ptr<GravityArrow> gravityArrow_ = nullptr;
 	std::vector<std::unique_ptr<Model>> gravityArrowModel_;
+
+	// 衝突マネージャ
+	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 };
 

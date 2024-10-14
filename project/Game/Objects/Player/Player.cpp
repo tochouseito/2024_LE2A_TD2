@@ -5,6 +5,8 @@
 #include"algorithm"
 #include "imgui.h"
 #include"Input.h"
+#include "Mymath.h"
+
 #include"math/Easing.h"
 #include"Game/MapChipField/MapChipField.h"
 //#include"DebugText.h"
@@ -35,6 +37,11 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 	model_ = model;
 
 	viewProjection_ = viewProjection;
+
+	// コライダーの設定
+	Collider::Initialize();
+	// 半径を設定
+	SetRadius(0.25f);
 }
 
 float targetRotZ = 0.0f;
@@ -62,7 +69,7 @@ void Player::Update() {
 	TurnControl();
 
 	if (isGravityInvert) {
-		targetRotZ = std::numbers::pi;
+		targetRotZ = std::numbers::pi_v<float>;
 	} else {
 		targetRotZ = 0.0f;
 	}
@@ -322,6 +329,19 @@ AABB Player::GetAABB() {
 		worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f };
 	return aabb;
 }
+
+Vector3 Player::GetCenterPosition() const {
+	// ローカル座標でのオフセット
+	const Vector3 offset = { 0.0f,0.0f,0.0f };
+	// ワールド座標に変換
+	Vector3 worldPos = Transform(offset, worldTransform_.matWorld_);
+	return worldPos;
+}
+
+void Player::OnCollision() {
+	BaseCharacter::OnCollision();
+}
+
 //void Player::OnCollision(const Enemy* enemy) {
 //	(void)enemy;
 //	isAlive = false;

@@ -1,8 +1,11 @@
 #pragma once
-#include"WorldTransform.h"
-#include"ViewProjection.h"
-#include"Model.h"
+#include "BaseCharacter.h"
+#include "WorldTransform.h"
+#include "ViewProjection.h"
+#include "Model.h"
+
 class MapChipField;
+
 enum Corner {
 	kRightBottom, // 右下
 	kLeftBottom,  // 左下
@@ -11,7 +14,8 @@ enum Corner {
 
 	kNumCorner // 要素数
 };
-class Player {
+
+class Player : public BaseCharacter {
 public: // メンバ関数
 
 	/// <summary>
@@ -98,6 +102,10 @@ public: // メンバ関数
 	bool GetIsAlive() { return isAlive; }
 
 	bool GetIsGravityInvert() const { return isGravityInvert; }
+
+	Vector3 GetCenterPosition() const override;
+
+	void OnCollision() override;
 
 private: // メンバ変数
 

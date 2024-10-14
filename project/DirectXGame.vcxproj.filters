@@ -79,6 +79,9 @@
     <ClCompile Include="Game\MapChipField\MapChipField.cpp" />
     <ClCompile Include="Game\Objects\Blocks\Blocks.cpp" />
     <ClCompile Include="Game\Objects\GravityArrow\GravityArrow.cpp" />
+    <ClCompile Include="Game\Objects\CollisionManager\Collider.cpp" />
+    <ClCompile Include="Game\Objects\BaseCharacter.cpp" />
+    <ClCompile Include="Game\Objects\CollisionManager\CollisionManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Scenes\AbstractSceneFactory.h" />
@@ -137,6 +140,9 @@
     <ClInclude Include="math\Easing.h" />
     <ClInclude Include="Game\Objects\Blocks\Blocks.h" />
     <ClInclude Include="Game\Objects\GravityArrow\GravityArrow.h" />
+    <ClInclude Include="Game\Objects\CollisionManager\Collider.h" />
+    <ClInclude Include="Game\Objects\BaseCharacter.h" />
+    <ClInclude Include="Game\Objects\CollisionManager\CollisionManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shader\FullScreen.hlsli" />
