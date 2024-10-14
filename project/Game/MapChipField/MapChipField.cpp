@@ -14,6 +14,7 @@ namespace {
 		{"3", MapChipType::kDownNeedle},
 		{"4", MapChipType::kPlayer},
 		{"5", MapChipType::kEnemy},
+		{"6", MapChipType::kGoal},
 	};
 }
 void MapChipField::ResetMapChipData() {

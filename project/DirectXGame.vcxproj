@@ -111,6 +111,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Blocks\Blocks.cpp" />
     <ClCompile Include="Game\CSVLoader\CSVLoader.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Objects\Goal\Goal.cpp" />
     <ClCompile Include="Game\Scenes\BaseScene.cpp" />
     <ClCompile Include="Engine\3D\DebugCamera.cpp" />
     <ClCompile Include="Engine\base\Audio.cpp" />
@@ -165,6 +166,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\Blocks\Blocks.h" />
     <ClInclude Include="Game\CSVLoader\CSVLoader.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Objects\Goal\Goal.h" />
     <ClInclude Include="Game\Scenes\AbstractSceneFactory.h" />
     <ClInclude Include="Game\Scenes\BaseScene.h" />
     <ClInclude Include="Engine\3D\DebugCamera.h" />

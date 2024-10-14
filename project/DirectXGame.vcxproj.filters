@@ -83,6 +83,7 @@
     <ClCompile Include="Game\Objects\BaseCharacter.cpp" />
     <ClCompile Include="Game\Objects\CollisionManager\CollisionManager.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Objects\Goal\Goal.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Scenes\AbstractSceneFactory.h" />
@@ -145,6 +146,7 @@
     <ClInclude Include="Game\Objects\BaseCharacter.h" />
     <ClInclude Include="Game\Objects\CollisionManager\CollisionManager.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Objects\Goal\Goal.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shader\FullScreen.hlsli" />
