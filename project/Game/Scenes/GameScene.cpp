@@ -204,45 +204,46 @@ void GameScene::Update() {
 			bullet->Update();
 		}
 
-	for (std::unique_ptr<Needle>& needle : needles_) {
-		needle->Update();
+		for (std::unique_ptr<Needle>& needle : needles_) {
+			needle->Update();
 
-	}
+		}
 
-	// 衝突判定と応答
-	CheckAllCollisions();
-	collisionManager_->UpdateWorldTransform();
+		// 衝突判定と応答
+		CheckAllCollisions();
+		collisionManager_->UpdateWorldTransform();
 
 #ifdef _DEBUG
-	// スペースキーでデバッグカメラの切り替え
-	ImGui::Begin("EngineDebug");
-	if (ImGui::Button("DebugCamera")) {
-		useDebugCamera_ = !useDebugCamera_;
-	}
-	//if (ImGui::Button("ChangeScene")) {
-	//	/*シーン切り替え依頼*/
-	//	SceneManager::GetInstance()->ChangeScene("TITLE");
-	//}
-	ImGui::End();
+		// スペースキーでデバッグカメラの切り替え
+		ImGui::Begin("EngineDebug");
+		if (ImGui::Button("DebugCamera")) {
+			useDebugCamera_ = !useDebugCamera_;
+		}
+		//if (ImGui::Button("ChangeScene")) {
+		//	/*シーン切り替え依頼*/
+		//	SceneManager::GetInstance()->ChangeScene("TITLE");
+		//}
+		ImGui::End();
 
-	// シーン切り替えウィンドウ
-	ImGui::Begin("GameScene");
-	if (ImGui::Button("GoResult")) {
-		/*シーン切り替え依頼*/
-		SceneManager::GetInstance()->ChangeScene("RESULT");
-	}
-	ImGui::End();
+		// シーン切り替えウィンドウ
+		ImGui::Begin("GameScene");
+		if (ImGui::Button("GoResult")) {
+			/*シーン切り替え依頼*/
+			SceneManager::GetInstance()->ChangeScene("RESULT");
+		}
+		ImGui::End();
 
 #endif // _DEBUG
-	if (useDebugCamera_) {
-		debugCamera_->Update();
-		viewProjection_.TransferMatrix();
-	} else {
-		// メインカメラの処理
-		mainCamera_->Update();
-		viewProjection_.UpdateMatrix();
+		if (useDebugCamera_) {
+			debugCamera_->Update();
+			viewProjection_.TransferMatrix();
+		} else {
+			// メインカメラの処理
+			mainCamera_->Update();
+			viewProjection_.UpdateMatrix();
+		}
+		deltaTime_->Update();
 	}
-	deltaTime_->Update();
 }
 
 void GameScene::Draw() {
@@ -278,13 +279,14 @@ void GameScene::Draw() {
 			bullet->Draw();
 		}
 
-	// 針の描画
-	for (std::unique_ptr<Needle>& needle : needles_) {
-		needle->Draw();
+		// 針の描画
+		for (std::unique_ptr<Needle>& needle : needles_) {
+			needle->Draw();
 
+		}
+
+		collisionManager_->Draw(viewProjection_);
 	}
-
-	collisionManager_->Draw(viewProjection_);
 }
 
 void GameScene::GenerateBlocks() {
