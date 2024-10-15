@@ -12,6 +12,10 @@ public:
 	void Update();
 	void Draw();
 
+	void SetIsGoal(bool isGoal) { isGoal_ = isGoal; }
+
+	bool GetIsGoal() const { return isGoal_; }
+
 private:
 
 	// ワールドトランスフォーム
@@ -25,5 +29,7 @@ private:
 
 	// ビュープロジェクション
 	ViewProjection* viewProjection_ = nullptr;
+
+	bool isGoal_ = false;
 
 };

@@ -134,7 +134,7 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 
 	// もしゴールしていたら
-	if (isGoal_) {
+	if (goal_->GetIsGoal()) {
 		/*シーン切り替え依頼*/
 		SceneManager::GetInstance()->ChangeScene("RESULT");
 	}
