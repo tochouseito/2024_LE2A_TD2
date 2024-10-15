@@ -196,54 +196,50 @@ void GameScene::Update() {
 
 
 	// バレットの更新
-	for (std::vector<std::unique_ptr<PlayerBullet>>& bulletLine : bullets_) {
-		for (std::unique_ptr<PlayerBullet>& bullet : bulletLine) {
-			if (!bullet) {
-				continue;
-			}
-			bullet->Update();
-		}
+	for (std::unique_ptr<PlayerBullet>& bullet : bullets_) {
+		bullet->Update();
+	}
 
-		for (std::unique_ptr<Needle>& needle : needles_) {
-			needle->Update();
+	for (std::unique_ptr<Needle>& needle : needles_) {
+		needle->Update();
 
-		}
+	}
 
-		// 衝突判定と応答
-		CheckAllCollisions();
-		collisionManager_->UpdateWorldTransform();
+	// 衝突判定と応答
+	CheckAllCollisions();
+	collisionManager_->UpdateWorldTransform();
 
 #ifdef _DEBUG
-		// スペースキーでデバッグカメラの切り替え
-		ImGui::Begin("EngineDebug");
-		if (ImGui::Button("DebugCamera")) {
-			useDebugCamera_ = !useDebugCamera_;
-		}
-		//if (ImGui::Button("ChangeScene")) {
-		//	/*シーン切り替え依頼*/
-		//	SceneManager::GetInstance()->ChangeScene("TITLE");
-		//}
-		ImGui::End();
+	// スペースキーでデバッグカメラの切り替え
+	ImGui::Begin("EngineDebug");
+	if (ImGui::Button("DebugCamera")) {
+		useDebugCamera_ = !useDebugCamera_;
+	}
+	//if (ImGui::Button("ChangeScene")) {
+	//	/*シーン切り替え依頼*/
+	//	SceneManager::GetInstance()->ChangeScene("TITLE");
+	//}
+	ImGui::End();
 
-		// シーン切り替えウィンドウ
-		ImGui::Begin("GameScene");
-		if (ImGui::Button("GoResult")) {
-			/*シーン切り替え依頼*/
-			SceneManager::GetInstance()->ChangeScene("RESULT");
-		}
-		ImGui::End();
+	// シーン切り替えウィンドウ
+	ImGui::Begin("GameScene");
+	if (ImGui::Button("GoResult")) {
+		/*シーン切り替え依頼*/
+		SceneManager::GetInstance()->ChangeScene("RESULT");
+	}
+	ImGui::End();
 
 #endif // _DEBUG
-		if (useDebugCamera_) {
-			debugCamera_->Update();
-			viewProjection_.TransferMatrix();
-		} else {
-			// メインカメラの処理
-			mainCamera_->Update();
-			viewProjection_.UpdateMatrix();
-		}
-		deltaTime_->Update();
+	if (useDebugCamera_) {
+		debugCamera_->Update();
+		viewProjection_.TransferMatrix();
+	} else {
+		// メインカメラの処理
+		mainCamera_->Update();
+		viewProjection_.UpdateMatrix();
 	}
+	deltaTime_->Update();
+
 }
 
 void GameScene::Draw() {
@@ -271,22 +267,18 @@ void GameScene::Draw() {
 
 
 	// バレットの描画
-	for (std::vector<std::unique_ptr<PlayerBullet>>& bulletLine : bullets_) {
-		for (std::unique_ptr<PlayerBullet>& bullet : bulletLine) {
-			if (!bullet) {
-				continue;
-			}
-			bullet->Draw();
-		}
-
-		// 針の描画
-		for (std::unique_ptr<Needle>& needle : needles_) {
-			needle->Draw();
-
-		}
-
-		collisionManager_->Draw(viewProjection_);
+	for (std::unique_ptr<PlayerBullet>& bullet : bullets_) {
+		bullet->Draw();
 	}
+
+	// 針の描画
+	for (std::unique_ptr<Needle>& needle : needles_) {
+		needle->Draw();
+
+	}
+
+	collisionManager_->Draw(viewProjection_);
+
 }
 
 void GameScene::GenerateBlocks() {
@@ -332,20 +324,17 @@ void GameScene::GenerateBullets() {
 	uint32_t numBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
 
 	// 要素数を変更する
-	// 列数を設定（縦方向のブロック）
-	bullets_.resize(numBlockVertical);
-	for (uint32_t i = 0; i < numBlockVertical; ++i) {
-		// 1列の要素数を設定（横方向のブロック数）
-		bullets_[i].resize(numBlockHorizontal);
-	}
 	// ブロックの生成
 	for (uint32_t i = 0; i < numBlockVertical; ++i) {
 
 		for (uint32_t j = 0; j < numBlockHorizontal; ++j) {
 			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBullet) {
-				bullets_[i][j] = std::make_unique<PlayerBullet>();
-				Vector3 pos = mapChipField_->GetMapChipPositionByIndex(j, i);
-				bullets_[i][j]->Initialize(bulletModel_.get(), &viewProjection_, pos);
+				// 配列のサイズを一つ増やす
+				bullets_.resize(bullets_.size() + 1);
+				// 作成
+				bullets_.back() = std::make_unique<PlayerBullet>();
+				// 初期化
+				bullets_.back()->Initialize(bulletModel_.get(), &viewProjection_, mapChipField_->GetMapChipPositionByIndex(j, i));
 			}
 		}
 	}
