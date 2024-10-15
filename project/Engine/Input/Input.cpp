@@ -193,17 +193,6 @@ const Vector2& Input::GetMousePosition() const
 {
 	return mousePosition_;
 }
-
-bool Input::GetJoystickState(int32_t stickNo, DIJOYSTATE2& out) const
-{
-	return false;
-}
-
-bool Input::GetJoystickStatePrevious(int32_t stickNo, DIJOYSTATE2& out) const
-{
-	return false;
-}
-
 bool Input::GetJoystickState(int32_t stickNo, XINPUT_STATE& out) const
 {
 	if (stickNo < 0 || stickNo >= devJoysticks_.size()) return false;
@@ -229,4 +218,14 @@ void Input::SetJoystickDeadZone(int32_t stickNo, int32_t deadZoneL, int32_t dead
 size_t Input::GetNumberOfJoysticks()
 {
 	return size_t();
+}
+
+bool Input::TriggerControllerButton(int32_t stickNo, WORD button)
+{
+	XINPUT_STATE currentState;
+	XINPUT_STATE previousState;
+	if (GetJoystickState(stickNo, currentState) && GetJoystickStatePrevious(stickNo, previousState)) {
+		return ((currentState.Gamepad.wButtons & button) != 0) && ((previousState.Gamepad.wButtons & button) == 0);
+	}
+	return false;
 }

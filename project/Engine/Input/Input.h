@@ -160,7 +160,7 @@ public:
 	/// <returns>接続されているジョイスティック数</returns>
 	size_t GetNumberOfJoysticks();
 
-
+	bool TriggerControllerButton(int32_t stickNo, WORD button);
 private:
 	Input() = default;
 	~Input() = default;
