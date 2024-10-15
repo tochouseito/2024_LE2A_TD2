@@ -111,6 +111,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\CollisionManager\Collider.cpp" />
     <ClCompile Include="Game\Objects\Blocks\Blocks.cpp" />
     <ClCompile Include="Game\CSVLoader\CSVLoader.cpp" />
+    <ClCompile Include="Game\Objects\CollisionManager\CollisionTypeIdDef.h" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Objects\Goal\Goal.cpp" />
     <ClCompile Include="Game\Objects\PlayerBullet\PlayerBullet.cpp" />
@@ -162,6 +163,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scenes\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\SceneFactory.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
+    <ClCompile Include="Needle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\DeltaTime\DeltaTime.h" />
@@ -229,6 +231,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scenes\SceneManager.h" />
     <ClInclude Include="Game\Scenes\SceneFactory.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
+    <ClInclude Include="Needle.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shader\BasicGeometryShader.hlsl">

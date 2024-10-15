@@ -4,6 +4,8 @@
 #include "algorithm"
 #include "imgui.h"
 #include "Input.h"
+#include "Mymath.h"
+#include "CollisionManager/CollisionTypeIdDef.h"
 #include "math/Easing.h"
 
 
@@ -22,6 +24,13 @@ void Goal::Initialize(Model* model, ViewProjection* viewProjection, const Vector
 	model_ = model;
 
 	viewProjection_ = viewProjection;
+
+	// コライダーの設定
+	Collider::Initialize();
+	// 半径を設定
+	SetRadius(1.0f);
+
+	SetTypeID(static_cast<uint32_t>(CollisionTypeIdDef::kEnemy));
 }
 
 void Goal::Update() {
@@ -32,4 +41,21 @@ void Goal::Update() {
 void Goal::Draw() {
 	// 3Dモデルを描画
 	model_->Draw(worldTransform_, *viewProjection_);
+}
+
+void Goal::OnCollision(Collider* other) {
+	// 衝突相手の種別IDを取得
+	uint32_t typeID = other->GetTypeID();
+	// 衝突相手が針なら
+	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kPlayer)) {
+		SetIsGoal(true);
+	}
+}
+
+Vector3 Goal::GetCenterPosition() const {
+	// ローカル座標でのオフセット
+	const Vector3 offset = { 0.0f,0.0f,0.0f };
+	// ワールド座標に変換
+	Vector3 worldPos = Transform(offset, worldTransform_.matWorld_);
+	return worldPos;
 }

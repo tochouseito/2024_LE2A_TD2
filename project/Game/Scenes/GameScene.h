@@ -56,9 +56,10 @@
 #include "Objects/PlayerBullet/PlayerBullet.h"
 
 // DeltaTime
+#include "Needle.h"
 #include"Game/DeltaTime/DeltaTime.h"
 
-class GameScene:
+class GameScene :
 	public BaseScene {
 public:
 	GameScene();
@@ -144,12 +145,17 @@ private:
 	std::unique_ptr<Goal> goal_ = nullptr;
 	std::unique_ptr<Model> goalModel_ = nullptr;
 
+
 	// Bullet
 	std::vector<std::vector<std::unique_ptr<PlayerBullet>>> bullets_;
 	std::unique_ptr<Model> bulletModel_ = nullptr;
 
 
 	// 動画提出用
+
+	// 針
+	std::vector<std::unique_ptr<Needle>> needles_;
+
 	std::unique_ptr<Model> upNeedleModel_ = nullptr;
 	std::unique_ptr<Model> downNeedleModel_ = nullptr;
 

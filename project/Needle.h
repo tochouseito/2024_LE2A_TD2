@@ -1,28 +1,18 @@
 #pragma once
-#include"WorldTransform.h"
-#include"ViewProjection.h"
-#include"Model.h"
+#include "Blocks/Blocks.h"
 #include "CollisionManager/Collider.h"
 
-class Goal : public Collider {
+class Needle : public Collider {
 public:
-	Goal() = default;
-	~Goal() = default;
-
-	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position);
+	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& pos);
 	void Update();
 	void Draw();
-
-	void SetIsGoal(bool isGoal) { isGoal_ = isGoal; }
-
-	bool GetIsGoal() const { return isGoal_; }
 
 	void OnCollision(Collider* other) override;
 
 	Vector3 GetCenterPosition() const override;
 
 private:
-
 	// ワールドトランスフォーム
 	WorldTransform worldTransform_;
 
@@ -34,7 +24,5 @@ private:
 
 	// ビュープロジェクション
 	ViewProjection* viewProjection_ = nullptr;
-
-	bool isGoal_ = false;
-
 };
+

@@ -11,6 +11,7 @@
 #endif
 
 #include "Mymath.h"
+#include "Needle.h"
 
 GameScene::GameScene() {}
 
@@ -65,10 +66,33 @@ void GameScene::Initialize() {
 	mapChipField_ = std::make_unique<MapChipField>();
 	mapChipField_->LoadMapChipCsv("Resources/Map1.csv");
 
-	// Blocks
-	blocksModel_.reset(Model::LordModel("Block"));
+	// 針
 	upNeedleModel_.reset(Model::LordModel("UpNeedle"));
 	downNeedleModel_.reset(Model::LordModel("DownNeedle"));
+	for (uint32_t i = 0; i < mapChipField_->GetNumBlockVertical(); i++) {
+		for (uint32_t j = 0; j < mapChipField_->GetNumBlockHorizontal(); ++j) {
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kUpNeedle) {
+				// 配列のサイズを一つ増やす
+				needles_.resize(needles_.size() + 1);
+				// 作成
+				needles_.back() = std::make_unique<Needle>();
+				// 初期化
+				needles_.back()->Initialize(upNeedleModel_.get(), &viewProjection_, mapChipField_->GetMapChipPositionByIndex(j, i));
+			}
+
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kDownNeedle) {
+				// 配列のサイズを一つ増やす
+				needles_.resize(needles_.size() + 1);
+				// 作成
+				needles_.back() = std::make_unique<Needle>();
+				// 初期化
+				needles_.back()->Initialize(downNeedleModel_.get(), &viewProjection_, mapChipField_->GetMapChipPositionByIndex(j, i));
+			}
+		}
+	}
+
+	// Blocks
+	blocksModel_.reset(Model::LordModel("Block"));
 	GenerateBlocks();
 
 	// Bullet
@@ -170,6 +194,7 @@ void GameScene::Update() {
 		}
 	}
 
+
 	// バレットの更新
 	for (std::vector<std::unique_ptr<PlayerBullet>>& bulletLine : bullets_) {
 		for (std::unique_ptr<PlayerBullet>& bullet : bulletLine) {
@@ -178,6 +203,10 @@ void GameScene::Update() {
 			}
 			bullet->Update();
 		}
+
+	for (std::unique_ptr<Needle>& needle : needles_) {
+		needle->Update();
+
 	}
 
 	// 衝突判定と応答
@@ -239,6 +268,7 @@ void GameScene::Draw() {
 		}
 	}
 
+
 	// バレットの描画
 	for (std::vector<std::unique_ptr<PlayerBullet>>& bulletLine : bullets_) {
 		for (std::unique_ptr<PlayerBullet>& bullet : bulletLine) {
@@ -247,6 +277,11 @@ void GameScene::Draw() {
 			}
 			bullet->Draw();
 		}
+
+	// 針の描画
+	for (std::unique_ptr<Needle>& needle : needles_) {
+		needle->Draw();
+
 	}
 
 	collisionManager_->Draw(viewProjection_);
@@ -274,17 +309,17 @@ void GameScene::GenerateBlocks() {
 				blocks_[i][j]->Initialize(blocksModel_.get(), &viewProjection_, pos);
 			}
 
-			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kUpNeedle) {
-				blocks_[i][j] = std::make_unique<Blocks>();
+			/*if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kUpNeedle) {
+				blocks_[i][j] = std::make_unique<Needle>();
 				Vector3 pos = mapChipField_->GetMapChipPositionByIndex(j, i);
 				blocks_[i][j]->Initialize(upNeedleModel_.get(), &viewProjection_, pos);
 			}
 
 			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kDownNeedle) {
-				blocks_[i][j] = std::make_unique<Blocks>();
+				blocks_[i][j] = std::make_unique<Needle>();
 				Vector3 pos = mapChipField_->GetMapChipPositionByIndex(j, i);
 				blocks_[i][j]->Initialize(downNeedleModel_.get(), &viewProjection_, pos);
-			}
+			}*/
 		}
 	}
 }
@@ -320,10 +355,11 @@ void GameScene::CheckAllCollisions() {
 
 	// コライダーをリストに登録
 	collisionManager_->AddCollider(player_.get());
+	collisionManager_->AddCollider(goal_.get());
 	// 針全てについて
-	/*for (const std::unique_ptr<Enemy>& enemy : enemies_) {
-
-	}*/
+	for (std::unique_ptr<Needle>& needle : needles_) {
+		collisionManager_->AddCollider(needle.get());
+	}
 
 	// 衝突判定と応答
 	collisionManager_->CheckAllCollision();
