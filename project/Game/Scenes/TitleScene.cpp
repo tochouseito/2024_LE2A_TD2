@@ -14,9 +14,9 @@ void TitleScene::Update()
 {
 #ifdef _DEBUG
 	ImGui::Begin("TitleScene");
-	if (ImGui::Button("ChangeScene")) {
+	if (ImGui::Button("GoStageSelect")) {
 		/*シーン切り替え依頼*/
-		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+		SceneManager::GetInstance()->ChangeScene("SELECT");
 	}
 	ImGui::End();
 #endif // _DEBUG

@@ -1,8 +1,10 @@
 #pragma once
 
-#include"AbstractSceneFactory.h"
-#include"GameScene.h"
-#include"TitleScene.h"
+#include "AbstractSceneFactory.h"
+#include "GameScene.h"
+#include "TitleScene.h"
+#include "StageSelectScene.h"
+#include "ResultScene.h"
 
 class SceneFactory :public AbstractSceneFactory {
 public:

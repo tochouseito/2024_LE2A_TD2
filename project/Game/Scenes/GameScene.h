@@ -141,6 +141,9 @@ private:
 	std::unique_ptr<Goal> goal_ = nullptr;
 	std::unique_ptr<Model> goalModel_ = nullptr;
 
+	// ゴール判定用変数
+	bool isGoal_ = false;
+
 	// 動画提出用
 	std::unique_ptr<Model> upNeedleModel_ = nullptr;
 	std::unique_ptr<Model> downNeedleModel_ = nullptr;
