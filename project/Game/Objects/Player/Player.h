@@ -105,7 +105,7 @@ public: // メンバ関数
 
 	Vector3 GetCenterPosition() const override;
 
-	void OnCollision() override;
+	void OnCollision(Collider* other) override;
 
 private: // メンバ変数
 
@@ -161,5 +161,13 @@ private: // メンバ変数
 	float kHeight = 0.8f;
 	float kBlank = 0.1f;
 	float kCorrectBlank = 0.5f;
+
+	// 針に接触したときの原則係数
+	float kNeedleSlowness = 0.5f;
+	// 針に再度接触するまでの時間(秒)
+	float kMaxSlownessTime = 2.0f;
+	float slownessTimer = 0.0f;
+	// 針に接触しているか?
+	bool isHitNeedle = false;
 };
 

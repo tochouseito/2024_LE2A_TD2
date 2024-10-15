@@ -1,11 +1,13 @@
 #define NOMINMAX
 #include "Player.h"
-#include"assert.h"
-#include"numbers"
-#include"algorithm"
+#include "assert.h"
+#include "numbers"
+#include "algorithm"
+#include "ConvertString.h"
 #include "imgui.h"
-#include"Input.h"
+#include "Input.h"
 #include "Mymath.h"
+#include "CollisionManager/CollisionTypeIdDef.h"
 
 #include"math/Easing.h"
 #include"Game/MapChipField/MapChipField.h"
@@ -42,6 +44,8 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 	Collider::Initialize();
 	// 半径を設定
 	SetRadius(0.25f);
+
+	SetTypeID(static_cast<uint32_t>(CollisionTypeIdDef::kPlayer));
 }
 
 float targetRotZ = 0.0f;
@@ -74,11 +78,28 @@ void Player::Update() {
 		targetRotZ = 0.0f;
 	}
 
+	if (isHitNeedle) {
+		slownessTimer -= 1.0f / 60.0f; // Todo : deltaTimeにする
+	}
+
+	if (slownessTimer <= 0.0f) {
+		isHitNeedle = false;
+	}
+
+	// 徐々に回転
 	worldTransform_.rotation_.z = std::lerp(worldTransform_.rotation_.z, targetRotZ, 1.0f / 60 * 16.0f);
+
+	ImGui::ShowDemoWindow();
 
 	ImGui::Begin("Player");
 	ImGui::Checkbox("isJumping", &isJumping);
 	ImGui::Checkbox("isGravityInvert", &isGravityInvert);
+	ImGui::Separator();
+	ImGui::DragFloat("NeedleSlowness", &kNeedleSlowness);
+	ImGui::Checkbox("IsHitNeedle", &isHitNeedle);
+	ImGui::SliderFloat("kMaxSlownessTime", &kMaxSlownessTime, 0.0f, 10.0f, "%.2f");
+	ImGui::SameLine(0, 32);
+	ImGui::VSliderFloat("currentTime", ImVec2(64, 160), &slownessTimer, 0.0f, kMaxSlownessTime, "%.2f");
 	if (ImGui::CollapsingHeader("Parameter")) {
 		ImGui::DragFloat("LimitRunSpeed", &kLimitRunSpeed, 0.01f);
 		ImGui::DragFloat("Acceleration", &kAcceleration, 0.01f);
@@ -168,6 +189,10 @@ void Player::CharMove() {
 		} else {
 			// 非入力時は移動減衰をかける
 			velocity_.x *= (1.0f - kAttenuation);
+		}
+
+		if (isHitNeedle) {
+			velocity_.x *= kNeedleSlowness;
 		}
 
 		// ジャンプ入力
@@ -357,8 +382,16 @@ Vector3 Player::GetCenterPosition() const {
 	return worldPos;
 }
 
-void Player::OnCollision() {
-	BaseCharacter::OnCollision();
+void Player::OnCollision(Collider* other) {
+	// 衝突相手の種別IDを取得
+	uint32_t typeID = other->GetTypeID();
+	// 衝突相手が針なら
+	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kNeedle)) {
+		if (!isHitNeedle) {
+			isHitNeedle = true;
+			slownessTimer = kMaxSlownessTime;
+		}
+	}
 }
 
 //void Player::OnCollision(const Enemy* enemy) {

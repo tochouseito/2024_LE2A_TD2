@@ -1,9 +1,10 @@
 #include "GravityArrow.h"
 
+#include "Mymath.h"
 #include "TextureManager.h"
 
-constexpr uint32_t kNumX = 3; // 並べる枚数
-constexpr uint32_t kNumY = 3;
+constexpr uint32_t kNumX = 2; // 並べる枚数
+constexpr uint32_t kNumY = 2;
 
 void GravityArrow::Initialize(Model* downModel, Model* upModel, ViewProjection* viewProjection, Vector3& pos) {
 	upModel_ = upModel;
@@ -15,7 +16,7 @@ void GravityArrow::Initialize(Model* downModel, Model* upModel, ViewProjection* 
 		for (uint32_t j = 0; j < kNumY; ++j) {
 			WorldTransform worldTransform;
 			worldTransform.Initialize();
-			worldTransform.translation_ = Vector3(pos.x + static_cast<float>(i) * 20.0f, pos.y + static_cast<float>(j) * 10.0f, pos.z);
+			worldTransform.translation_ = Vector3(pos.x + static_cast<float>(i) * 20.0f, pos.y + static_cast<float>(j) * 20.0f, pos.z);
 			worldTransform.Initialize();
 			worldTransforms_.push_back(worldTransform);
 		}
@@ -28,7 +29,9 @@ void GravityArrow::Update() const {
 	for (WorldTransform worldTransform : worldTransforms_) {
 		worldTransform.UpdateMatrix();
 	}
-	upModel_->GetMaterial()->GetMaterialData()->color.r += 0.01f;
+
+	upModel_->GetMaterial()->GetMaterialData()->uvTransform.m[3][1] += 0.001f; // 縦
+	upModel_->GetMaterial()->GetMaterialData()->uvTransform.m[3][0] += 0.001f; // 縦
 }
 
 void GravityArrow::Draw() {
