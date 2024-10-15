@@ -409,6 +409,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Map1.csv" />
+    <None Include="Resources\Map2.csv" />
     <None Include="Resources\Shader\FullScreen.hlsli" />
     <None Include="Resources\Shader\Mymath.hlsli" />
     <None Include="Resources\Shader\obj3d.hlsli" />
