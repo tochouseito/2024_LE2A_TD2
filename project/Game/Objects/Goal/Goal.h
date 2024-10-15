@@ -2,8 +2,9 @@
 #include"WorldTransform.h"
 #include"ViewProjection.h"
 #include"Model.h"
+#include "CollisionManager/Collider.h"
 
-class Goal {
+class Goal : public Collider {
 public:
 	Goal() = default;
 	~Goal() = default;
@@ -15,6 +16,10 @@ public:
 	void SetIsGoal(bool isGoal) { isGoal_ = isGoal; }
 
 	bool GetIsGoal() const { return isGoal_; }
+
+	void OnCollision(Collider* other) override;
+
+	Vector3 GetCenterPosition() const override;
 
 private:
 

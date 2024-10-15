@@ -165,7 +165,7 @@ private: // メンバ変数
 	// 針に接触したときの原則係数
 	float kNeedleSlowness = 0.5f;
 	// 針に再度接触するまでの時間(秒)
-	float kMaxSlownessTime = 2.0f;
+	float kMaxSlownessTime = 0.5f;
 	float slownessTimer = 0.0f;
 	// 針に接触しているか?
 	bool isHitNeedle = false;
