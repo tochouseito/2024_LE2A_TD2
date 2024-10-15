@@ -89,6 +89,7 @@
     <ClCompile Include="Game\Objects\CollisionManager\CollisionTypeIdDef.h" />
     <ClCompile Include="Game\Scenes\ResultScene.cpp" />
     <ClCompile Include="Game\Scenes\StageSelectScene.cpp" />
+    <ClCompile Include="Game\Objects\PlayerBullet\PlayerBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Scenes\AbstractSceneFactory.h" />
@@ -156,6 +157,7 @@
     <ClInclude Include="Needle.h" />
     <ClInclude Include="Game\Scenes\ResultScene.h" />
     <ClInclude Include="Game\Scenes\StageSelectScene.h" />
+    <ClInclude Include="Game\Objects\PlayerBullet\PlayerBullet.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shader\FullScreen.hlsli" />
