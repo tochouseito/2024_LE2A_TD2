@@ -14,10 +14,7 @@ void Collider::Draw(Model* model, const ViewProjection& viewProjection) const {
 	WorldTransform transform = worldTransform_;
 	transform.scale_ = transform.scale_ * radius_;
 	transform.UpdateMatrix();
-	ObjectColor color;
-	color.Initialize();
-	color.SetColor({ 1.0f,0.0f,0.0f,0.5f });
-	model->Draw(transform, viewProjection, "", &color);
+	model->Draw(transform, viewProjection);
 }
 
 void Collider::SetRadius(const float newRadius) {

@@ -2,19 +2,18 @@
 #include"WorldTransform.h"
 #include"ViewProjection.h"
 #include"Model.h"
-class Blocks
-{
+class Blocks {
 public:
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model,ViewProjection* viewProjection,Vector3& pos);
+	virtual void Initialize(Model* model, ViewProjection* viewProjection, Vector3& pos);
 
-	void Update();
+	virtual void Update();
 
-	void Draw();
-private:
+	virtual void Draw();
+protected:
 	WorldTransform worldTransform_;
 	ViewProjection* viewProjection_ = nullptr;
 
