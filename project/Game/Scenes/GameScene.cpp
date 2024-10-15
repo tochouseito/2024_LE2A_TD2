@@ -110,6 +110,21 @@ void GameScene::Initialize() {
 	}
 	enemy_->Initialize(enemyModel_.get(), &viewProjection_, enemyPosition);
 
+	// Goal
+	goalModel_.reset(Model::CreateSphere());
+	goal_ = std::make_unique<Goal>();
+	// CSVからエネミーの開始位置を見つける
+	Vector3 goalPosition{};
+	for (uint32_t i = 0; i < mapChipField_->GetNumBlockVertical(); i++) {
+		for (uint32_t j = 0; j < mapChipField_->GetNumBlockHorizontal(); j++) {
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kGoal) {
+				goalPosition = mapChipField_->GetMapChipPositionByIndex(j, i);
+				break;
+			}
+		}
+	}
+	goal_->Initialize(goalModel_.get(), &viewProjection_, goalPosition);
+
 }
 void GameScene::Update() {
 	// 矢印
@@ -120,6 +135,9 @@ void GameScene::Update() {
 
 	// Enemy
 	enemy_->Update();
+
+	// Goal
+	goal_->Update();
 
 	gravityArrow_->SetGravityDir(player_->GetIsGravityInvert());
 
@@ -171,6 +189,9 @@ void GameScene::Draw() {
 
 	// エネミー
 	enemy_->Draw();
+
+	// ゴール
+	goal_->Draw();
 
 	// ブロックの更新
 	for (std::vector<std::unique_ptr<Blocks>>& blockLine : blocks_) {

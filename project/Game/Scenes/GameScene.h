@@ -52,6 +52,7 @@
 #include "Objects/Player/Player.h"
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/Blocks/Blocks.h"
+#include "Objects/Goal/Goal.h"
 
 class GameScene:
 	public BaseScene {
@@ -132,6 +133,10 @@ private:
 	std::vector<std::vector<std::unique_ptr<Blocks>>> blocks_;
 	//std::unique_ptr<Blocks> blocks_ = nullptr;
 	std::unique_ptr<Model> blocksModel_ = nullptr;
+
+	// Goal
+	std::unique_ptr<Goal> goal_ = nullptr;
+	std::unique_ptr<Model> goalModel_ = nullptr;
 
 	// 動画提出用
 	std::unique_ptr<Model> upNeedleModel_ = nullptr;
