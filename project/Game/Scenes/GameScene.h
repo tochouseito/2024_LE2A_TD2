@@ -53,6 +53,7 @@
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/Blocks/Blocks.h"
 #include "Objects/Goal/Goal.h"
+#include "Objects/PlayerBullet/PlayerBullet.h"
 
 // DeltaTime
 #include "Needle.h"
@@ -77,6 +78,8 @@ public:
 	}
 
 	void GenerateBlocks();
+
+	void GenerateBullets();
 
 	void CheckAllCollisions();
 
@@ -142,8 +145,17 @@ private:
 	std::unique_ptr<Goal> goal_ = nullptr;
 	std::unique_ptr<Model> goalModel_ = nullptr;
 
+
+	// Bullet
+	std::vector<std::vector<std::unique_ptr<PlayerBullet>>> bullets_;
+	std::unique_ptr<Model> bulletModel_ = nullptr;
+
+
+	// 動画提出用
+
 	// 針
 	std::vector<std::unique_ptr<Needle>> needles_;
+
 	std::unique_ptr<Model> upNeedleModel_ = nullptr;
 	std::unique_ptr<Model> downNeedleModel_ = nullptr;
 
