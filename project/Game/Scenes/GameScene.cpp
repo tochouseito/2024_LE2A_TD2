@@ -71,6 +71,10 @@ void GameScene::Initialize() {
 	downNeedleModel_.reset(Model::LordModel("DownNeedle"));
 	GenerateBlocks();
 
+	// Bullet
+	bulletModel_.reset(Model::CreateSphere());
+	GenerateBullets();
+
 	// 矢印の生成
 	gravityArrowModel_.resize(2);
 	gravityArrowModel_[0].reset(Model::LordModel("GravityDownArrow"));
@@ -166,6 +170,16 @@ void GameScene::Update() {
 		}
 	}
 
+	// バレットの更新
+	for (std::vector<std::unique_ptr<PlayerBullet>>& bulletLine : bullets_) {
+		for (std::unique_ptr<PlayerBullet>& bullet : bulletLine) {
+			if (!bullet) {
+				continue;
+			}
+			bullet->Update();
+		}
+	}
+
 	// 衝突判定と応答
 	CheckAllCollisions();
 	collisionManager_->UpdateWorldTransform();
@@ -225,6 +239,16 @@ void GameScene::Draw() {
 		}
 	}
 
+	// バレットの描画
+	for (std::vector<std::unique_ptr<PlayerBullet>>& bulletLine : bullets_) {
+		for (std::unique_ptr<PlayerBullet>& bullet : bulletLine) {
+			if (!bullet) {
+				continue;
+			}
+			bullet->Draw();
+		}
+	}
+
 	collisionManager_->Draw(viewProjection_);
 }
 
@@ -260,6 +284,31 @@ void GameScene::GenerateBlocks() {
 				blocks_[i][j] = std::make_unique<Blocks>();
 				Vector3 pos = mapChipField_->GetMapChipPositionByIndex(j, i);
 				blocks_[i][j]->Initialize(downNeedleModel_.get(), &viewProjection_, pos);
+			}
+		}
+	}
+}
+
+void GameScene::GenerateBullets() {
+	// 要素数
+	uint32_t numBlockVertical = mapChipField_->GetNumBlockVertical();
+	uint32_t numBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
+
+	// 要素数を変更する
+	// 列数を設定（縦方向のブロック）
+	bullets_.resize(numBlockVertical);
+	for (uint32_t i = 0; i < numBlockVertical; ++i) {
+		// 1列の要素数を設定（横方向のブロック数）
+		bullets_[i].resize(numBlockHorizontal);
+	}
+	// ブロックの生成
+	for (uint32_t i = 0; i < numBlockVertical; ++i) {
+
+		for (uint32_t j = 0; j < numBlockHorizontal; ++j) {
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBullet) {
+				bullets_[i][j] = std::make_unique<PlayerBullet>();
+				Vector3 pos = mapChipField_->GetMapChipPositionByIndex(j, i);
+				bullets_[i][j]->Initialize(bulletModel_.get(), &viewProjection_, pos);
 			}
 		}
 	}
