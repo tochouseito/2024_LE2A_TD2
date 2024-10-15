@@ -6,7 +6,7 @@
 #include "Model.h"
 
 class PlayerBullet {
-private:
+public:
 	enum class Behavior {
 		kRoot,	 // 通常行動
 		kAttack, // 攻撃行動
