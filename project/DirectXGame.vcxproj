@@ -105,6 +105,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\DeltaTime\DeltaTime.cpp" />
     <ClCompile Include="Game\Objects\CollisionManager\CollisionManager.cpp" />
     <ClCompile Include="Game\Objects\BaseCharacter.cpp" />
     <ClCompile Include="Game\Objects\CollisionManager\Collider.cpp" />
@@ -160,6 +161,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\DeltaTime\DeltaTime.h" />
     <ClInclude Include="Game\Objects\CollisionManager\CollisionManager.h" />
     <ClInclude Include="Game\Objects\BaseCharacter.h" />
     <ClInclude Include="Game\Objects\CollisionManager\Collider.h" />

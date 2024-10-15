@@ -56,6 +56,11 @@ void GameScene::Initialize() {
 	mainCamera_->Initialize(Vector3(4.5f, 17.0f, -15.0f), &viewProjection_); // HACK : 動画提出用
 	mainCamera_->rotation_ = Vector3(0.0f, 0.0f, 0.0f); // HACK : 動画提出用
 
+	deltaTime_ = std::make_unique<DeltaTime>();
+	deltaTime_->Update();
+
+	///////////////////////////////////////////////////////////////////////////////////////
+
 	// MapChip
 	mapChipField_ = std::make_unique<MapChipField>();
 	mapChipField_->LoadMapChipCsv("Resources/Map1.csv");
@@ -178,6 +183,7 @@ void GameScene::Update() {
 		mainCamera_->Update();
 		viewProjection_.UpdateMatrix();
 	}
+	deltaTime_->Update();
 }
 
 void GameScene::Draw() {

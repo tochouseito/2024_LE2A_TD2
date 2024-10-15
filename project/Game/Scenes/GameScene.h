@@ -54,6 +54,9 @@
 #include "Objects/Blocks/Blocks.h"
 #include "Objects/Goal/Goal.h"
 
+// DeltaTime
+#include"Game/DeltaTime/DeltaTime.h"
+
 class GameScene:
 	public BaseScene {
 public:
@@ -147,5 +150,7 @@ private:
 
 	// 衝突マネージャ
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
+
+	std::unique_ptr<DeltaTime> deltaTime_ = nullptr;
 };
 
