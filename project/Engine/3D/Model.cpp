@@ -233,6 +233,17 @@ void Model::SkinClusterUpdata(SkinCluster* skinCluster, Skeleton* skeleton)
 /// </summary>
 void Model::Draw(WorldTransform& worldTransform,const ViewProjection& viewProjection,
 	std::string textureHandle, const ObjectColor* objectColor) {
+	// カメラから離れた過ぎていたら
+	// X軸方向のカリング
+	if (worldTransform.translation_.x < viewProjection.translation_.x - cullingValue ||
+		worldTransform.translation_.x > viewProjection.translation_.x + cullingValue) {
+		return;
+	}
+	// Y軸方向のカリング
+	if (worldTransform.translation_.y < viewProjection.translation_.y - cullingValue ||
+		worldTransform.translation_.y > viewProjection.translation_.y + cullingValue) {
+		return;
+	}
 	if (textureHandle == "") {
 		textureHandle = "./Resources/white1x1.png";
 	}
