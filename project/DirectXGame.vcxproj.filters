@@ -87,6 +87,8 @@
     <ClCompile Include="Game\DeltaTime\DeltaTime.cpp" />
     <ClCompile Include="Needle.cpp" />
     <ClCompile Include="Game\Objects\CollisionManager\CollisionTypeIdDef.h" />
+    <ClCompile Include="Game\Scenes\ResultScene.cpp" />
+    <ClCompile Include="Game\Scenes\StageSelectScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Scenes\AbstractSceneFactory.h" />
@@ -152,6 +154,8 @@
     <ClInclude Include="Game\Objects\Goal\Goal.h" />
     <ClInclude Include="Game\DeltaTime\DeltaTime.h" />
     <ClInclude Include="Needle.h" />
+    <ClInclude Include="Game\Scenes\ResultScene.h" />
+    <ClInclude Include="Game\Scenes\StageSelectScene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shader\FullScreen.hlsli" />
@@ -165,6 +169,7 @@
     <None Include="Resources\Shader\Skybox.VS.hlsl" />
     <None Include="Resources\Shader\Sprite.hlsli" />
     <None Include="Resources\Map1.csv" />
+    <None Include="Resources\Map2.csv" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

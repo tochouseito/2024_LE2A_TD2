@@ -135,6 +135,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Input\Input.cpp" />
     <ClCompile Include="Engine\3D\LightGroup.cpp" />
     <ClCompile Include="Game\Objects\GravityArrow\GravityArrow.cpp" />
+    <ClCompile Include="Game\Scenes\ResultScene.cpp" />
+    <ClCompile Include="Game\Scenes\StageSelectScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\3D\MainCamera.cpp" />
     <ClCompile Include="Engine\3D\Material.cpp" />
@@ -197,6 +199,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\3D\LightGroup.h" />
     <ClInclude Include="Game\MapChipField\MapChipField.h" />
     <ClInclude Include="Game\Objects\GravityArrow\GravityArrow.h" />
+    <ClInclude Include="Game\Scenes\ResultScene.h" />
+    <ClInclude Include="Game\Scenes\StageSelectScene.h" />
     <ClInclude Include="math\Easing.h" />
     <ClInclude Include="math\mathShapes.h" />
     <ClInclude Include="math\Matrix4x4.h" />
@@ -412,6 +416,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Map1.csv" />
+    <None Include="Resources\Map2.csv" />
     <None Include="Resources\Shader\FullScreen.hlsli" />
     <None Include="Resources\Shader\Mymath.hlsli" />
     <None Include="Resources\Shader\obj3d.hlsli" />

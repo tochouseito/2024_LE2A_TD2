@@ -156,6 +156,13 @@ void GameScene::Initialize() {
 
 }
 void GameScene::Update() {
+
+	// もしゴールしていたら
+	if (goal_->GetIsGoal()) {
+		/*シーン切り替え依頼*/
+		SceneManager::GetInstance()->ChangeScene("RESULT");
+	}
+
 	// 矢印
 	gravityArrow_->Update();
 
@@ -197,11 +204,20 @@ void GameScene::Update() {
 	if (ImGui::Button("DebugCamera")) {
 		useDebugCamera_ = !useDebugCamera_;
 	}
-	if (ImGui::Button("ChangeScene")) {
+	//if (ImGui::Button("ChangeScene")) {
+	//	/*シーン切り替え依頼*/
+	//	SceneManager::GetInstance()->ChangeScene("TITLE");
+	//}
+	ImGui::End();
+
+	// シーン切り替えウィンドウ
+	ImGui::Begin("GameScene");
+	if (ImGui::Button("GoResult")) {
 		/*シーン切り替え依頼*/
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		SceneManager::GetInstance()->ChangeScene("RESULT");
 	}
 	ImGui::End();
+
 #endif // _DEBUG
 	if (useDebugCamera_) {
 		debugCamera_->Update();
