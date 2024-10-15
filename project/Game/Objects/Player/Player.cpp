@@ -113,12 +113,25 @@ void Player::Draw() {
 
 // 移動入力
 void Player::CharMove() {
+	XINPUT_STATE controllerState;
+	bool controllerConnected = Input::GetInstance()->GetJoystickState(0, controllerState);
+
+	float stickX = 0.0f;
+	if (controllerConnected) {
+		stickX = controllerState.Gamepad.sThumbLX / 32767.0f;  // 正規化したスティックのX入力（-1.0 ~ 1.0）
+	}
+
 	if (onGround_ == true) {
 		// 左右移動入力
-		if (Input::GetInstance()->PushKey(DIK_D) || Input::GetInstance()->PushKey(DIK_A)) {
+		bool keyboardMoveLeft = Input::GetInstance()->PushKey(DIK_A);
+		bool keyboardMoveRight = Input::GetInstance()->PushKey(DIK_D);
+		bool controllerMoveLeft = stickX < -0.2f;
+		bool controllerMoveRight = stickX > 0.2f;
+
+		if (keyboardMoveLeft || keyboardMoveRight || controllerMoveLeft || controllerMoveRight) {
 			// 左右処理
 			Vector3 acceleration = {};
-			if (Input::GetInstance()->PushKey(DIK_D)) {
+			if (keyboardMoveRight || controllerMoveRight) {
 				// 左移動中の右入力
 				if (velocity_.x < 0.0f) {
 					velocity_.x *= (1.0f - kAttenuation);
@@ -131,7 +144,7 @@ void Player::CharMove() {
 					// 旋回タイマーに時間を設定する
 					turnTimer_ = kTimeTurn;
 				}
-			} else if (Input::GetInstance()->PushKey(DIK_A)) {
+			} else if (keyboardMoveLeft || controllerMoveLeft) {
 				// 右移動中の左入力
 				if (velocity_.x > 0.0f) {
 					// 速度と逆方向に入力中は急ブレーキ
@@ -157,14 +170,20 @@ void Player::CharMove() {
 			velocity_.x *= (1.0f - kAttenuation);
 		}
 
-		if (onGround_ && Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		// ジャンプ入力
+		bool keyboardJump = Input::GetInstance()->TriggerKey(DIK_SPACE);
+		bool controllerJump = controllerConnected && Input::GetInstance()->TriggerControllerButton(0, XINPUT_GAMEPAD_A);
+		if (onGround_ && (keyboardJump || controllerJump)) {
 			// ジャンプ初速
 			velocity_ += Vector3(0, isGravityInvert ? -kJumpAcceleration : kJumpAcceleration, 0);
 			isJumping = true;
 		}
 	}
 
-	if (!onGround_ && isJumping && Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+	// 重力反転入力
+	bool keyboardInvertGravity = Input::GetInstance()->TriggerKey(DIK_SPACE);
+	bool controllerInvertGravity = controllerConnected && Input::GetInstance()->TriggerControllerButton(0, XINPUT_GAMEPAD_A);
+	if (!onGround_ && isJumping && (keyboardInvertGravity || controllerInvertGravity)) {
 		isGravityInvert = !isGravityInvert;
 	}
 }
