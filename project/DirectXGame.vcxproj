@@ -114,6 +114,83 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\CollisionManager\CollisionTypeIdDef.h" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Objects\Goal\Goal.cpp" />
+    <ClCompile Include="Game\Objects\Needle\Needle.cpp">
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\..\generated\obj\DirectXGame\Debug\</AssemblerListingLocation>
+      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
+      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformationFile>C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\..\generated\obj\DirectXGame\Debug\</BrowseInformationFile>
+      <CompileAs>Default</CompileAs>
+      <ConformanceMode>true</ConformanceMode>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <ExpandAttributedSource>false</ExpandAttributedSource>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <EnableASAN>false</EnableASAN>
+      <EnableFuzzer>false</EnableFuzzer>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <GenerateModuleDependencies>false</GenerateModuleDependencies>
+      <GenerateSourceDependencies>false</GenerateSourceDependencies>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ModuleDependenciesFile>C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\..\generated\obj\DirectXGame\Debug\</ModuleDependenciesFile>
+      <ModuleOutputFile>C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\..\generated\obj\DirectXGame\Debug\</ModuleOutputFile>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ObjectFileName>C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\..\generated\obj\DirectXGame\Debug\</ObjectFileName>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ProgramDataBaseFileName>C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\..\generated\obj\DirectXGame\Debug\vc143.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\..\generated\obj\DirectXGame\Debug\DirectXGame.pch</PrecompiledHeaderOutputFile>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+      <ShowIncludes>false</ShowIncludes>
+      <SourceDependenciesFile>C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\..\generated\obj\DirectXGame\Debug\</SourceDependenciesFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <SpectreMitigation>false</SpectreMitigation>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <TrackerLogDirectory>C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\..\generated\obj\DirectXGame\Debug\DirectXGame.tlog\</TrackerLogDirectory>
+      <TranslateIncludes>false</TranslateIncludes>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>true</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <XMLDocumentationFileName>C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\..\generated\obj\DirectXGame\Debug\</XMLDocumentationFileName>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <IntelJCCErratum>false</IntelJCCErratum>
+      <BuildStlModules>false</BuildStlModules>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
+      <TreatExternalTemplatesAsInternal>true</TreatExternalTemplatesAsInternal>
+      <DisableAnalyzeExternal>false</DisableAnalyzeExternal>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_UNICODE;UNICODE;</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalOptions>/utf-8 </AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Engine\2d;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Engine\3d;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Engine\audio;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Engine\base;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Engine\input;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\scene;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\math;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\imgui;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\externals\DirectXTex;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\externals\imgui;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Scenes;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Objects;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\externals\assimp\include;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Engine;;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\externals\nlohmann;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Objects\City;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Objects\FollowCamera;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Objects\Ground;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Objects\PlayerShockwave;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Objects\StaticCamera;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Entities;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Entities\Base;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Entities\Base\BaseEntity;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Entities\Base\Collider;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Entities\Atom;&amp;(ProjectDir)Game\Entities\Hole;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Entities\ElectricObject;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Entities\Enemy;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Entities\EnergyObject;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Entities\ObstacleObject;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Entities\Player;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Manager\CollisionManager;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Specifications;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\ExternalMethod\JsonManager;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\Entities\Hammer;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\UI\HUD;C:\Users\mizu hami\Documents\GitHub\GJ\2024_LE2A_TD2\project\Game\UI</AdditionalIncludeDirectories>
+      <LinkCompiled>true</LinkCompiled>
+    </ClCompile>
     <ClCompile Include="Game\Scenes\BaseScene.cpp" />
     <ClCompile Include="Engine\3D\DebugCamera.cpp" />
     <ClCompile Include="Engine\base\Audio.cpp" />
@@ -162,7 +239,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scenes\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\SceneFactory.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
-    <ClCompile Include="Needle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\DeltaTime\DeltaTime.h" />
@@ -173,6 +249,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\CSVLoader\CSVLoader.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\Goal\Goal.h" />
+    <ClInclude Include="Game\Objects\Needle\Needle.h" />
     <ClInclude Include="Game\Scenes\AbstractSceneFactory.h" />
     <ClInclude Include="Game\Scenes\BaseScene.h" />
     <ClInclude Include="Engine\3D\DebugCamera.h" />
@@ -229,7 +306,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scenes\SceneManager.h" />
     <ClInclude Include="Game\Scenes\SceneFactory.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
-    <ClInclude Include="Needle.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shader\BasicGeometryShader.hlsl">

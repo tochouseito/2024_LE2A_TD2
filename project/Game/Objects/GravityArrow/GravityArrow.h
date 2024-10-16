@@ -1,4 +1,5 @@
 #pragma once
+#include "MainCamera.h"
 #include "Blocks/Blocks.h"
 
 class GravityArrow {
@@ -8,14 +9,15 @@ public:
 	/// 初期化
 	/// </summary>
 	void Initialize(Model* upModel, Model* downModel, ViewProjection* viewProjection, Vector3& pos);
-
-	void Update() const;
+	void Update();
 
 	void Draw();
 
 	void SetGravityDir(const bool up) {
 		isUp_ = up;
 	}
+
+	void SetPos(Vector3 vector3);
 
 	/*void SetPos(const Vector3 newPos) {
 		worldTransform_.translation_ = newPos;
@@ -31,8 +33,7 @@ public:
 
 
 private:
-	//WorldTransform worldTransform_;
-	std::vector<WorldTransform> worldTransforms_;
+	WorldTransform worldTransform_;
 	ViewProjection* viewProjection_ = nullptr;
 
 	Model* upModel_ = nullptr;
@@ -42,5 +43,3 @@ private:
 
 	std::string upTextureHandle;
 };
-
-
