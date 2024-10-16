@@ -1,17 +1,15 @@
 #define NOMINMAX
 #include "GameScene.h"
 #include "TextureManager.h"
-#include <DirectXTex.h>
 #include <cassert>
-#include "LightGroup.h"
-#include <fstream>
-#include <algorithm>
 #ifdef _DEBUG
 #include "imgui.h"
 #endif
 
 #include "Mymath.h"
 #include "Needle/Needle.h"
+
+constexpr float gravityArrowZPos = 25.0f;
 
 GameScene::GameScene() {}
 
@@ -68,7 +66,7 @@ void GameScene::Initialize() {
 	// 針
 	upNeedleModel_.reset(Model::LordModel("UpNeedle"));
 	downNeedleModel_.reset(Model::LordModel("DownNeedle"));
-	for (uint32_t i = 0; i < mapChipField_->GetNumBlockVertical(); i++) {
+	for (uint32_t i = 0; i < mapChipField_->GetNumBlockVertical(); ++i) {
 		for (uint32_t j = 0; j < mapChipField_->GetNumBlockHorizontal(); ++j) {
 			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kUpNeedle) {
 				// 配列のサイズを一つ増やす
@@ -164,9 +162,6 @@ void GameScene::Update() {
 		SceneManager::GetInstance()->ChangeScene("RESULT");
 	}
 
-	// 矢印
-	gravityArrow_->Update();
-
 	// player
 	player_->Update();
 
@@ -176,13 +171,14 @@ void GameScene::Update() {
 	// Goal
 	goal_->Update();
 
-	gravityArrow_->SetGravityDir(player_->GetIsGravityInvert());
-
-	mainCamera_->translation_ = Lerp(mainCamera_->translation_, player_->GetWorldPosition() + player_->GetVelocity(),
-		1.0f / 60.0f * 5.0f);
+	// カメラ移動
+	mainCamera_->translation_ = Lerp(mainCamera_->translation_, player_->GetWorldPosition() + player_->GetVelocity() * deltaTime_->GetDeltaTime(), deltaTime_->GetDeltaTime() * 5.0f);
 	mainCamera_->translation_.z = -15.0f;
 
-	gravityArrow_->SetPos({ mainCamera_->translation_.x,mainCamera_->translation_.y, 25.0f });
+	// 矢印
+	gravityArrow_->SetPos({ mainCamera_->translation_.x, mainCamera_->translation_.y, gravityArrowZPos });
+	gravityArrow_->SetGravityDir(player_->GetIsGravityInvert());
+	gravityArrow_->Update(); // カメラを移動した後に更新
 
 	// ブロックの更新
 	for (std::vector<std::unique_ptr<Blocks>>& blockLine : blocks_) {
@@ -194,7 +190,6 @@ void GameScene::Update() {
 		}
 	}
 
-
 	// バレットの更新
 	for (std::unique_ptr<PlayerBullet>& bullet : bullets_) {
 		bullet->Update();
@@ -202,7 +197,6 @@ void GameScene::Update() {
 
 	for (std::unique_ptr<Needle>& needle : needles_) {
 		needle->Update();
-
 	}
 
 	// 衝突判定と応答
@@ -228,8 +222,8 @@ void GameScene::Update() {
 		SceneManager::GetInstance()->ChangeScene("RESULT");
 	}
 	ImGui::End();
-
 #endif // _DEBUG
+
 	if (useDebugCamera_) {
 		debugCamera_->Update();
 		viewProjection_.TransferMatrix();
@@ -238,8 +232,8 @@ void GameScene::Update() {
 		mainCamera_->Update();
 		viewProjection_.UpdateMatrix();
 	}
-	deltaTime_->Update();
 
+	deltaTime_->Update();
 }
 
 void GameScene::Draw() {

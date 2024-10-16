@@ -141,7 +141,6 @@ private: // メンバ変数
 	// 旋回タイマー
 	float turnTimer_ = 0.0f;
 
-
 	float kLimitRunSpeed = 0.125f;
 	float kAcceleration = 0.03f;
 	float kAttenuation = 0.3f;
