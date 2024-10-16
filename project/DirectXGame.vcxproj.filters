@@ -85,7 +85,7 @@
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Objects\Goal\Goal.cpp" />
     <ClCompile Include="Game\DeltaTime\DeltaTime.cpp" />
-    <ClCompile Include="Needle.cpp" />
+    <ClCompile Include="Game\Objects\Needle\Needle.cpp" />
     <ClCompile Include="Game\Objects\CollisionManager\CollisionTypeIdDef.h" />
     <ClCompile Include="Game\Scenes\ResultScene.cpp" />
     <ClCompile Include="Game\Scenes\StageSelectScene.cpp" />
@@ -153,7 +153,7 @@
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\Goal\Goal.h" />
     <ClInclude Include="Game\DeltaTime\DeltaTime.h" />
-    <ClInclude Include="Needle.h" />
+    <ClInclude Include="Game\Objects\Needle\Needle.h" />
     <ClInclude Include="Game\Scenes\ResultScene.h" />
     <ClInclude Include="Game\Scenes\StageSelectScene.h" />
   </ItemGroup>
