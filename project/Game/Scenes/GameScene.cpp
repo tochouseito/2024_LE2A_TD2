@@ -347,9 +347,14 @@ void GameScene::CheckAllCollisions() {
 	// コライダーをリストに登録
 	collisionManager_->AddCollider(player_.get());
 	collisionManager_->AddCollider(goal_.get());
+	collisionManager_->AddCollider(enemy_.get());
 	// 針全てについて
 	for (std::unique_ptr<Needle>& needle : needles_) {
 		collisionManager_->AddCollider(needle.get());
+	}
+	// 弾すべて
+	for (std::unique_ptr<PlayerBullet>& bullet : bullets_) {
+		collisionManager_->AddCollider(bullet.get());
 	}
 
 	// 衝突判定と応答
