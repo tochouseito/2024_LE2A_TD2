@@ -1,10 +1,14 @@
 #pragma once
-#include "Blocks/Blocks.h"
 #include "CollisionManager/Collider.h"
+
+enum NeedleDir {
+	kUp = 0,
+	kDown,
+};
 
 class Needle : public Collider {
 public:
-	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& pos);
+	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& pos, NeedleDir direction);
 	void Update();
 	void Draw();
 
@@ -18,6 +22,9 @@ private:
 
 	// 3Dモデル
 	Model* model_ = nullptr;
+
+	// 方向
+	NeedleDir dir_ = kUp;
 
 	// テクスチャハンドル
 	uint32_t texturehandle_ = 0;

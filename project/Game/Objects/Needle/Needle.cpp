@@ -1,12 +1,13 @@
 #include "Needle.h"
 
 #include "Mymath.h"
+
 #include "CollisionManager/CollisionTypeIdDef.h"
 
-void Needle::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& pos) {
+void Needle::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& pos, NeedleDir direction) {
 	model_ = model;
-
 	viewProjection_ = viewProjection;
+	dir_ = direction;
 
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = pos;
@@ -33,8 +34,20 @@ void Needle::OnCollision(Collider* other) {
 }
 
 Vector3 Needle::GetCenterPosition() const {
+	Vector3 offset;
+
 	// ローカル座標でのオフセット
-	const Vector3 offset = { 0.0f,0.0f,0.0f };
+	switch (dir_) {
+	case kUp:
+		offset = { 0.0f,-0.5f,0.0f };
+		break;
+	case kDown:
+		offset = { 0.0f,0.5f,0.0f };
+		break;
+	default:
+		offset = { 0.0f,0.0f,0.0f };
+	}
+
 	// ワールド座標に変換
 	Vector3 worldPos = Transform(offset, worldTransform_.matWorld_);
 	return worldPos;

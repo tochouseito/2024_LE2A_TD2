@@ -56,8 +56,8 @@
 #include "Objects/PlayerBullet/PlayerBullet.h"
 
 // DeltaTime
-#include "Needle.h"
 #include"Game/DeltaTime/DeltaTime.h"
+#include "Needle/Needle.h"
 
 class GameScene:
 	public BaseScene {
@@ -66,13 +66,15 @@ public:
 	~GameScene();
 
 	// Main
-	void Initialize()override;
-	void Finalize()override;
-	void Update()override;
-	void Draw()override;
+	void Initialize() override;
+	void Finalize() override;
+	void Update() override;
+	void Draw() override;
 
 	// シーンの切り替え依頼
-	void ChangeScene()override {}
+	void ChangeScene() override {
+	}
+
 	void SetSceneManager(SceneManager* sceneManager) override {
 		sceneManager_ = sceneManager;
 	}
@@ -113,7 +115,7 @@ private:
 
 
 	// デバッグカメラ
-	std::unique_ptr < DebugCamera> debugCamera_;
+	std::unique_ptr<DebugCamera> debugCamera_;
 	bool useDebugCamera_ = false;
 
 	std::unique_ptr<MainCamera> mainCamera_;
@@ -167,4 +169,3 @@ private:
 
 	std::unique_ptr<DeltaTime> deltaTime_ = nullptr;
 };
-
