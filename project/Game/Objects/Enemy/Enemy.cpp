@@ -5,7 +5,8 @@
 #include "imgui.h"
 #include "Input.h"
 #include "math/Easing.h"
-
+#include "Mymath.h"
+#include "CollisionManager/CollisionTypeIdDef.h"
 
 void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position) {
 	assert(model);
@@ -17,11 +18,17 @@ void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vecto
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
-	worldTransform_.scale_ *= 0.5f;
 	// 3Dモデルの生成
 	model_ = model;
 
 	viewProjection_ = viewProjection;
+
+	// コライダーの設定
+	Collider::Initialize();
+	// 半径を設定
+	SetRadius(1.0f);
+
+	SetTypeID(static_cast<uint32_t>(CollisionTypeIdDef::kEnemy));
 }
 
 void Enemy::Update() {
@@ -52,3 +59,20 @@ void Enemy::Move() {
 }
 
 void Enemy::Attack() {}
+
+void Enemy::OnCollision(Collider* other) {
+	// 衝突相手の種別IDを取得
+	uint32_t typeID = other->GetTypeID();
+	// 衝突相手が弾なら
+	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kBullet)) {
+
+	}
+}
+
+Vector3 Enemy::GetCenterPosition() const {
+	// ローカル座標でのオフセット
+	const Vector3 offset = { 0.0f,0.0f,0.0f };
+	// ワールド座標に変換
+	Vector3 worldPos = Transform(offset, worldTransform_.matWorld_);
+	return worldPos;
+}

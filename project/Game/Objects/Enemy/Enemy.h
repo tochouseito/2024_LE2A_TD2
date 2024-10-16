@@ -2,8 +2,9 @@
 #include"WorldTransform.h"
 #include"ViewProjection.h"
 #include"Model.h"
+#include "CollisionManager/Collider.h"
 
-class Enemy {
+class Enemy: public Collider {
 public:
 	Enemy() = default;
 	~Enemy() = default;
@@ -14,6 +15,9 @@ public:
 
 	void Move();
 	void Attack();
+
+	void OnCollision(Collider* other) override;
+	Vector3 GetCenterPosition() const override;
 
 private:
 

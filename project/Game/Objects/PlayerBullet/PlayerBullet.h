@@ -4,8 +4,10 @@
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 #include "Model.h"
+#include "CollisionManager/Collider.h"
 
-class PlayerBullet {
+
+class PlayerBullet: public Collider {
 public:
 	enum class Behavior {
 		kRoot,	 // 通常行動
@@ -19,6 +21,9 @@ public:
 	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position);
 	void Update();
 	void Draw();
+
+	void OnCollision(Collider* other) override;
+	Vector3 GetCenterPosition() const override;
 
 private:
 
@@ -43,6 +48,9 @@ private:
 
 	// 3Dモデル
 	Model* model_ = nullptr;
+
+	// 生存フラグ
+	bool isAllive_ = true;
 
 	// 振る舞い
 	Behavior behavior_ = Behavior::kRoot;
