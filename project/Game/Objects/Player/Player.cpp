@@ -79,7 +79,7 @@ void Player::Update() {
 	}
 
 	if (isHitNeedle) {
-		slownessTimer -= 1.0f / 60.0f; // Todo : deltaTimeにする
+		slownessTimer -= 1.0f / 60.0f; // TODO : deltaTimeにする
 	}
 
 	if (slownessTimer <= 0.0f) {
@@ -87,35 +87,69 @@ void Player::Update() {
 	}
 
 	// 徐々に回転
-	worldTransform_.rotation_.z = std::lerp(worldTransform_.rotation_.z, targetRotZ, 1.0f / 60 * 16.0f);
+	worldTransform_.rotation_.z = std::lerp(worldTransform_.rotation_.z, targetRotZ, 1.0f / 60.0f * 16.0f); // TODO : deltaTimeにする
 
-	ImGui::ShowDemoWindow();
-
+#ifdef _DEBUG
 	ImGui::Begin("Player");
+
+	// ジャンプと重力反転の状態を並べて表示
 	ImGui::Checkbox("isJumping", &isJumping);
+	ImGui::SameLine();
 	ImGui::Checkbox("isGravityInvert", &isGravityInvert);
+
 	ImGui::Separator();
+
+	// 速度やヒット状態のスライダーとチェックボックスをわかりやすく並べる
 	ImGui::DragFloat("NeedleSlowness", &kNeedleSlowness);
+	ImGui::SameLine();
 	ImGui::Checkbox("IsHitNeedle", &isHitNeedle);
+
+	// スローモーションタイマーの進行状況をプログレスバーで表示
+	ImGui::Text("Slowness Timer :");
+	ImGui::ProgressBar(slownessTimer / kMaxSlownessTime, ImVec2(0.0f, 0.0f));
+
+	// スライダーでスローモーションの時間を調整
 	ImGui::SliderFloat("kMaxSlownessTime", &kMaxSlownessTime, 0.0f, 10.0f, "%.2f");
-	ImGui::SameLine(0, 32);
-	ImGui::VSliderFloat("currentTime", ImVec2(64, 160), &slownessTimer, 0.0f, kMaxSlownessTime, "%.2f");
-	if (ImGui::CollapsingHeader("Parameter")) {
-		ImGui::DragFloat("LimitRunSpeed", &kLimitRunSpeed, 0.01f);
-		ImGui::DragFloat("Acceleration", &kAcceleration, 0.01f);
-		ImGui::DragFloat("Attenuation", &kAttenuation, 0.01f);
-		ImGui::DragFloat("AttenuationLanding", &kAttenuationLanding, 0.01f);
-		ImGui::DragFloat("TimeTurn", &kTimeTurn, 0.01f);
-		ImGui::DragFloat("GravityAcceleration", &kGravityAcceleration, 0.01f);
-		ImGui::DragFloat("LimitFallSpeed", &kLimitFallSpeed, 0.01f);
-		ImGui::DragFloat("JumpAcceleration", &kJumpAcceleration, 0.01f);
-		ImGui::DragFloat("AttenuationWall", &kAttenuationWall, 0.01f);
-		ImGui::DragFloat("Width", &kWidth, 0.01f);
-		ImGui::DragFloat("Height", &kHeight, 0.01f);
-		ImGui::DragFloat("Blank", &kBlank, 0.01f);
-		ImGui::DragFloat("CorrectBlank", &kCorrectBlank, 0.01f);
+
+	ImGui::Separator();
+
+	// Parameters をグループ化して見やすくする
+	if (ImGui::CollapsingHeader("Player Parameters", ImGuiTreeNodeFlags_DefaultOpen)) {
+		ImGui::Text("Movement Settings:");
+
+		// Movement Parameters Group
+		ImGui::BeginGroup();
+		ImGui::DragFloat("LimitRunSpeed", &kLimitRunSpeed, 0.01f, 0.0f, 100.0f);
+		ImGui::DragFloat("Acceleration", &kAcceleration, 0.01f, 0.0f, 100.0f);
+		ImGui::DragFloat("Attenuation", &kAttenuation, 0.01f, 0.0f, 100.0f);
+		ImGui::EndGroup();
+
+		ImGui::Separator(); // セクションの区切り
+
+		ImGui::Text("Jump and Gravity Settings:");
+
+		// Jump & Gravity Parameters Group
+		ImGui::BeginGroup();
+		ImGui::DragFloat("JumpAcceleration", &kJumpAcceleration, 0.01f, 0.0f, 100.0f);
+		ImGui::DragFloat("GravityAcceleration", &kGravityAcceleration, 0.01f, 0.0f, 100.0f);
+		ImGui::DragFloat("LimitFallSpeed", &kLimitFallSpeed, 0.01f, 0.0f, 100.0f);
+		ImGui::EndGroup();
+
+		ImGui::Separator();
+
+		ImGui::Text("Collision Settings:");
+
+		// Collision Parameters Group
+		ImGui::BeginGroup();
+		ImGui::DragFloat("Width", &kWidth, 0.01f, 0.0f, 100.0f);
+		ImGui::DragFloat("Height", &kHeight, 0.01f, 0.0f, 100.0f);
+		ImGui::DragFloat("Blank", &kBlank, 0.01f, 0.0f, 100.0f);
+		ImGui::DragFloat("CorrectBlank", &kCorrectBlank, 0.01f, 0.0f, 100.0f);
+		ImGui::EndGroup();
 	}
+
 	ImGui::End();
+#endif
 
 	// 移動
 	//worldTransform_.translation_.x += velocity_.x;
@@ -191,6 +225,7 @@ void Player::CharMove() {
 			velocity_.x *= (1.0f - kAttenuation);
 		}
 
+		// 針に接触している場合は速度を下げる
 		if (isHitNeedle) {
 			velocity_.x *= kNeedleSlowness;
 		}
@@ -288,7 +323,7 @@ void Player::OnGround(const CollisionMapInfo& info) {
 	if (!onGround_) {// 空中状態
 		// 落下速度
 		velocity_.x += 0.0f;
-		velocity_.y += isGravityInvert ? kGravityAcceleration : -kGravityAcceleration; // HACK : マジで良くない 後で直す
+		velocity_.y += (isGravityInvert ? kGravityAcceleration : -kGravityAcceleration);
 		velocity_.z += 0.0f;
 		// 落下速度制御
 		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
