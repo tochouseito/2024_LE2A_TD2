@@ -163,7 +163,9 @@ void Player::Update() {
 
 void Player::Draw() {
 	// 3Dモデルを描画
-	model_->Draw(worldTransform_, *viewProjection_);
+	if (isAlive) {
+		model_->Draw(worldTransform_, *viewProjection_);
+	}
 }
 
 // 移動入力
@@ -420,6 +422,10 @@ Vector3 Player::GetCenterPosition() const {
 void Player::OnCollision(Collider* other) {
 	// 衝突相手の種別IDを取得
 	uint32_t typeID = other->GetTypeID();
+	// 衝突相手がエネミーなら
+	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemy)) {
+		isAlive = false;
+	}
 	// 衝突相手が針なら
 	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kNeedle)) {
 		if (!isHitNeedle) {
@@ -427,6 +433,7 @@ void Player::OnCollision(Collider* other) {
 			slownessTimer = kMaxSlownessTime;
 		}
 	}
+
 }
 
 //void Player::OnCollision(const Enemy* enemy) {
