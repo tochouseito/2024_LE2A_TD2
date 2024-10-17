@@ -37,9 +37,12 @@ private:
 	Vector3 velocity_ = {};
 
 	// 加速度
-	const float acceleration_ = 0.0002f;
+	const float acceleration_ = 0.001f;
 
 	// 最大速度
 	const float kMaxSpeed_ = 0.12f;
+
+	// 減速速度
+	const float kSubtractSpeed_ = 0.06f;
 
 };

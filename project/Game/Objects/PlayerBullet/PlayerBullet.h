@@ -7,7 +7,7 @@
 #include "CollisionManager/Collider.h"
 
 
-class PlayerBullet: public Collider {
+class PlayerBullet : public Collider {
 public:
 	enum class Behavior {
 		kRoot,	 // 通常行動
@@ -22,8 +22,11 @@ public:
 	void Update();
 	void Draw();
 
+	bool GetIsAllive()const;
+
 	void OnCollision(Collider* other) override;
 	Vector3 GetCenterPosition() const override;
+
 
 private:
 
@@ -48,6 +51,9 @@ private:
 
 	// 3Dモデル
 	Model* model_ = nullptr;
+
+	// 死亡アニメーションタイマー
+	uint32_t deadAnimationTimer_ = 0;
 
 	// 生存フラグ
 	bool isAllive_ = true;
