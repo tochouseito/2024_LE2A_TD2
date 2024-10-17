@@ -16,7 +16,7 @@ void PlayerBullet::Initialize(Model* model, ViewProjection* viewProjection, cons
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
-	worldTransform_.scale_ *= 0.5f;
+	worldTransform_.scale_ *= 0.25f;
 	// 3Dモデルの生成
 	model_ = model;
 
@@ -27,7 +27,7 @@ void PlayerBullet::Initialize(Model* model, ViewProjection* viewProjection, cons
 	// 半径を設定
 	SetRadius(0.25f);
 
-	SetTypeID(static_cast<uint32_t>(CollisionTypeIdDef::kBullet));
+	SetTypeID(static_cast<uint32_t>(CollisionTypeIdDef::kBulletRoot));
 }
 
 void PlayerBullet::Update() {
@@ -41,7 +41,22 @@ void PlayerBullet::Update() {
 }
 
 void PlayerBullet::Draw() {
-	model_->Draw(worldTransform_, *viewProjection_);
+	switch (behavior_) {
+	case PlayerBullet::Behavior::kRoot:
+		model_->Draw(worldTransform_, *viewProjection_);
+		break;
+	case PlayerBullet::Behavior::kAttack:
+		model_->Draw(worldTransform_, *viewProjection_);
+		break;
+	case PlayerBullet::Behavior::kHit:
+		break;
+	default:
+		break;
+	}
+}
+
+bool PlayerBullet::GetIsAllive() const {
+	return isAllive_;
 }
 
 void PlayerBullet::OnCollision(Collider* other) {
@@ -77,15 +92,15 @@ void PlayerBullet::BehaviorInitialize() {
 		behavior_ = behaviorRequest_.value();
 		// 各振る舞いごとの初期化を実行
 		switch (behavior_) {
-			case PlayerBullet::Behavior::kRoot:
-				RootInitialize();
-				break;
-			case PlayerBullet::Behavior::kAttack:
-				AttackInitialize();
-				break;
-			case PlayerBullet::Behavior::kHit:
-				HitInitialize();
-				break;
+		case PlayerBullet::Behavior::kRoot:
+			RootInitialize();
+			break;
+		case PlayerBullet::Behavior::kAttack:
+			AttackInitialize();
+			break;
+		case PlayerBullet::Behavior::kHit:
+			HitInitialize();
+			break;
 		}
 		// 振る舞いリクエストをリセット
 		behaviorRequest_ = std::nullopt;
@@ -94,20 +109,20 @@ void PlayerBullet::BehaviorInitialize() {
 
 void PlayerBullet::BehaviorUpdate() {
 	switch (behavior_) {
-		case PlayerBullet::Behavior::kRoot:
-			RootUpdate();
-			break;
-		case PlayerBullet::Behavior::kAttack:
-			AttackUpdate();
-			break;
-		case PlayerBullet::Behavior::kHit:
-			HitUpdate();
-			break;
+	case PlayerBullet::Behavior::kRoot:
+		RootUpdate();
+		break;
+	case PlayerBullet::Behavior::kAttack:
+		AttackUpdate();
+		break;
+	case PlayerBullet::Behavior::kHit:
+		HitUpdate();
+		break;
 	}
 }
 
 void PlayerBullet::RootInitialize() {
-
+	isAllive_ = true;
 }
 
 void PlayerBullet::RootUpdate() {
@@ -115,18 +130,24 @@ void PlayerBullet::RootUpdate() {
 }
 
 void PlayerBullet::AttackInitialize() {
-
+	SetTypeID(static_cast<uint32_t>(CollisionTypeIdDef::kBulletActive));
 }
 
 void PlayerBullet::AttackUpdate() {
-	
-	worldTransform_.translation_.x -= 0.1f;
+
+	worldTransform_.translation_.x -= kVelocity_;
 }
 
 void PlayerBullet::HitInitialize() {
-
+	SetTypeID(static_cast<uint32_t>(CollisionTypeIdDef::kBulletHit));
+	// タイマーセット
+	deadAnimationTimer_ = 30;
 }
 
 void PlayerBullet::HitUpdate() {
-
+	// タイマーをデクリメント
+	deadAnimationTimer_--;
+	if (deadAnimationTimer_ == 0) {
+		isAllive_ = false;
+	}
 }
