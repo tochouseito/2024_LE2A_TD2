@@ -18,10 +18,11 @@ struct GPUParticle
 };
 struct PerView
 {
-    float32_t4x4 View;
-    float32_t4x4 Projection;
+    float4x4 View;
+    float4x4 Projection;
     //float32_t4x4 billboardMatrix;
-    float32_t3 cameraPosition;
+    float4x4 cameraMat;
+    float3 cameraPosition;
 };
 struct PerFrame
 {

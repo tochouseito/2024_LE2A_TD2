@@ -57,6 +57,9 @@ void GameScene::Initialize() {
 	deltaTime_ = std::make_unique<DeltaTime>();
 	deltaTime_->Update();
 
+	particleManager_ = std::make_unique<ParticleManager>();
+	particleManager_->Initialize(&viewProjection_, textureHandle_[0]);
+
 	///////////////////////////////////////////////////////////////////////////////////////
 
 	// MapChip
@@ -199,6 +202,8 @@ void GameScene::Update() {
 		needle->Update();
 	}
 
+	particleManager_->Update();
+
 	// 衝突判定と応答
 	CheckAllCollisions();
 	collisionManager_->UpdateWorldTransform();
@@ -272,6 +277,8 @@ void GameScene::Draw() {
 	}
 
 	collisionManager_->Draw(viewProjection_);
+
+	particleManager_->DrawGPU();
 
 }
 

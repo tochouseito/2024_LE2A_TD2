@@ -107,6 +107,8 @@ public: // メンバ関数
 
 	void OnCollision(Collider* other) override;
 
+	void SetLandingTexture(const std::string& handle);
+
 private: // メンバ変数
 
 	// マップチップフィールドによるフィールド
@@ -120,6 +122,7 @@ private: // メンバ変数
 
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0;
+	std::string landingTexture_;
 
 	// ビュープロジェクション
 	ViewProjection* viewProjection_ = nullptr;
@@ -135,6 +138,7 @@ private: // メンバ変数
 
 	bool isGravityInvert = false;
 	bool isJumping = false;
+	bool landing;
 
 	// 旋回開始時の角度
 	float turnFirstRotationY_ = 0.0f;

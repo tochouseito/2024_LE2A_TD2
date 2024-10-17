@@ -329,7 +329,7 @@ void Player::OnGround(const CollisionMapInfo& info) {
 		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
 
 		// 着地フラグ
-		bool landing = false;
+		landing = false;
 
 		// 地面との当たり判定
 		// 下降中？
@@ -427,6 +427,11 @@ void Player::OnCollision(Collider* other) {
 			slownessTimer = kMaxSlownessTime;
 		}
 	}
+}
+
+void Player::SetLandingTexture(const std::string& handle)
+{
+	landingTexture_ = handle;
 }
 
 //void Player::OnCollision(const Enemy* enemy) {

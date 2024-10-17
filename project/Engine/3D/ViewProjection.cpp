@@ -16,6 +16,7 @@ void ViewProjection::CreateConstBufferResource(uint32_t Instance) {
 	// 単位行列を書き込んでいく
 	wvpData_->View = MakeIdentity4x4();
 	wvpData_->Projection = MakeIdentity4x4();
+	wvpData_->cameraMat = MakeIdentity4x4();
 	wvpData_->cameraPosition = Vector3(0.0f, 0.0f, 0.0f);
 }
 void ViewProjection::CBProjectionResource(uint32_t Instance)
@@ -39,6 +40,7 @@ void ViewProjection::Map() {
 void ViewProjection::TransferMatrix() {
 	wvpData_->View = viewMatrix_;
 	wvpData_->Projection = projectionMatrix_;
+	wvpData_->cameraMat = Inverse(viewMatrix_);
 	wvpData_->cameraPosition = translation_;
 	projectionInverse_->ProjectionInverse = Inverse(projectionMatrix_);
 }
