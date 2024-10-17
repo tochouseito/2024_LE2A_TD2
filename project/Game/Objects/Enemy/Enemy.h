@@ -43,6 +43,6 @@ private:
 	const float kMaxSpeed_ = 0.12f;
 
 	// 減速速度
-	const float kSubtractSpeed_ = 0.06f;
+	const float kSubtractSpeed_ = 0.04f;
 
 };

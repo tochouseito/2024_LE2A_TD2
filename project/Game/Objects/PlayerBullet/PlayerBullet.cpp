@@ -135,7 +135,7 @@ void PlayerBullet::AttackInitialize() {
 
 void PlayerBullet::AttackUpdate() {
 
-	worldTransform_.translation_.x -= 0.1f;
+	worldTransform_.translation_.x -= kVelocity_;
 }
 
 void PlayerBullet::HitInitialize() {
