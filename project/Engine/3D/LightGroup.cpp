@@ -1,8 +1,8 @@
 #include "LightGroup.h"
 #include"imgui.h"
+#include "Mymath.h"
 
-void LightGroup::Initialize()
-{
+void LightGroup::Initialize() {
 	directionalLight_ = new DirectionalLight();
 	spotLight_ = new SpotLight();
 	pointLight_ = new PointLight();
@@ -11,15 +11,16 @@ void LightGroup::Initialize()
 	spotLight_->CreateSpotLightResource();
 }
 
-void LightGroup::Update()
-{
+void LightGroup::Update() {
 #ifdef _DEBUG
 	ImGui::Begin("GameSceneLighting");
 
 	if (ImGui::CollapsingHeader("Directional")) {
 		ImGui::DragFloat4("dColor", &directionalLight_->GetDirectionalLightData()->color.r, 0.01f);
 		ImGui::SliderFloat("dIntensity", &directionalLight_->GetDirectionalLightData()->intensity, 0.0f, 1.0f);
-		ImGui::DragFloat3("dDirection", &directionalLight_->GetDirectionalLightData()->direction.x, 0.01f);
+		if (ImGui::DragFloat3("dDirection", &directionalLight_->GetDirectionalLightData()->direction.x, 0.01f)) {
+			directionalLight_->GetDirectionalLightData()->direction = Normalize(directionalLight_->GetDirectionalLightData()->direction);
+		}
 	}
 	if (ImGui::CollapsingHeader("Spot")) {
 		ImGui::DragFloat4("sColor", &spotLight_->GetSpotLightData()->color.r, 0.01f);
@@ -36,8 +37,7 @@ void LightGroup::Update()
 
 }
 
-void LightGroup::Finalize()
-{
+void LightGroup::Finalize() {
 	delete pointLight_;
 	delete spotLight_;
 	delete directionalLight_;
