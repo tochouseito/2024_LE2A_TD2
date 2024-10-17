@@ -3032,6 +3032,15 @@ IDxcBlob* GraphicsPipelineState::CompilerShader(
 	// コンパイルエラーではなくdxcが起動できないなど致命的な状況
 	assert(SUCCEEDED(hr));
 
+	// 警告、エラーが出たらログに出して止める
+	IDxcBlobUtf8* shaderError = nullptr;
+	shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
+	if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
+		Log(shaderError->GetStringPointer());
+		// 警告、エラー
+		assert(false);
+	}
+
 	// コンパイル結果から実行用のバイナリ部分を取得
 	IDxcBlob* shaderBlob = nullptr;
 	hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
@@ -3041,6 +3050,7 @@ IDxcBlob* GraphicsPipelineState::CompilerShader(
 	// もう使わないリソースを解放
 	shaderSource->Release();
 	shaderResult->Release();
+	shaderError->Release();
 	// 実行用のバイナリを返却
 	return shaderBlob;
 }

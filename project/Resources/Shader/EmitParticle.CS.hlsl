@@ -52,9 +52,6 @@ void main( uint3 DTid : SV_DispatchThreadID )
                 gParticles[particleIndex].currentTime = 0.0f;
                 gParticles[particleIndex].isAlive = true;
                 
-               
-                
-                
             }
             else
             {

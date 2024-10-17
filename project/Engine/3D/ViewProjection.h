@@ -9,6 +9,7 @@
 struct ConstBufferDataViewProjection {
 	Matrix4x4 View;
 	Matrix4x4 Projection;
+	Matrix4x4 cameraMat;
 	Vector3 cameraPosition;
 };
 
