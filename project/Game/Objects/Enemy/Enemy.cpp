@@ -58,7 +58,9 @@ void Enemy::Move() {
 	worldTransform_.translation_ += velocity_;
 }
 
-void Enemy::Attack() {}
+void Enemy::Attack() {
+
+}
 
 void Enemy::OnCollision(Collider* other) {
 	// 衝突相手の種別IDを取得
