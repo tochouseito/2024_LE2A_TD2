@@ -96,7 +96,7 @@ void GameScene::Initialize() {
 	GenerateBlocks();
 
 	// Bullet
-	bulletModel_.reset(Model::CreateSphere());
+	bulletModel_.reset(Model::LordModel("PlayerBullet"));
 	GenerateBullets();
 
 	// 矢印の生成
@@ -302,18 +302,6 @@ void GameScene::GenerateBlocks() {
 				Vector3 pos = mapChipField_->GetMapChipPositionByIndex(j, i);
 				blocks_[i][j]->Initialize(blocksModel_.get(), &viewProjection_, pos);
 			}
-
-			/*if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kUpNeedle) {
-				blocks_[i][j] = std::make_unique<Needle>();
-				Vector3 pos = mapChipField_->GetMapChipPositionByIndex(j, i);
-				blocks_[i][j]->Initialize(upNeedleModel_.get(), &viewProjection_, pos);
-			}
-
-			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kDownNeedle) {
-				blocks_[i][j] = std::make_unique<Needle>();
-				Vector3 pos = mapChipField_->GetMapChipPositionByIndex(j, i);
-				blocks_[i][j]->Initialize(downNeedleModel_.get(), &viewProjection_, pos);
-			}*/
 		}
 	}
 }
