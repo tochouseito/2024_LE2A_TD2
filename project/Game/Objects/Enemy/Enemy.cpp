@@ -64,8 +64,8 @@ void Enemy::OnCollision(Collider* other) {
 	// 衝突相手の種別IDを取得
 	uint32_t typeID = other->GetTypeID();
 	// 衝突相手が弾なら
-	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kBullet)) {
-
+	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kBulletActive)) {
+		velocity_.x -= kSubtractSpeed_;
 	}
 }
 
