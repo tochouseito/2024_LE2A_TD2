@@ -30,7 +30,7 @@ public:
 
 private:
 #ifdef _DEBUG
-	bool bShowCollision = true;
+	bool bShowCollision = false;
 #else
 	bool bShowCollision = false;
 #endif

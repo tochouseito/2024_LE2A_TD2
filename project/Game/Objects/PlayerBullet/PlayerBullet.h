@@ -62,7 +62,7 @@ private:
 	Behavior behavior_ = Behavior::kRoot;
 
 	// 弾の移動量
-	const float kVelocity_ = 0.3f;
+	const float kVelocity_ = 0.2f;
 
 	// 次の振る舞いリスト
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;
