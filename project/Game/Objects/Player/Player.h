@@ -149,7 +149,7 @@ private: // メンバ変数
 	float kAcceleration = 0.03f;
 	float kAttenuation = 0.3f;
 	float kAttenuationLanding = 0.3f;
-	float kTimeTurn = 0.2f;
+	float kTimeTurn = 0.125f;
 
 	// 重力加速度（下方向）
 	float kGravityAcceleration = 0.01f;

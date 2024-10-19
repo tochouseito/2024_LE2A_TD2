@@ -1,21 +1,17 @@
 #define NOMINMAX
 #include "Player.h"
-#include "assert.h"
-#include "numbers"
+
 #include "algorithm"
+#include "assert.h"
 #include "ConvertString.h"
 #include "imgui.h"
 #include "Input.h"
 #include "Mymath.h"
+#include "numbers"
+
 #include "CollisionManager/CollisionTypeIdDef.h"
 
-#include"math/Easing.h"
 #include"Game/MapChipField/MapChipField.h"
-//#include"DebugText.h"
-
-//-----------------------------------------------------------------------------
-// TODO : 重力反転した際にプレイヤーが正しい方向を向くようにする 
-//-----------------------------------------------------------------------------
 
 Player::Player() {
 
@@ -74,8 +70,18 @@ void Player::Update() {
 
 	if (isGravityInvert) {
 		targetRotZ = std::numbers::pi_v<float>;
+		// Y軸の回転を反転
+		worldTransform_.rotation_.y = std::lerp(worldTransform_.rotation_.y,
+			(lrDirection_ == LRDirection::kRight) ?
+			std::numbers::pi_v<float> *3.0f / 2.0f : std::numbers::pi_v<float> / 2.0f,
+			0.1f); // 補間係数を調整
 	} else {
 		targetRotZ = 0.0f;
+		// 通常のY軸の回転
+		worldTransform_.rotation_.y = std::lerp(worldTransform_.rotation_.y,
+			(lrDirection_ == LRDirection::kRight) ?
+			std::numbers::pi_v<float> / 2.0f : std::numbers::pi_v<float> *3.0f / 2.0f,
+			0.1f); // 補間係数を調整
 	}
 
 	if (isHitNeedle) {
@@ -175,7 +181,7 @@ void Player::CharMove() {
 
 	float stickX = 0.0f;
 	if (controllerConnected) {
-		stickX = controllerState.Gamepad.sThumbLX / 32767.0f;  // 正規化したスティックのX入力（-1.0 ~ 1.0）
+		stickX = static_cast<float>(controllerState.Gamepad.sThumbLX) / 32767.0f;  // 正規化したスティックのX入力（-1.0 ~ 1.0）
 	}
 
 	if (onGround_ == true) {
@@ -360,11 +366,19 @@ void Player::TurnControl() {
 		turnTimer_ -= 0.015f;
 		float t = 1.0f - (turnTimer_ / kTimeTurn);
 		// 左右の自キャラ角度テーブル
-		float destinationRotationYTable[] = { std::numbers::pi_v<float> / 2.0f, std::numbers::pi_v<float> *3.0f / 2.0f };
+		float destinationRotationYTable[] = {
+			std::numbers::pi_v<float> / 2.0f,
+			std::numbers::pi_v<float> *3.0f / 2.0f
+		};
+		// 重力反転時の角度調整
+		if (isGravityInvert) {
+			destinationRotationYTable[0] = std::numbers::pi_v<float> *3.0f / 2.0f;
+			destinationRotationYTable[1] = std::numbers::pi_v<float> / 2.0f;
+		}
 		// 状態に応じた角度を取得する
 		float destinationRotationY = destinationRotationYTable[static_cast<uint32_t>(lrDirection_)];
-		// 自キャラの角度を設定する
-		worldTransform_.rotation_.y = turnFirstRotationY_ + (destinationRotationY - turnFirstRotationY_) * Easing::easeInOutQuad(t);
+		// 自キャラの角度をLerpで補間する
+		worldTransform_.rotation_.y = std::lerp(turnFirstRotationY_, destinationRotationY, t);
 	}
 }
 
@@ -436,8 +450,7 @@ void Player::OnCollision(Collider* other) {
 
 }
 
-void Player::SetLandingTexture(const std::string& handle)
-{
+void Player::SetLandingTexture(const std::string& handle) {
 	landingTexture_ = handle;
 }
 
