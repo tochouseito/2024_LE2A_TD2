@@ -99,6 +99,10 @@ void GameScene::Initialize() {
 	bulletModel_.reset(Model::LordModel("PlayerBullet"));
 	GenerateBullets();
 
+	// enemyAttack
+	enemyAttackModel_.reset(Model::LordModel("attack"));
+	enemyAttackWorldTransform_.Initialize();
+
 	// 矢印の生成
 	gravityArrowModel_.resize(2);
 	gravityArrowModel_[0].reset(Model::LordModel("GravityUpArrow"));
@@ -208,6 +212,9 @@ void GameScene::Update() {
 	CheckAllCollisions();
 	collisionManager_->UpdateWorldTransform();
 
+	// エネミーの攻撃とプレイヤーの当たり判定処理
+	EnemyAttack(enemy_->GetAttackYIndex());
+
 #ifdef _DEBUG
 	// スペースキーでデバッグカメラの切り替え
 	ImGui::Begin("EngineDebug");
@@ -250,6 +257,7 @@ void GameScene::Draw() {
 
 	// エネミー
 	enemy_->Draw();
+	enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
 
 	// ゴール
 	goal_->Draw();
@@ -351,6 +359,28 @@ void GameScene::CheckAllCollisions() {
 
 void GameScene::EnemyAttack(const uint32_t& enemyAttackYIndex) {
 	// エネミーの攻撃のy座標を取得
-	Vector3 enemyAttackYTranslate = mapChipField_->GetMapChipPositionByIndex(0, enemyAttackYIndex);
+	float enemyAttackYTranslate = mapChipField_->GetMapChipPositionYByIndex(enemyAttackYIndex);
+	playerAABB_ = player_->GetAABB();
+	enemyAttackAABB_.min = { 0.0f,enemyAttackYTranslate - 0.5f,0.0f };
+	enemyAttackAABB_.max = { static_cast<float>(mapChipField_->GetNumBlockHorizontal()),enemyAttackYTranslate + 0.5f,0.0f };
+
+	if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
+		player_->SetIsAllive(false);
+	}
+
+	Vector3 enemyAttackTranslate = { viewProjection_.translation_.x,enemyAttackYTranslate,0.0f };
+	enemyAttackWorldTransform_.translation_ = enemyAttackTranslate;
+	enemyAttackWorldTransform_.UpdateMatrix();
 
 }
+
+bool GameScene::AABBIntersects(const AABB& a, const AABB& b) {
+	// 各軸についてAABBが重なっているかを確認する
+	bool xOverlap = a.min.x < b.max.x && a.max.x > b.min.x;
+	bool yOverlap = a.min.y < b.max.y && a.max.y > b.min.y;
+	bool zOverlap = a.min.z < b.max.z && a.max.z > b.min.z;
+
+	// すべての軸で重なっている場合に衝突と判断する
+	return xOverlap && yOverlap && zOverlap;
+}
+

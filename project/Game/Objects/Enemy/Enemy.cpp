@@ -123,3 +123,7 @@ void Enemy::PreliminaryUpdate() {}
 void Enemy::AttackInitialize() {}
 
 void Enemy::AttackUpdate() {}
+
+uint32_t Enemy::GetAttackYIndex()const {
+	return attackYIndex_;
+}

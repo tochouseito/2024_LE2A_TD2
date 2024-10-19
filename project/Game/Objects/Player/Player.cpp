@@ -167,7 +167,7 @@ void Player::Update() {
 
 void Player::Draw() {
 	// 3Dモデルを描画
-	if (isAlive) {
+	if (isAlive_) {
 		model_->Draw(worldTransform_, *viewProjection_);
 	}
 }
@@ -436,7 +436,7 @@ void Player::OnCollision(Collider* other) {
 	uint32_t typeID = other->GetTypeID();
 	// 衝突相手がエネミーなら
 	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemy)) {
-		isAlive = false;
+		isAlive_ = false;
 	}
 	// 衝突相手が針なら
 	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kNeedle)) {
@@ -450,6 +450,10 @@ void Player::OnCollision(Collider* other) {
 
 void Player::SetLandingTexture(const std::string& handle) {
 	landingTexture_ = handle;
+}
+
+void Player::SetIsAllive(const bool& isAllive) {
+	isAlive_ = isAllive;
 }
 
 //void Player::OnCollision(const Enemy* enemy) {
