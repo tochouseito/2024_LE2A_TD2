@@ -50,9 +50,22 @@ void Enemy::Initialize(Model* models[], ViewProjection* viewProjection, const Ve
 }
 
 void Enemy::Update() {
+#ifdef _DEBUG
+	ImGui::Begin("Enemy");
+	switch (behavior_) {
+		case Enemy::Behavior::kRoot:
+			ImGui::Text("Behavior: root");
+			break;
+		case Enemy::Behavior::kPreliminary:
+			ImGui::Text("Behavior: preliminary");
+			break;
+		case Enemy::Behavior::kAttack:
+			ImGui::Text("Behavior: attack");
+			break;
+	}
 
-	// 移動処理
-	Move();
+	ImGui::End();
+#endif // _DEBUG
 
 	worldTransform_.rotation_.z -= velocity_.x;
 
@@ -65,7 +78,11 @@ void Enemy::Update() {
 
 	hitTimer_ = std::clamp(hitTimer_, -0.9f, 1.0f);
 
-	// 行列更新
+	// ビヘイビア初期化処理
+	BehaviorInitialize();
+	// ビヘイビア更新処理
+	BehaviorUpdate();
+
 	worldTransform_.UpdateMatrix();
 	faceTransform_.UpdateMatrix();
 	leftEyeTransform_.UpdateMatrix();
@@ -100,10 +117,6 @@ void Enemy::Move() {
 	rightEyeTransform_.translation_ = worldTransform_.translation_ + rightEyeOffset_;
 }
 
-void Enemy::Attack() {
-
-}
-
 void Enemy::OnCollision(Collider* other) {
 	// 衝突相手の種別IDを取得
 	uint32_t typeID = other->GetTypeID();
@@ -120,4 +133,96 @@ Vector3 Enemy::GetCenterPosition() const {
 	// ワールド座標に変換
 	Vector3 worldPos = Transform(offset, worldTransform_.matWorld_);
 	return worldPos;
+}
+
+void Enemy::BehaviorInitialize() {
+	// 振る舞い
+	if (behaviorRequest_) {
+		// 振る舞いを変更する
+		behavior_ = behaviorRequest_.value();
+		// 各振る舞いごとの初期化を実行
+		switch (behavior_) {
+			case Enemy::Behavior::kRoot:
+				RootInitialize();
+				break;
+			case Enemy::Behavior::kPreliminary:
+				PreliminaryInitialize();
+				break;
+			case Enemy::Behavior::kAttack:
+				AttackInitialize();
+				break;
+		}
+		// 振る舞いリクエストをリセット
+		behaviorRequest_ = std::nullopt;
+	}
+}
+
+void Enemy::BehaviorUpdate() {
+	switch (behavior_) {
+		case Enemy::Behavior::kRoot:
+			RootUpdate();
+			break;
+		case Enemy::Behavior::kPreliminary:
+			PreliminaryUpdate();
+			break;
+		case Enemy::Behavior::kAttack:
+			AttackUpdate();
+			break;
+	}
+}
+
+void Enemy::RootInitialize() {
+	// タイマーをリセット
+	behaviorTimer_ = 0;
+}
+
+void Enemy::RootUpdate() {
+	// 移動処理
+	Move();
+
+	if (behaviorTimer_ < kRootTime_) {
+		behaviorTimer_++;
+	} else {
+		behaviorRequest_ = Behavior::kPreliminary;
+	}
+}
+
+void Enemy::PreliminaryInitialize() {
+	// タイマーをリセット
+	behaviorTimer_ = 0;
+	// 攻撃するレーンのインデックスをセット
+	attackYIndex_ = preliminaryYIndex_;
+}
+
+void Enemy::PreliminaryUpdate() {
+	if (behaviorTimer_ < kPreliminaryTime_) {
+		behaviorTimer_++;
+	} else {
+		behaviorRequest_ = Behavior::kAttack;
+	}
+}
+
+void Enemy::AttackInitialize() {
+	// タイマーをリセット
+	behaviorTimer_ = 0;
+}
+
+void Enemy::AttackUpdate() {
+	if (behaviorTimer_ < kAttackTime_) {
+		behaviorTimer_++;
+	} else {
+		behaviorRequest_ = Behavior::kRoot;
+	}
+}
+
+uint32_t Enemy::GetAttackYIndex()const {
+	return attackYIndex_;
+}
+
+Enemy::Behavior Enemy::GetBehavior() const {
+	return behavior_;
+}
+
+void Enemy::SetPreliminaryYIndex(const uint32_t& yIndex) {
+	preliminaryYIndex_ = yIndex;
 }

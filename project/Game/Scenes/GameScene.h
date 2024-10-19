@@ -60,7 +60,9 @@
 #include "Needle/Needle.h"
 
 class GameScene :
+
 	public BaseScene {
+
 public:
 	GameScene();
 	~GameScene();
@@ -72,8 +74,7 @@ public:
 	void Draw() override;
 
 	// シーンの切り替え依頼
-	void ChangeScene() override {
-	}
+	void ChangeScene() override {}
 
 	void SetSceneManager(SceneManager* sceneManager) override {
 		sceneManager_ = sceneManager;
@@ -84,6 +85,10 @@ public:
 	void GenerateBullets();
 
 	void CheckAllCollisions();
+
+	void EnemyAttack(const uint32_t& enemyAttackYIndex, const Enemy::Behavior& behavior);
+
+	bool AABBIntersects(const AABB& a, const AABB& b);
 
 private:
 	DirectXCommon* dxCommon_ = nullptr;
@@ -141,6 +146,10 @@ private:
 	std::unique_ptr<Model> enemyEyeNormal = nullptr;
 	std::unique_ptr<Model> enemyEyeHit = nullptr;
 
+	// エネミーの攻撃用モデル
+	std::unique_ptr<Model> enemyAttackModel_ = nullptr;
+	WorldTransform enemyAttackWorldTransform_;
+
 	// Blocks
 	std::vector<std::vector<std::unique_ptr<Blocks>>> blocks_;
 	//std::unique_ptr<Blocks> blocks_ = nullptr;
@@ -171,4 +180,9 @@ private:
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 
 	std::unique_ptr<DeltaTime> deltaTime_ = nullptr;
+
+	// プレイヤーのAABB
+	AABB playerAABB_{};
+	// エネミーの攻撃判定AABB
+	AABB enemyAttackAABB_{};
 };

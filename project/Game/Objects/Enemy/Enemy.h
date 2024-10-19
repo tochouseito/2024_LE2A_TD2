@@ -2,10 +2,18 @@
 #include"WorldTransform.h"
 #include"ViewProjection.h"
 #include"Model.h"
+#include <optional>
+
 #include "CollisionManager/Collider.h"
 
-class Enemy : public Collider {
+class Enemy: public Collider {
 public:
+	enum class Behavior {
+		kRoot,			// 通常行動
+		kPreliminary,	// 攻撃予備動作
+		kAttack,		// 攻撃
+	};
+
 	Enemy() = default;
 	~Enemy() = default;
 
@@ -14,10 +22,27 @@ public:
 	void Draw();
 
 	void Move();
-	void Attack();
 
 	void OnCollision(Collider* other) override;
 	Vector3 GetCenterPosition() const override;
+
+	void BehaviorInitialize();
+	void BehaviorUpdate();
+
+	void RootInitialize();
+	void RootUpdate();
+
+	void PreliminaryInitialize();
+	void PreliminaryUpdate();
+
+	void AttackInitialize();
+	void AttackUpdate();
+
+	// エネミーの攻撃Y座標を取得
+	uint32_t GetAttackYIndex()const;
+	Behavior GetBehavior()const;
+
+	void SetPreliminaryYIndex(const uint32_t& yIndex);
 
 private:
 
@@ -60,6 +85,19 @@ private:
 
 
 	// 攻撃yインデックス
+	uint32_t preliminaryYIndex_ = 0;
 	uint32_t attackYIndex_ = 0;
+
+	// 振る舞い
+	Behavior behavior_ = Behavior::kRoot;
+
+	// 次の振る舞いリスト
+	std::optional<Behavior> behaviorRequest_ = std::nullopt;
+
+
+	const uint32_t kRootTime_ = 180;
+	const uint32_t kPreliminaryTime_ = 120;
+	const uint32_t kAttackTime_ = 90;
+	uint32_t behaviorTimer_ = 0;
 
 };

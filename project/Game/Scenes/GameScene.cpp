@@ -99,6 +99,10 @@ void GameScene::Initialize() {
 	bulletModel_.reset(Model::LordModel("PlayerBullet"));
 	GenerateBullets();
 
+	// enemyAttack
+	enemyAttackModel_.reset(Model::LordModel("attack"));
+	enemyAttackWorldTransform_.Initialize();
+
 	// 矢印の生成
 	gravityArrowModel_.resize(2);
 	gravityArrowModel_[0].reset(Model::LordModel("GravityUpArrow"));
@@ -221,6 +225,9 @@ void GameScene::Update() {
 	CheckAllCollisions();
 	collisionManager_->UpdateWorldTransform();
 
+	// エネミーの攻撃とプレイヤーの当たり判定処理
+	EnemyAttack(enemy_->GetAttackYIndex(), enemy_->GetBehavior());
+
 #ifdef _DEBUG
 	// スペースキーでデバッグカメラの切り替え
 	ImGui::Begin("EngineDebug");
@@ -263,6 +270,7 @@ void GameScene::Draw() {
 
 	// エネミー
 	enemy_->Draw();
+	enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
 
 	// ゴール
 	goal_->Draw();
@@ -360,3 +368,45 @@ void GameScene::CheckAllCollisions() {
 	// 衝突判定と応答
 	collisionManager_->CheckAllCollision();
 }
+
+void GameScene::EnemyAttack(const uint32_t& enemyAttackYIndex, const Enemy::Behavior& behavior) {
+
+	switch (behavior) {
+		case Enemy::Behavior::kRoot:
+			Vector3 playerWorldPosition = player_->GetWorldPosition();
+			enemy_->SetPreliminaryYIndex(mapChipField_->GetMapChipIndexSetByPosition(playerWorldPosition).yIndex);
+			break;
+		case Enemy::Behavior::kPreliminary:
+
+			break;
+		case Enemy::Behavior::kAttack:
+			// エネミーの攻撃のy座標を取得
+			float enemyAttackYTranslate = mapChipField_->GetMapChipPositionYByIndex(enemyAttackYIndex);
+			playerAABB_ = player_->GetAABB();
+			enemyAttackAABB_.min = { 0.0f,enemyAttackYTranslate - 0.5f,0.0f };
+			enemyAttackAABB_.max = { static_cast<float>(mapChipField_->GetNumBlockHorizontal()),enemyAttackYTranslate + 0.5f,0.0f };
+			Vector3 enemyAttackTranslate = { viewProjection_.translation_.x,enemyAttackYTranslate,0.0f };
+			enemyAttackWorldTransform_.translation_ = enemyAttackTranslate;
+			enemyAttackWorldTransform_.UpdateMatrix();
+			if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
+				// 攻撃がヒットした時の処理
+				player_->SetIsAllive(false);
+			}
+			break;
+	}
+
+
+
+
+}
+
+bool GameScene::AABBIntersects(const AABB& a, const AABB& b) {
+	// 各軸についてAABBが重なっているかを確認する
+	bool xOverlap = a.min.x < b.max.x && a.max.x > b.min.x;
+	bool yOverlap = a.min.y < b.max.y && a.max.y > b.min.y;
+	bool zOverlap = a.min.z < b.max.z && a.max.z > b.min.z;
+
+	// すべての軸で重なっている場合に衝突と判断する
+	return xOverlap && yOverlap && zOverlap;
+}
+
