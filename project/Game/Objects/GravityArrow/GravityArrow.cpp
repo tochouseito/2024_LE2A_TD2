@@ -2,7 +2,7 @@
 
 #include "Mymath.h"
 
-constexpr float parallaxFactor = 0.025f;
+constexpr float parallaxFactor = 0.0125f;
 constexpr float scrollSpeed = 0.0005f;
 
 void GravityArrow::Initialize(Model* upModel, Model* downModel, ViewProjection* viewProjection) {
@@ -19,11 +19,15 @@ void GravityArrow::Update() {
 	// uvスクロール
 	uvX = viewProjection_->translation_.x * parallaxFactor;
 
+	float parallaxY = viewProjection_->translation_.y * parallaxFactor;
+
 	if (isUp_) {
 		uvY += scrollSpeed;
 	} else {
 		uvY -= scrollSpeed;
 	}
+
+	float uvYTarget = uvY + parallaxY;
 
 	upModel_->GetMaterial()->GetMaterialData()->uvTransform.m[3][0] = uvX; // 横
 	upModel_->GetMaterial()->GetMaterialData()->uvTransform.m[3][1] = uvY; // 縦

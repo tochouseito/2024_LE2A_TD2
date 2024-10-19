@@ -59,7 +59,7 @@
 #include"Game/DeltaTime/DeltaTime.h"
 #include "Needle/Needle.h"
 
-class GameScene:
+class GameScene :
 	public BaseScene {
 public:
 	GameScene();
@@ -137,6 +137,9 @@ private:
 	// Enemy
 	std::unique_ptr<Enemy> enemy_ = nullptr;
 	std::unique_ptr<Model> enemyModel_ = nullptr;
+	std::unique_ptr<Model> enemyFace_ = nullptr;
+	std::unique_ptr<Model> enemyEyeNormal = nullptr;
+	std::unique_ptr<Model> enemyEyeHit = nullptr;
 
 	// Blocks
 	std::vector<std::vector<std::unique_ptr<Blocks>>> blocks_;

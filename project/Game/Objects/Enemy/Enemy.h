@@ -9,7 +9,7 @@ public:
 	Enemy() = default;
 	~Enemy() = default;
 
-	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position);
+	void Initialize(Model* models[], ViewProjection* viewProjection, const Vector3& position);
 	void Update();
 	void Draw();
 
@@ -23,9 +23,22 @@ private:
 
 	// ワールドトランスフォーム
 	WorldTransform worldTransform_;
+	WorldTransform bodyTransform_;
+	WorldTransform faceTransform_;
+	WorldTransform leftEyeTransform_;
+	WorldTransform rightEyeTransform_;
 
 	// 3Dモデル
-	Model* model_ = nullptr;
+	Model* bodyModel_ = nullptr;
+	Model* faceModel_ = nullptr;
+	Model* eyeNormalModel_ = nullptr;
+	Model* eyeHitModel_ = nullptr;
+
+	const Vector3 leftEyeOffset_ = Vector3(-0.3f, 0.3f, -0.05f);
+	const Vector3 rightEyeOffset_ = Vector3(0.5f, 0.3f, -0.05f);
+
+	float hitTimer_ = 0.0f;
+	const float kHitTime = 1.0f;
 
 	// テクスチャハンドル
 	uint32_t texturehandle_ = 0;

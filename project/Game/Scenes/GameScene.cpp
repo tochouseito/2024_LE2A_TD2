@@ -128,7 +128,16 @@ void GameScene::Initialize() {
 	player_->SetMapChipField(mapChipField_.get());
 
 	// Enemy
-	enemyModel_.reset(Model::CreateSphere());
+	enemyModel_.reset(Model::LordModel("EnemySaw"));
+	enemyFace_.reset(Model::LordModel("EnemyFace"));
+	enemyEyeNormal.reset(Model::LordModel("EnemyEyeNormal"));
+	enemyEyeHit.reset(Model::LordModel("EnemyEyeHit"));
+	Model* models[] = {
+		enemyModel_.get(),
+		enemyFace_.get(),
+		enemyEyeNormal.get(),
+		enemyEyeHit.get(),
+	};
 	enemy_ = std::make_unique<Enemy>();
 	// CSVからエネミーの開始位置を見つける
 	Vector3 enemyPosition{};
@@ -140,7 +149,7 @@ void GameScene::Initialize() {
 			}
 		}
 	}
-	enemy_->Initialize(enemyModel_.get(), &viewProjection_, enemyPosition);
+	enemy_->Initialize(models, &viewProjection_, enemyPosition);
 
 	// Goal
 	goalModel_.reset(Model::CreateSphere());
@@ -175,8 +184,12 @@ void GameScene::Update() {
 	goal_->Update();
 
 	// カメラ移動
-	mainCamera_->translation_ = Lerp(mainCamera_->translation_, player_->GetWorldPosition() + player_->GetVelocity() * deltaTime_->GetDeltaTime(), deltaTime_->GetDeltaTime() * 5.0f);
-	mainCamera_->translation_.z = -15.0f;
+	mainCamera_->translation_.x = std::lerp(mainCamera_->translation_.x, player_->GetWorldPosition().x + player_->GetVelocity().x * deltaTime_->GetDeltaTime(), deltaTime_->GetDeltaTime() * 5.0f);
+	mainCamera_->translation_.y = std::lerp(mainCamera_->translation_.y, player_->GetWorldPosition().y + player_->GetVelocity().y * deltaTime_->GetDeltaTime(), deltaTime_->GetDeltaTime() * 5.0f);
+
+	// プレイヤーの速度が上がると後ろに下がる
+	float targetZ = -15.0f - std::clamp(std::abs(player_->GetVelocity().x * 50.0f), 0.0f, 10.0f);
+	mainCamera_->translation_.z = Lerp(mainCamera_->translation_.z, targetZ, deltaTime_->GetDeltaTime() * 0.1f);
 
 	// 矢印
 	gravityArrow_->SetPos({ mainCamera_->translation_.x, mainCamera_->translation_.y, gravityArrowZPos });
@@ -263,7 +276,6 @@ void GameScene::Draw() {
 			block->Draw();
 		}
 	}
-
 
 	// バレットの描画
 	for (std::unique_ptr<PlayerBullet>& bullet : bullets_) {

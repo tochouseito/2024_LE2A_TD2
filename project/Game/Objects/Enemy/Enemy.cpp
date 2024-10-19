@@ -1,15 +1,13 @@
 #include "Enemy.h"
 #include <cassert>
 #include "numbers"
-#include "algorithm"
-#include "imgui.h"
 #include "Input.h"
 #include "math/Easing.h"
 #include "Mymath.h"
 #include "CollisionManager/CollisionTypeIdDef.h"
 
-void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position) {
-	assert(model);
+void Enemy::Initialize(Model* models[], ViewProjection* viewProjection, const Vector3& position) {
+	assert(models);
 
 	// ファイル名を指定してテクスチャを読み込む
 	//textureHandle_ = textureHandel;
@@ -18,8 +16,28 @@ void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vecto
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
+
+	// 顔
+	faceTransform_.Initialize();
+	faceTransform_.translation_ = position;
+	faceTransform_.rotation_.y = worldTransform_.rotation_.y;
+
+	// 左目
+	leftEyeTransform_.Initialize();
+	leftEyeTransform_.translation_ = position + leftEyeOffset_;
+	leftEyeTransform_.rotation_.y = worldTransform_.rotation_.y;
+
+	// 右目
+	rightEyeTransform_.Initialize();
+	rightEyeTransform_.translation_ = position + rightEyeOffset_;
+	rightEyeTransform_.rotation_.y = worldTransform_.rotation_.y;
+
+
 	// 3Dモデルの生成
-	model_ = model;
+	bodyModel_ = models[0];
+	faceModel_ = models[1];
+	eyeNormalModel_ = models[2];
+	eyeHitModel_ = models[3];
 
 	viewProjection_ = viewProjection;
 
@@ -36,16 +54,35 @@ void Enemy::Update() {
 	// 移動処理
 	Move();
 
+	worldTransform_.rotation_.z -= velocity_.x;
+
 	// 攻撃処理
 	Attack();
 
+	if (hitTimer_ >= 0.0f) {
+		hitTimer_ -= 1.0f / 60.0f;
+	}
+
+	hitTimer_ = std::clamp(hitTimer_, -0.9f, 1.0f);
+
 	// 行列更新
 	worldTransform_.UpdateMatrix();
+	faceTransform_.UpdateMatrix();
+	leftEyeTransform_.UpdateMatrix();
+	rightEyeTransform_.UpdateMatrix();
 }
 
 void Enemy::Draw() {
 	// 3Dモデルを描画
-	model_->Draw(worldTransform_, *viewProjection_);
+	bodyModel_->Draw(worldTransform_, *viewProjection_);
+	faceModel_->Draw(faceTransform_, *viewProjection_);
+	if (hitTimer_ <= 0.0f) {
+		eyeNormalModel_->Draw(leftEyeTransform_, *viewProjection_);
+		eyeNormalModel_->Draw(rightEyeTransform_, *viewProjection_);
+	} else {
+		eyeHitModel_->Draw(leftEyeTransform_, *viewProjection_);
+		eyeHitModel_->Draw(rightEyeTransform_, *viewProjection_);
+	}
 }
 
 void Enemy::Move() {
@@ -56,6 +93,11 @@ void Enemy::Move() {
 	}
 	// 移動量を加算
 	worldTransform_.translation_ += velocity_;
+	faceTransform_.translation_ = worldTransform_.translation_;
+
+	// TODO : プレイヤーに向ける
+	leftEyeTransform_.translation_ = worldTransform_.translation_ + leftEyeOffset_;
+	rightEyeTransform_.translation_ = worldTransform_.translation_ + rightEyeOffset_;
 }
 
 void Enemy::Attack() {
@@ -68,6 +110,7 @@ void Enemy::OnCollision(Collider* other) {
 	// 衝突相手が弾なら
 	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kBulletActive)) {
 		velocity_.x -= kSubtractSpeed_;
+		hitTimer_ += kHitTime;
 	}
 }
 
