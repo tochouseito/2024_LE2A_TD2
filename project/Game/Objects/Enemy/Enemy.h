@@ -40,6 +40,9 @@ public:
 
 	// エネミーの攻撃Y座標を取得
 	uint32_t GetAttackYIndex()const;
+	Behavior GetBehavior()const;
+
+	void SetPreliminaryYIndex(const uint32_t& yIndex);
 
 private:
 
@@ -69,7 +72,8 @@ private:
 
 
 	// 攻撃yインデックス
-	uint32_t attackYIndex_ = 14;
+	uint32_t preliminaryYIndex_ = 0;
+	uint32_t attackYIndex_ = 0;
 
 	// 振る舞い
 	Behavior behavior_ = Behavior::kRoot;
@@ -77,5 +81,10 @@ private:
 	// 次の振る舞いリスト
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;
 
+
+	const uint32_t kRootTime_ = 180;
+	const uint32_t kPreliminaryTime_ = 120;
+	const uint32_t kAttackTime_ = 90;
+	uint32_t behaviorTimer_ = 0;
 
 };

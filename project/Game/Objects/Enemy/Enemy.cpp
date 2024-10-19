@@ -32,6 +32,23 @@ void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vecto
 }
 
 void Enemy::Update() {
+#ifdef _DEBUG
+	ImGui::Begin("Enemy");
+	switch (behavior_) {
+		case Enemy::Behavior::kRoot:
+			ImGui::Text("Behavior: root");
+			break;
+		case Enemy::Behavior::kPreliminary:
+			ImGui::Text("Behavior: preliminary");
+			break;
+		case Enemy::Behavior::kAttack:
+			ImGui::Text("Behavior: attack");
+			break;
+	}
+
+	ImGui::End();
+#endif // _DEBUG
+
 	// ビヘイビア初期化処理
 	BehaviorInitialize();
 	// ビヘイビア更新処理
@@ -109,21 +126,58 @@ void Enemy::BehaviorUpdate() {
 	}
 }
 
-void Enemy::RootInitialize() {}
+void Enemy::RootInitialize() {
+	// タイマーをリセット
+	behaviorTimer_ = 0;
+}
 
 void Enemy::RootUpdate() {
 	// 移動処理
 	Move();
+
+	if (behaviorTimer_ < kRootTime_) {
+		behaviorTimer_++;
+	} else {
+		behaviorRequest_ = Behavior::kPreliminary;
+	}
 }
 
-void Enemy::PreliminaryInitialize() {}
+void Enemy::PreliminaryInitialize() {
+	// タイマーをリセット
+	behaviorTimer_ = 0;
+	// 攻撃するレーンのインデックスをセット
+	attackYIndex_ = preliminaryYIndex_;
+}
 
-void Enemy::PreliminaryUpdate() {}
+void Enemy::PreliminaryUpdate() {
+	if (behaviorTimer_ < kPreliminaryTime_) {
+		behaviorTimer_++;
+	} else {
+		behaviorRequest_ = Behavior::kAttack;
+	}
+}
 
-void Enemy::AttackInitialize() {}
+void Enemy::AttackInitialize() {
+	// タイマーをリセット
+	behaviorTimer_ = 0;
+}
 
-void Enemy::AttackUpdate() {}
+void Enemy::AttackUpdate() {
+	if (behaviorTimer_ < kAttackTime_) {
+		behaviorTimer_++;
+	} else {
+		behaviorRequest_ = Behavior::kRoot;
+	}
+}
 
 uint32_t Enemy::GetAttackYIndex()const {
 	return attackYIndex_;
+}
+
+Enemy::Behavior Enemy::GetBehavior() const {
+	return behavior_;
+}
+
+void Enemy::SetPreliminaryYIndex(const uint32_t& yIndex) {
+	preliminaryYIndex_ = yIndex;
 }
