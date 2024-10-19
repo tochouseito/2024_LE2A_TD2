@@ -1,5 +1,7 @@
 #include "Enemy.h"
 #include <cassert>
+
+#include "imgui.h"
 #include "numbers"
 #include "Input.h"
 #include "math/Easing.h"
@@ -53,24 +55,21 @@ void Enemy::Update() {
 #ifdef _DEBUG
 	ImGui::Begin("Enemy");
 	switch (behavior_) {
-		case Enemy::Behavior::kRoot:
-			ImGui::Text("Behavior: root");
-			break;
-		case Enemy::Behavior::kPreliminary:
-			ImGui::Text("Behavior: preliminary");
-			break;
-		case Enemy::Behavior::kAttack:
-			ImGui::Text("Behavior: attack");
-			break;
+	case Enemy::Behavior::kRoot:
+		ImGui::Text("Behavior: root");
+		break;
+	case Enemy::Behavior::kPreliminary:
+		ImGui::Text("Behavior: preliminary");
+		break;
+	case Enemy::Behavior::kAttack:
+		ImGui::Text("Behavior: attack");
+		break;
 	}
 
 	ImGui::End();
 #endif // _DEBUG
 
 	worldTransform_.rotation_.z -= velocity_.x;
-
-	// 攻撃処理
-	Attack();
 
 	if (hitTimer_ >= 0.0f) {
 		hitTimer_ -= 1.0f / 60.0f;
@@ -142,15 +141,15 @@ void Enemy::BehaviorInitialize() {
 		behavior_ = behaviorRequest_.value();
 		// 各振る舞いごとの初期化を実行
 		switch (behavior_) {
-			case Enemy::Behavior::kRoot:
-				RootInitialize();
-				break;
-			case Enemy::Behavior::kPreliminary:
-				PreliminaryInitialize();
-				break;
-			case Enemy::Behavior::kAttack:
-				AttackInitialize();
-				break;
+		case Enemy::Behavior::kRoot:
+			RootInitialize();
+			break;
+		case Enemy::Behavior::kPreliminary:
+			PreliminaryInitialize();
+			break;
+		case Enemy::Behavior::kAttack:
+			AttackInitialize();
+			break;
 		}
 		// 振る舞いリクエストをリセット
 		behaviorRequest_ = std::nullopt;
@@ -159,15 +158,15 @@ void Enemy::BehaviorInitialize() {
 
 void Enemy::BehaviorUpdate() {
 	switch (behavior_) {
-		case Enemy::Behavior::kRoot:
-			RootUpdate();
-			break;
-		case Enemy::Behavior::kPreliminary:
-			PreliminaryUpdate();
-			break;
-		case Enemy::Behavior::kAttack:
-			AttackUpdate();
-			break;
+	case Enemy::Behavior::kRoot:
+		RootUpdate();
+		break;
+	case Enemy::Behavior::kPreliminary:
+		PreliminaryUpdate();
+		break;
+	case Enemy::Behavior::kAttack:
+		AttackUpdate();
+		break;
 	}
 }
 
