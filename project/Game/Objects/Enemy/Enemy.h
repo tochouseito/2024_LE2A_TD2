@@ -6,7 +6,7 @@
 
 #include "CollisionManager/Collider.h"
 
-class Enemy: public Collider {
+class Enemy : public Collider {
 public:
 	enum class Behavior {
 		kRoot,			// 通常行動
@@ -38,6 +38,8 @@ public:
 	void AttackInitialize();
 	void AttackUpdate();
 
+	void SetPlayerPos(Vector3 newPlayerPos);
+
 	// エネミーの攻撃Y座標を取得
 	uint32_t GetAttackYIndex()const;
 	Behavior GetBehavior()const;
@@ -47,11 +49,11 @@ public:
 private:
 
 	// ワールドトランスフォーム
-	WorldTransform worldTransform_;
-	WorldTransform bodyTransform_;
-	WorldTransform faceTransform_;
-	WorldTransform leftEyeTransform_;
-	WorldTransform rightEyeTransform_;
+	WorldTransform worldTransform_; // root
+	WorldTransform bodyTransform_; // ノコギリ
+	WorldTransform faceTransform_; // 顔
+	WorldTransform leftEyeTransform_; // 左目
+	WorldTransform rightEyeTransform_; // 右目
 
 	// 3Dモデル
 	Model* bodyModel_ = nullptr;
@@ -62,11 +64,13 @@ private:
 	const Vector3 leftEyeOffset_ = Vector3(-0.3f, 0.3f, -0.05f);
 	const Vector3 rightEyeOffset_ = Vector3(0.5f, 0.3f, -0.05f);
 
+	Vector3 playerPos_;
+
 	float hitTimer_ = 0.0f;
-	const float kHitTime = 1.0f;
+	const float kHitTime_ = 1.0f;
 
 	// テクスチャハンドル
-	uint32_t texturehandle_ = 0;
+	uint32_t textureHandle_ = 0;
 
 	// ビュープロジェクション
 	ViewProjection* viewProjection_ = nullptr;

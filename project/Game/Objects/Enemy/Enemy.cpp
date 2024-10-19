@@ -111,9 +111,30 @@ void Enemy::Move() {
 	worldTransform_.translation_ += velocity_;
 	faceTransform_.translation_ = worldTransform_.translation_;
 
+	// プレイヤーの方向を計算
+	Vector3 dirToPlayer = playerPos_ - worldTransform_.translation_;
+	dirToPlayer = Normalize(dirToPlayer);
+	dirToPlayer *= 0.25f;
+
 	// TODO : プレイヤーに向ける
-	leftEyeTransform_.translation_ = worldTransform_.translation_ + leftEyeOffset_;
-	rightEyeTransform_.translation_ = worldTransform_.translation_ + rightEyeOffset_;
+	leftEyeTransform_.translation_ = worldTransform_.translation_ + leftEyeOffset_ + dirToPlayer;
+	rightEyeTransform_.translation_ = worldTransform_.translation_ + rightEyeOffset_ + dirToPlayer;
+
+	// 左目の位置からプレイヤーの方向を計算
+	Vector3 leftEyePosition = worldTransform_.translation_ + leftEyeOffset_;
+	Vector3 dirToPlayerFromLeftEye = playerPos_ - leftEyePosition;
+	dirToPlayerFromLeftEye = Normalize(dirToPlayerFromLeftEye);
+	dirToPlayerFromLeftEye *= 0.25f;
+
+	// 右目の位置からプレイヤーの方向を計算
+	Vector3 rightEyePosition = worldTransform_.translation_ + rightEyeOffset_;
+	Vector3 dirToPlayerFromRightEye = playerPos_ - rightEyePosition;
+	dirToPlayerFromRightEye = Normalize(dirToPlayerFromRightEye);
+	dirToPlayerFromRightEye *= 0.25f;
+
+	// 左目と右目の位置をプレイヤーの方向に調整
+	leftEyeTransform_.translation_ = leftEyePosition + dirToPlayerFromLeftEye;
+	rightEyeTransform_.translation_ = rightEyePosition + dirToPlayerFromRightEye;
 }
 
 void Enemy::OnCollision(Collider* other) {
@@ -122,7 +143,7 @@ void Enemy::OnCollision(Collider* other) {
 	// 衝突相手が弾なら
 	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kBulletActive)) {
 		velocity_.x -= kSubtractSpeed_;
-		hitTimer_ += kHitTime;
+		hitTimer_ += kHitTime_;
 	}
 }
 
@@ -212,6 +233,10 @@ void Enemy::AttackUpdate() {
 	} else {
 		behaviorRequest_ = Behavior::kRoot;
 	}
+}
+
+void Enemy::SetPlayerPos(const Vector3 newPlayerPos) {
+	playerPos_ = newPlayerPos;
 }
 
 uint32_t Enemy::GetAttackYIndex()const {

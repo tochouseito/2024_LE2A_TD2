@@ -182,6 +182,7 @@ void GameScene::Update() {
 	player_->Update();
 
 	// Enemy
+	enemy_->SetPlayerPos(player_->GetWorldPosition());
 	enemy_->Update();
 
 	// Goal
@@ -372,32 +373,28 @@ void GameScene::CheckAllCollisions() {
 void GameScene::EnemyAttack(const uint32_t& enemyAttackYIndex, const Enemy::Behavior& behavior) {
 
 	switch (behavior) {
-		case Enemy::Behavior::kRoot:
-			Vector3 playerWorldPosition = player_->GetWorldPosition();
-			enemy_->SetPreliminaryYIndex(mapChipField_->GetMapChipIndexSetByPosition(playerWorldPosition).yIndex);
-			break;
-		case Enemy::Behavior::kPreliminary:
+	case Enemy::Behavior::kRoot:
+		Vector3 playerWorldPosition = player_->GetWorldPosition();
+		enemy_->SetPreliminaryYIndex(mapChipField_->GetMapChipIndexSetByPosition(playerWorldPosition).yIndex);
+		break;
+	case Enemy::Behavior::kPreliminary:
 
-			break;
-		case Enemy::Behavior::kAttack:
-			// エネミーの攻撃のy座標を取得
-			float enemyAttackYTranslate = mapChipField_->GetMapChipPositionYByIndex(enemyAttackYIndex);
-			playerAABB_ = player_->GetAABB();
-			enemyAttackAABB_.min = { 0.0f,enemyAttackYTranslate - 0.5f,0.0f };
-			enemyAttackAABB_.max = { static_cast<float>(mapChipField_->GetNumBlockHorizontal()),enemyAttackYTranslate + 0.5f,0.0f };
-			Vector3 enemyAttackTranslate = { viewProjection_.translation_.x,enemyAttackYTranslate,0.0f };
-			enemyAttackWorldTransform_.translation_ = enemyAttackTranslate;
-			enemyAttackWorldTransform_.UpdateMatrix();
-			if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
-				// 攻撃がヒットした時の処理
-				player_->SetIsAllive(false);
-			}
-			break;
+		break;
+	case Enemy::Behavior::kAttack:
+		// エネミーの攻撃のy座標を取得
+		float enemyAttackYTranslate = mapChipField_->GetMapChipPositionYByIndex(enemyAttackYIndex);
+		playerAABB_ = player_->GetAABB();
+		enemyAttackAABB_.min = { 0.0f,enemyAttackYTranslate - 0.5f,0.0f };
+		enemyAttackAABB_.max = { static_cast<float>(mapChipField_->GetNumBlockHorizontal()),enemyAttackYTranslate + 0.5f,0.0f };
+		Vector3 enemyAttackTranslate = { viewProjection_.translation_.x,enemyAttackYTranslate,0.0f };
+		enemyAttackWorldTransform_.translation_ = enemyAttackTranslate;
+		enemyAttackWorldTransform_.UpdateMatrix();
+		if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
+			// 攻撃がヒットした時の処理
+			//player_->SetIsAllive(false);
+		}
+		break;
 	}
-
-
-
-
 }
 
 bool GameScene::AABBIntersects(const AABB& a, const AABB& b) {
