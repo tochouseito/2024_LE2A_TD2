@@ -239,8 +239,7 @@ Matrix4x4 MakeRotateZMatrix(float radian) {
 	};
 	return result;
 }
-Matrix4x4 MakeRotateXYZMatrix(Vector3& rotate)
-{
+Matrix4x4 MakeRotateXYZMatrix(Vector3& rotate) {
 	Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);
 	Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);
 	Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotate.z);
@@ -468,7 +467,7 @@ float Length(const Vector3& v) {
 	return result;
 }
 // 正規化
-Vector2 Normalize(const Vector2& v){
+Vector2 Normalize(const Vector2& v) {
 
 	float length = Length(v);
 	if (length != 0) {
@@ -518,14 +517,12 @@ bool IsCollision(const Vector3& center, const AABB& aabb) {
 	}
 }
 
-Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m)
-{
+Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m) {
 	Vector3 result{ v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0], v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1], v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2] };
 	return result;
 }
 
-Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angle)
-{
+Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angle) {
 	Vector3 normAxis = axis;
 	float axisLength = std::sqrt(axis.x * axis.x + axis.y * axis.y + axis.z * axis.z);
 	if (axisLength != 0.0f) {
@@ -565,8 +562,7 @@ Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angle)
 	return rotateMatrix;
 }
 
-Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to)
-{
+Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to) {
 	Matrix4x4 rotateMatrix = { 0.0f };
 	Vector3 n = Normalize(Cross(from, to));
 	if (from == -to) {
@@ -587,8 +583,7 @@ Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to)
 	return rotateMatrix;
 }
 
-Quaternion Multiply(const Quaternion& lhs, const Quaternion& rhs)
-{
+Quaternion Multiply(const Quaternion& lhs, const Quaternion& rhs) {
 	return {
 		lhs.w * rhs.x + lhs.x * rhs.w + lhs.y * rhs.z - lhs.z * rhs.y,
 		lhs.w * rhs.y - lhs.x * rhs.z + lhs.y * rhs.w + lhs.z * rhs.x,
@@ -597,26 +592,22 @@ Quaternion Multiply(const Quaternion& lhs, const Quaternion& rhs)
 	};
 }
 
-Quaternion IdentityQuaternion()
-{
+Quaternion IdentityQuaternion() {
 	return { 0.0f, 0.0f, 0.0f, 1.0f };
 }
 
-Quaternion Conjugate(const Quaternion& quaternion)
-{
+Quaternion Conjugate(const Quaternion& quaternion) {
 	return { -quaternion.x, -quaternion.y, -quaternion.z, quaternion.w };
 }
 
-float Norm(const Quaternion& quaternion)
-{
+float Norm(const Quaternion& quaternion) {
 	return std::sqrt(quaternion.x * quaternion.x +
 		quaternion.y * quaternion.y +
 		quaternion.z * quaternion.z +
 		quaternion.w * quaternion.w);
 }
 
-Quaternion Normalize(const Quaternion& quaternion)
-{
+Quaternion Normalize(const Quaternion& quaternion) {
 	float norm = Norm(quaternion);
 	if (norm == 0.0f) {
 		return { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -624,8 +615,7 @@ Quaternion Normalize(const Quaternion& quaternion)
 	return { quaternion.x / norm, quaternion.y / norm, quaternion.z / norm, quaternion.w / norm };
 }
 
-Quaternion Inverse(const Quaternion& quaternion)
-{
+Quaternion Inverse(const Quaternion& quaternion) {
 	Quaternion conjugate = Conjugate(quaternion);
 	float norm = Norm(quaternion);
 	float normSq = norm * norm;
@@ -635,24 +625,21 @@ Quaternion Inverse(const Quaternion& quaternion)
 	return { conjugate.x / normSq, conjugate.y / normSq, conjugate.z / normSq, conjugate.w / normSq };
 }
 
-Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle)
-{
+Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle) {
 	Vector3 normAxis = Normalize(axis);
 	float sinHalfAngle = std::sin(angle / 2.0f);
 	float cosHalfAngle = std::cos(angle / 2.0f);
 	return { normAxis.x * sinHalfAngle, normAxis.y * sinHalfAngle, normAxis.z * sinHalfAngle, cosHalfAngle };
 }
 
-Vector3 RotateVector(const Vector3& vector, const Quaternion& quaternion)
-{
+Vector3 RotateVector(const Vector3& vector, const Quaternion& quaternion) {
 	Quaternion qVector = { vector.x, vector.y, vector.z, 0.0f };
 	Quaternion qConjugate = { -quaternion.x, -quaternion.y, -quaternion.z, quaternion.w };
 	Quaternion qResult = Multiply(Multiply(quaternion, qVector), qConjugate);
 	return { qResult.x, qResult.y, qResult.z };
 }
 
-Matrix4x4 MakeRotateMatrix(const Quaternion& quaternion)
-{
+Matrix4x4 MakeRotateMatrix(const Quaternion& quaternion) {
 	Matrix4x4 matrix = {};
 
 	float xx = quaternion.x * quaternion.x;
@@ -690,13 +677,11 @@ Matrix4x4 MakeRotateMatrix(const Quaternion& quaternion)
 	return matrix;
 }
 
-float Dot(const Quaternion& q0, const Quaternion& q1)
-{
+float Dot(const Quaternion& q0, const Quaternion& q1) {
 	return q0.x * q1.x + q0.y * q1.y + q0.z * q1.z + q0.w * q1.w;
 }
 
-Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
-{
+Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t) {
 	// クォータニオンの内積を計算
 	float dot = Dot(q0, q1);
 
@@ -738,12 +723,11 @@ Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
 	};
 }
 
-Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t)
-{
+Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t) {
 	return Vector3{
-		v1.x + t * (v2.x - v1.x),
-		v1.y + t * (v2.y - v1.y),
-		v1.z + t * (v2.z - v1.z)
+		v1.x + (v2.x - v1.x) * t ,
+		v1.y + (v2.y - v1.y) * t,
+		v1.z + (v2.z - v1.z) * t
 	};
 }
 float Lerp(float a, float b, float t) { return a + (b - a) * t; }

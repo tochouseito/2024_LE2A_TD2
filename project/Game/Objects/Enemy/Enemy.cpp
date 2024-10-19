@@ -4,7 +4,6 @@
 #include "imgui.h"
 #include "numbers"
 #include "Input.h"
-#include "math/Easing.h"
 #include "Mymath.h"
 #include "CollisionManager/CollisionTypeIdDef.h"
 
@@ -110,15 +109,6 @@ void Enemy::Move() {
 	// 移動量を加算
 	worldTransform_.translation_ += velocity_;
 	faceTransform_.translation_ = worldTransform_.translation_;
-
-	// プレイヤーの方向を計算
-	Vector3 dirToPlayer = playerPos_ - worldTransform_.translation_;
-	dirToPlayer = Normalize(dirToPlayer);
-	dirToPlayer *= 0.25f;
-
-	// TODO : プレイヤーに向ける
-	leftEyeTransform_.translation_ = worldTransform_.translation_ + leftEyeOffset_ + dirToPlayer;
-	rightEyeTransform_.translation_ = worldTransform_.translation_ + rightEyeOffset_ + dirToPlayer;
 
 	// 左目の位置からプレイヤーの方向を計算
 	Vector3 leftEyePosition = worldTransform_.translation_ + leftEyeOffset_;
