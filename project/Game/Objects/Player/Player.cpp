@@ -1,8 +1,9 @@
 #define NOMINMAX
 #include "Player.h"
 
+#include <assert.h>
+
 #include "algorithm"
-#include "assert.h"
 #include "ConvertString.h"
 #include "imgui.h"
 #include "Input.h"
@@ -13,12 +14,9 @@
 
 #include"Game/MapChipField/MapChipField.h"
 
-Player::Player() {
+Player::Player() = default;
 
-}
-Player::~Player() {
-
-}
+Player::~Player() = default;
 
 void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position) {
 	assert(model);
@@ -395,7 +393,7 @@ void Player::MapCollision(CollisionMapInfo& info) {
 	LeftCollision(info);
 }
 
-Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
+Vector3 Player::CornerPosition(const Vector3& center, const Corner corner) const {
 	Vector3 offsetTable[kNumCorner] = {
 		{+kWidth / 2.0f, -kHeight / 2.0f, 0},//kRightBottom
 		{-kWidth / 2.0f, -kHeight / 2.0f, 0},//kLeftBottom
@@ -405,7 +403,7 @@ Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
 	return center + offsetTable[static_cast<uint32_t>(corner)];
 }
 
-Vector3 Player::GetWorldPosition() {
+Vector3 Player::GetWorldPosition() const {
 	/*ワールド座標を入れる変数*/
 	Vector3 worldPos;
 	/*ワールド行列の平行移動成分を取得*/
@@ -415,7 +413,7 @@ Vector3 Player::GetWorldPosition() {
 	return worldPos;
 }
 
-AABB Player::GetAABB() {
+AABB Player::GetAABB() const {
 	Vector3 worldPos = GetWorldPosition();
 	AABB aabb;
 	aabb.min = {

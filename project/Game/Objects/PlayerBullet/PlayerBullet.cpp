@@ -55,8 +55,8 @@ void PlayerBullet::Draw() {
 	}
 }
 
-bool PlayerBullet::GetIsAllive() const {
-	return isAllive_;
+bool PlayerBullet::GetIsAlive() const {
+	return isAlive_;
 }
 
 void PlayerBullet::OnCollision(Collider* other) {
@@ -122,7 +122,7 @@ void PlayerBullet::BehaviorUpdate() {
 }
 
 void PlayerBullet::RootInitialize() {
-	isAllive_ = true;
+	isAlive_ = true;
 }
 
 void PlayerBullet::RootUpdate() {
@@ -134,8 +134,9 @@ void PlayerBullet::AttackInitialize() {
 }
 
 void PlayerBullet::AttackUpdate() {
-
-	worldTransform_.translation_.x -= kVelocity_;
+	// 徐々に加速
+	velocity_ = std::lerp(velocity_, velocity_ + kAccelerate_, 1.0f / 60 * 10.0f); // TODO : deltaTimeにする
+	worldTransform_.translation_.x -= velocity_;
 }
 
 void PlayerBullet::HitInitialize() {
@@ -148,6 +149,6 @@ void PlayerBullet::HitUpdate() {
 	// タイマーをデクリメント
 	deadAnimationTimer_--;
 	if (deadAnimationTimer_ == 0) {
-		isAllive_ = false;
+		isAlive_ = false;
 	}
 }

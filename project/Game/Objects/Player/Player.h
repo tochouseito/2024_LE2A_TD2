@@ -88,13 +88,13 @@ public: // メンバ関数
 	// 左方向
 	void LeftCollision(CollisionMapInfo& info);
 
-	Vector3 CornerPosition(const Vector3& center, Corner corner);
+	Vector3 CornerPosition(const Vector3& center, Corner corner) const;
 
 	/*ワールド座標を取得*/
-	Vector3 GetWorldPosition();
+	Vector3 GetWorldPosition() const;
 
 	/*AABBを取得*/
-	AABB GetAABB();
+	AABB GetAABB() const;
 
 	/*衝突応答*/
 	//void OnCollision(const Enemy* enemy);

@@ -22,7 +22,7 @@ public:
 	void Update();
 	void Draw();
 
-	bool GetIsAllive()const;
+	bool GetIsAlive()const;
 
 	void OnCollision(Collider* other) override;
 	Vector3 GetCenterPosition() const override;
@@ -56,13 +56,15 @@ private:
 	uint32_t deadAnimationTimer_ = 0;
 
 	// 生存フラグ
-	bool isAllive_ = true;
+	bool isAlive_ = true;
 
 	// 振る舞い
 	Behavior behavior_ = Behavior::kRoot;
 
-	// 弾の移動量
-	const float kVelocity_ = 0.2f;
+	float velocity_ = 0.0f;
+
+	// 弾の加速量
+	const float kAccelerate_ = 0.2f;
 
 	// 次の振る舞いリスト
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;
