@@ -63,11 +63,7 @@
 
 class GameScene:
 	public BaseScene {
-public:
-	struct AABB {
-		Vector3 min;
-		Vector3 max;
-	};
+
 public:
 	GameScene();
 	~GameScene();
@@ -92,6 +88,8 @@ public:
 	void CheckAllCollisions();
 
 	void EnemyAttack(const uint32_t& enemyAttackYIndex);
+
+	bool AABBIntersects(const AABB& a, const AABB& b);
 
 private:
 	DirectXCommon* dxCommon_ = nullptr;
@@ -145,6 +143,10 @@ private:
 	// Enemy
 	std::unique_ptr<Enemy> enemy_ = nullptr;
 	std::unique_ptr<Model> enemyModel_ = nullptr;
+
+	// エネミーの攻撃用モデル
+	std::unique_ptr<Model> enemyAttackModel_ = nullptr;
+	WorldTransform enemyAttackWorldTransform_;
 
 	// Blocks
 	std::vector<std::vector<std::unique_ptr<Blocks>>> blocks_;

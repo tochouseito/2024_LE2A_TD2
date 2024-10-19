@@ -99,7 +99,7 @@ public: // メンバ関数
 	/*衝突応答*/
 	//void OnCollision(const Enemy* enemy);
 
-	bool GetIsAlive() { return isAlive; }
+	bool GetIsAlive() { return isAlive_; }
 
 	bool GetIsGravityInvert() const { return isGravityInvert; }
 
@@ -108,6 +108,8 @@ public: // メンバ関数
 	void OnCollision(Collider* other) override;
 
 	void SetLandingTexture(const std::string& handle);
+	
+	void SetIsAllive(const bool& isAllive);
 
 private: // メンバ変数
 
@@ -133,7 +135,7 @@ private: // メンバ変数
 		kRight,
 		kLeft,
 	};
-	bool isAlive = true;
+	bool isAlive_ = true;
 	LRDirection lrDirection_ = LRDirection::kRight;
 
 	bool isGravityInvert = false;

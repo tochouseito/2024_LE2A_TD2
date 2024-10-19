@@ -38,6 +38,9 @@ public:
 	void AttackInitialize();
 	void AttackUpdate();
 
+	// エネミーの攻撃Y座標を取得
+	uint32_t GetAttackYIndex()const;
+
 private:
 
 	// ワールドトランスフォーム
@@ -66,7 +69,7 @@ private:
 
 
 	// 攻撃yインデックス
-	uint32_t attackYIndex_ = 0;
+	uint32_t attackYIndex_ = 14;
 
 	// 振る舞い
 	Behavior behavior_ = Behavior::kRoot;
