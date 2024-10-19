@@ -271,7 +271,17 @@ void GameScene::Draw() {
 
 	// エネミー
 	enemy_->Draw();
-	enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+	switch (enemy_->GetBehavior()) {
+	case Enemy::Behavior::kRoot:
+
+		break;
+	case Enemy::Behavior::kPreliminary:
+
+		break;
+	case Enemy::Behavior::kAttack:
+		enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+		break;
+	}
 
 	// ゴール
 	goal_->Draw();
