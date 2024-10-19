@@ -2,10 +2,18 @@
 #include"WorldTransform.h"
 #include"ViewProjection.h"
 #include"Model.h"
+#include <optional>
+
 #include "CollisionManager/Collider.h"
 
-class Enemy : public Collider {
+class Enemy: public Collider {
 public:
+	enum class Behavior {
+		kRoot,			// 通常行動
+		kPreliminary,	// 攻撃予備動作
+		kAttack,		// 攻撃
+	};
+
 	Enemy() = default;
 	~Enemy() = default;
 
@@ -14,10 +22,21 @@ public:
 	void Draw();
 
 	void Move();
-	void Attack();
 
 	void OnCollision(Collider* other) override;
 	Vector3 GetCenterPosition() const override;
+
+	void BehaviorInitialize();
+	void BehaviorUpdate();
+
+	void RootInitialize();
+	void RootUpdate();
+
+	void PreliminaryInitialize();
+	void PreliminaryUpdate();
+
+	void AttackInitialize();
+	void AttackUpdate();
 
 private:
 
@@ -48,5 +67,12 @@ private:
 
 	// 攻撃yインデックス
 	uint32_t attackYIndex_ = 0;
+
+	// 振る舞い
+	Behavior behavior_ = Behavior::kRoot;
+
+	// 次の振る舞いリスト
+	std::optional<Behavior> behaviorRequest_ = std::nullopt;
+
 
 };

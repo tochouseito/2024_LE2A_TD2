@@ -37,6 +37,7 @@ public:
 	void LoadMapChipCsv(const std::string& filePath);
 	MapChipType GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex);
 	Vector3 GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
+	float GetMapChipPositionYByIndex(uint32_t yIndex);
 	uint32_t GetNumBlockVertical() {
 		return kNumBlockVertical;
 	}

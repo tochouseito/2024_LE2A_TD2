@@ -32,14 +32,12 @@ void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vecto
 }
 
 void Enemy::Update() {
+	// ビヘイビア初期化処理
+	BehaviorInitialize();
+	// ビヘイビア更新処理
+	BehaviorUpdate();
 
-	// 移動処理
-	Move();
-
-	// 攻撃処理
-	Attack();
-
-	// 行列更新
+	// 行列の更新
 	worldTransform_.UpdateMatrix();
 }
 
@@ -58,10 +56,6 @@ void Enemy::Move() {
 	worldTransform_.translation_ += velocity_;
 }
 
-void Enemy::Attack() {
-
-}
-
 void Enemy::OnCollision(Collider* other) {
 	// 衝突相手の種別IDを取得
 	uint32_t typeID = other->GetTypeID();
@@ -78,3 +72,54 @@ Vector3 Enemy::GetCenterPosition() const {
 	Vector3 worldPos = Transform(offset, worldTransform_.matWorld_);
 	return worldPos;
 }
+
+void Enemy::BehaviorInitialize() {
+	// 振る舞い
+	if (behaviorRequest_) {
+		// 振る舞いを変更する
+		behavior_ = behaviorRequest_.value();
+		// 各振る舞いごとの初期化を実行
+		switch (behavior_) {
+			case Enemy::Behavior::kRoot:
+				RootInitialize();
+				break;
+			case Enemy::Behavior::kPreliminary:
+				PreliminaryInitialize();
+				break;
+			case Enemy::Behavior::kAttack:
+				AttackInitialize();
+				break;
+		}
+		// 振る舞いリクエストをリセット
+		behaviorRequest_ = std::nullopt;
+	}
+}
+
+void Enemy::BehaviorUpdate() {
+	switch (behavior_) {
+		case Enemy::Behavior::kRoot:
+			RootUpdate();
+			break;
+		case Enemy::Behavior::kPreliminary:
+			PreliminaryUpdate();
+			break;
+		case Enemy::Behavior::kAttack:
+			AttackUpdate();
+			break;
+	}
+}
+
+void Enemy::RootInitialize() {}
+
+void Enemy::RootUpdate() {
+	// 移動処理
+	Move();
+}
+
+void Enemy::PreliminaryInitialize() {}
+
+void Enemy::PreliminaryUpdate() {}
+
+void Enemy::AttackInitialize() {}
+
+void Enemy::AttackUpdate() {}

@@ -59,8 +59,15 @@
 #include"Game/DeltaTime/DeltaTime.h"
 #include "Needle/Needle.h"
 
+
+
 class GameScene:
 	public BaseScene {
+public:
+	struct AABB {
+		Vector3 min;
+		Vector3 max;
+	};
 public:
 	GameScene();
 	~GameScene();
@@ -72,8 +79,7 @@ public:
 	void Draw() override;
 
 	// シーンの切り替え依頼
-	void ChangeScene() override {
-	}
+	void ChangeScene() override {}
 
 	void SetSceneManager(SceneManager* sceneManager) override {
 		sceneManager_ = sceneManager;
@@ -84,6 +90,8 @@ public:
 	void GenerateBullets();
 
 	void CheckAllCollisions();
+
+	void EnemyAttack(const uint32_t& enemyAttackYIndex);
 
 private:
 	DirectXCommon* dxCommon_ = nullptr;
@@ -168,4 +176,9 @@ private:
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 
 	std::unique_ptr<DeltaTime> deltaTime_ = nullptr;
+
+	// プレイヤーのAABB
+	AABB playerAABB_{};
+	// エネミーの攻撃判定AABB
+	AABB enemyAttackAABB_{};
 };

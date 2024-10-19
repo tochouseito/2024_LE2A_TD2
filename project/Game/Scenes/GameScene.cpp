@@ -348,3 +348,9 @@ void GameScene::CheckAllCollisions() {
 	// 衝突判定と応答
 	collisionManager_->CheckAllCollision();
 }
+
+void GameScene::EnemyAttack(const uint32_t& enemyAttackYIndex) {
+	// エネミーの攻撃のy座標を取得
+	Vector3 enemyAttackYTranslate = mapChipField_->GetMapChipPositionByIndex(0, enemyAttackYIndex);
+
+}
