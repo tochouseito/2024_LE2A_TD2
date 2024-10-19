@@ -87,7 +87,7 @@ public:
 
 	void CheckAllCollisions();
 
-	void EnemyAttack(const uint32_t& enemyAttackYIndex);
+	void EnemyAttack(const uint32_t& enemyAttackYIndex, const Enemy::Behavior& behavior);
 
 	bool AABBIntersects(const AABB& a, const AABB& b);
 

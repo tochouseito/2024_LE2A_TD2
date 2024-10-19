@@ -213,7 +213,7 @@ void GameScene::Update() {
 	collisionManager_->UpdateWorldTransform();
 
 	// エネミーの攻撃とプレイヤーの当たり判定処理
-	EnemyAttack(enemy_->GetAttackYIndex());
+	EnemyAttack(enemy_->GetAttackYIndex(), enemy_->GetBehavior());
 
 #ifdef _DEBUG
 	// スペースキーでデバッグカメラの切り替え
@@ -357,20 +357,34 @@ void GameScene::CheckAllCollisions() {
 	collisionManager_->CheckAllCollision();
 }
 
-void GameScene::EnemyAttack(const uint32_t& enemyAttackYIndex) {
-	// エネミーの攻撃のy座標を取得
-	float enemyAttackYTranslate = mapChipField_->GetMapChipPositionYByIndex(enemyAttackYIndex);
-	playerAABB_ = player_->GetAABB();
-	enemyAttackAABB_.min = { 0.0f,enemyAttackYTranslate - 0.5f,0.0f };
-	enemyAttackAABB_.max = { static_cast<float>(mapChipField_->GetNumBlockHorizontal()),enemyAttackYTranslate + 0.5f,0.0f };
+void GameScene::EnemyAttack(const uint32_t& enemyAttackYIndex, const Enemy::Behavior& behavior) {
 
-	if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
-		player_->SetIsAllive(false);
+	switch (behavior) {
+		case Enemy::Behavior::kRoot:
+			Vector3 playerWorldPosition = player_->GetWorldPosition();
+			enemy_->SetPreliminaryYIndex(mapChipField_->GetMapChipIndexSetByPosition(playerWorldPosition).yIndex);
+			break;
+		case Enemy::Behavior::kPreliminary:
+
+			break;
+		case Enemy::Behavior::kAttack:
+			// エネミーの攻撃のy座標を取得
+			float enemyAttackYTranslate = mapChipField_->GetMapChipPositionYByIndex(enemyAttackYIndex);
+			playerAABB_ = player_->GetAABB();
+			enemyAttackAABB_.min = { 0.0f,enemyAttackYTranslate - 0.5f,0.0f };
+			enemyAttackAABB_.max = { static_cast<float>(mapChipField_->GetNumBlockHorizontal()),enemyAttackYTranslate + 0.5f,0.0f };
+			Vector3 enemyAttackTranslate = { viewProjection_.translation_.x,enemyAttackYTranslate,0.0f };
+			enemyAttackWorldTransform_.translation_ = enemyAttackTranslate;
+			enemyAttackWorldTransform_.UpdateMatrix();
+			if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
+				// 攻撃がヒットした時の処理
+				player_->SetIsAllive(false);
+			}
+			break;
 	}
 
-	Vector3 enemyAttackTranslate = { viewProjection_.translation_.x,enemyAttackYTranslate,0.0f };
-	enemyAttackWorldTransform_.translation_ = enemyAttackTranslate;
-	enemyAttackWorldTransform_.UpdateMatrix();
+
+
 
 }
 
