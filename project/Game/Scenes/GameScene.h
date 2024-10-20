@@ -147,6 +147,7 @@ private:
 	std::unique_ptr<Model> enemyEyeHit = nullptr;
 
 	// エネミーの攻撃用モデル
+	std::unique_ptr<Model> enemyPreliminaryModel_ = nullptr;
 	std::unique_ptr<Model> enemyAttackModel_ = nullptr;
 	WorldTransform enemyAttackWorldTransform_;
 

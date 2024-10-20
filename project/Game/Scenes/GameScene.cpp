@@ -102,6 +102,8 @@ void GameScene::Initialize() {
 	// enemyAttack
 	enemyAttackModel_.reset(Model::LordModel("attack"));
 	enemyAttackWorldTransform_.Initialize();
+	enemyPreliminaryModel_.reset(Model::LordModel("preliminary"));
+	enemyAttackWorldTransform_.Initialize();
 
 	// 矢印の生成
 	gravityArrowModel_.resize(2);
@@ -276,7 +278,7 @@ void GameScene::Draw() {
 
 		break;
 	case Enemy::Behavior::kPreliminary:
-
+		enemyPreliminaryModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
 		break;
 	case Enemy::Behavior::kAttack:
 		enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
@@ -381,6 +383,14 @@ void GameScene::CheckAllCollisions() {
 }
 
 void GameScene::EnemyAttack(const uint32_t& enemyAttackYIndex, const Enemy::Behavior& behavior) {
+	// エネミーの攻撃のy座標を取得
+	float enemyAttackYTranslate = mapChipField_->GetMapChipPositionYByIndex(enemyAttackYIndex);
+	playerAABB_ = player_->GetAABB();
+	enemyAttackAABB_.min = { 0.0f,enemyAttackYTranslate - 0.5f,0.0f };
+	enemyAttackAABB_.max = { static_cast<float>(mapChipField_->GetNumBlockHorizontal()),enemyAttackYTranslate + 0.5f,0.0f };
+	Vector3 enemyAttackTranslate = { viewProjection_.translation_.x,enemyAttackYTranslate,0.0f };
+	enemyAttackWorldTransform_.translation_ = enemyAttackTranslate;
+	enemyAttackWorldTransform_.UpdateMatrix();
 
 	switch (behavior) {
 	case Enemy::Behavior::kRoot:
@@ -391,14 +401,7 @@ void GameScene::EnemyAttack(const uint32_t& enemyAttackYIndex, const Enemy::Beha
 
 		break;
 	case Enemy::Behavior::kAttack:
-		// エネミーの攻撃のy座標を取得
-		float enemyAttackYTranslate = mapChipField_->GetMapChipPositionYByIndex(enemyAttackYIndex);
-		playerAABB_ = player_->GetAABB();
-		enemyAttackAABB_.min = { 0.0f,enemyAttackYTranslate - 0.5f,0.0f };
-		enemyAttackAABB_.max = { static_cast<float>(mapChipField_->GetNumBlockHorizontal()),enemyAttackYTranslate + 0.5f,0.0f };
-		Vector3 enemyAttackTranslate = { viewProjection_.translation_.x,enemyAttackYTranslate,0.0f };
-		enemyAttackWorldTransform_.translation_ = enemyAttackTranslate;
-		enemyAttackWorldTransform_.UpdateMatrix();
+
 		if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
 			// 攻撃がヒットした時の処理
 			player_->SetIsAllive(false);
