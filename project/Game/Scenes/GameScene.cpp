@@ -101,8 +101,14 @@ void GameScene::Initialize() {
 
 	// enemyAttack
 	enemyAttackModel_.reset(Model::LordModel("attack"));
+	enemyAttackModel_->SetBlendMode(1); // ブレンドモード設定
+	enemyAttackModel_->GetMaterial()->GetMaterialData()->enableLighting = false;
+	enemyAttackModel_->GetMaterial()->GetMaterialData()->enableEmissive = true; // TODO : 動いてる?
+	//enemyAttackModel_->SetBlendMode(1); // ブレンドモード設定
 	enemyAttackWorldTransform_.Initialize();
 	enemyPreliminaryModel_.reset(Model::LordModel("preliminary"));
+	enemyPreliminaryModel_->SetBlendMode(1); // ブレンドモード設定
+	enemyPreliminaryModel_->GetMaterial()->GetMaterialData()->color = { 1.0f,1.0f,1.0f,0.5f }; // 半透明に
 	enemyAttackWorldTransform_.Initialize();
 
 	// 矢印の生成
