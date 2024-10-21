@@ -158,7 +158,7 @@ private: // メンバ変数
 	// 最大落下速度（下方向）
 	float kLimitFallSpeed = 0.3f;
 	// ジャンプ速度（上方向）
-	float kJumpAcceleration = 0.15f;
+	float kJumpAcceleration = 0.1f;
 	// 壁に接触時速度
 	float kAttenuationWall = 0.6f;
 	// キャラクターの当たり判定サイズ
