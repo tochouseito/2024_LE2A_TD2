@@ -249,7 +249,7 @@ void Player::CharMove() {
 	// 重力反転入力
 	bool keyboardInvertGravity = Input::GetInstance()->TriggerKey(DIK_SPACE);
 	bool controllerInvertGravity = controllerConnected && Input::GetInstance()->TriggerControllerButton(0, XINPUT_GAMEPAD_A);
-	if (!onGround_ && isJumping && (keyboardInvertGravity || controllerInvertGravity)) {
+	if (!onGround_ && (keyboardInvertGravity || controllerInvertGravity)) {
 		isGravityInvert = !isGravityInvert;
 	}
 }
