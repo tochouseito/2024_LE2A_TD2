@@ -38,8 +38,10 @@ private:
 
 	ViewProjection viewProjection_;
 
-	std::string guiTextureHandle_;
+	std::string titleLogoTextureHandle_;
+	std::unique_ptr<Sprite> titleLogoSprite_;
 
-	std::unique_ptr<Sprite> guiSprite_;
+	std::string buttonUpTextureHandle_;
+	std::unique_ptr<Sprite> buttonUpSprite_;
 };
 
