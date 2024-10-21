@@ -51,7 +51,7 @@ void GameScene::Initialize() {
 
 	// メインカメラの生成
 	mainCamera_ = std::make_unique<MainCamera>();
-	mainCamera_->Initialize(Vector3(4.5f, 17.0f, -15.0f), &viewProjection_); // HACK : 動画提出用
+	mainCamera_->Initialize(Vector3(4.5f, 17.0f, -25.0f), &viewProjection_); // HACK : 動画提出用
 	mainCamera_->rotation_ = Vector3(0.0f, 0.0f, 0.0f); // HACK : 動画提出用
 
 	deltaTime_ = std::make_unique<DeltaTime>();
