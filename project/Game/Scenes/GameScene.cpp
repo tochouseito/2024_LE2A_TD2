@@ -64,7 +64,7 @@ void GameScene::Initialize() {
 
 	// MapChip
 	mapChipField_ = std::make_unique<MapChipField>();
-	mapChipField_->LoadMapChipCsv("Resources/Map1.csv");
+	mapChipField_->LoadMapChipCsv("Resources/Map2.csv");
 
 	// 針
 	upNeedleModel_.reset(Model::LordModel("UpNeedle"));
