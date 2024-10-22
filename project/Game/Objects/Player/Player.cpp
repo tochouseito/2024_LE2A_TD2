@@ -368,7 +368,6 @@ void Player::OnGround(const CollisionMapInfo& info) {
 		onGround_ = false;
 	}
 
-
 	if (!onGround_) {// 空中状態
 		// 落下速度
 		velocity_.x += 0.0f;
