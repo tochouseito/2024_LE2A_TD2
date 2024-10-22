@@ -23,6 +23,8 @@ public:
 
 	void Move();
 
+	void AttackMove();
+
 	void OnCollision(Collider* other) override;
 	Vector3 GetCenterPosition() const override;
 
@@ -38,7 +40,11 @@ public:
 	void AttackInitialize();
 	void AttackUpdate();
 
-	void SetPlayerPos(Vector3 newPlayerPos);
+	void SetPlayerPos(const Vector3& newPlayerPos);
+
+	void FollowPlayerTranslateY();
+
+	float FollowTarget(float currentValue, float targetValue, float speed);
 
 	// エネミーの攻撃Y座標を取得
 	uint32_t GetAttackYIndex()const;
@@ -79,7 +85,7 @@ private:
 	Vector3 velocity_ = {};
 
 	// 加速度
-	const float acceleration_ = 0.0006f;
+	const float acceleration_ = 0.0012f;
 
 	// 最大速度
 	const float kMaxSpeed_ = 0.1f;
@@ -103,5 +109,6 @@ private:
 	const uint32_t kPreliminaryTime_ = 120;
 	const uint32_t kAttackTime_ = 90;
 	uint32_t behaviorTimer_ = 0;
+
 
 };

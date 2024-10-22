@@ -125,6 +125,35 @@ void Enemy::Move() {
 	// 左目と右目の位置をプレイヤーの方向に調整
 	leftEyeTransform_.translation_ = leftEyePosition + dirToPlayerFromLeftEye;
 	rightEyeTransform_.translation_ = rightEyePosition + dirToPlayerFromRightEye;
+
+	// Y軸をプレイヤーに対して補間移動
+	FollowPlayerTranslateY();
+}
+
+void Enemy::AttackMove() {
+	// 通常のは半分の移動量を加算
+	worldTransform_.translation_ += velocity_ / 2.0f;
+	faceTransform_.translation_ = worldTransform_.translation_;
+
+	// 左目の位置からプレイヤーの方向を計算
+	Vector3 leftEyePosition = worldTransform_.translation_ + leftEyeOffset_;
+	Vector3 dirToPlayerFromLeftEye = playerPos_ - leftEyePosition;
+	dirToPlayerFromLeftEye = Normalize(dirToPlayerFromLeftEye);
+	dirToPlayerFromLeftEye *= 0.25f;
+
+	// 右目の位置からプレイヤーの方向を計算
+	Vector3 rightEyePosition = worldTransform_.translation_ + rightEyeOffset_;
+	Vector3 dirToPlayerFromRightEye = playerPos_ - rightEyePosition;
+	dirToPlayerFromRightEye = Normalize(dirToPlayerFromRightEye);
+	dirToPlayerFromRightEye *= 0.25f;
+
+	// 左目と右目の位置をプレイヤーの方向に調整
+	leftEyeTransform_.translation_ = leftEyePosition + dirToPlayerFromLeftEye;
+	rightEyeTransform_.translation_ = rightEyePosition + dirToPlayerFromRightEye;
+
+
+	// Y軸をプレイヤーに対して補間移動
+	FollowPlayerTranslateY();
 }
 
 void Enemy::OnCollision(Collider* other) {
@@ -207,7 +236,6 @@ void Enemy::PreliminaryInitialize() {
 }
 
 void Enemy::PreliminaryUpdate() {
-
 	// 移動処理
 	Move();
 
@@ -224,6 +252,8 @@ void Enemy::AttackInitialize() {
 }
 
 void Enemy::AttackUpdate() {
+	// 攻撃時は少し遅めの移動速度
+	AttackMove();
 	if (behaviorTimer_ < kAttackTime_) {
 		behaviorTimer_++;
 	} else {
@@ -231,8 +261,18 @@ void Enemy::AttackUpdate() {
 	}
 }
 
-void Enemy::SetPlayerPos(const Vector3 newPlayerPos) {
+void Enemy::SetPlayerPos(const Vector3& newPlayerPos) {
 	playerPos_ = newPlayerPos;
+}
+
+void Enemy::FollowPlayerTranslateY() {
+	worldTransform_.translation_.y = FollowTarget(worldTransform_.translation_.y, playerPos_.y, 0.05f);
+}
+
+float Enemy::FollowTarget(float currentValue, float targetValue, float speed) {
+	float newValue = currentValue + (targetValue - currentValue) * speed;
+
+	return newValue;
 }
 
 uint32_t Enemy::GetAttackYIndex()const {
