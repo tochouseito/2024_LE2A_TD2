@@ -78,7 +78,7 @@ void GameScene::Initialize() {
 
 	// MapChip
 	mapChipField_ = std::make_unique<MapChipField>();
-	mapChipField_->LoadMapChipCsv("Resources/Map"+str+".csv");
+	mapChipField_->LoadMapChipCsv("Resources/Map" + str + ".csv");
 
 	// 針
 	upNeedleModel_.reset(Model::LordModel("UpNeedle"));
@@ -307,15 +307,15 @@ void GameScene::Draw() {
 	// エネミー
 	enemy_->Draw();
 	switch (enemy_->GetBehavior()) {
-	case Enemy::Behavior::kRoot:
+		case Enemy::Behavior::kRoot:
 
-		break;
-	case Enemy::Behavior::kPreliminary:
-		enemyPreliminaryModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
-		break;
-	case Enemy::Behavior::kAttack:
-		enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
-		break;
+			break;
+		case Enemy::Behavior::kPreliminary:
+			enemyPreliminaryModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+			break;
+		case Enemy::Behavior::kAttack:
+			enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+			break;
 	}
 
 	// ゴール
@@ -426,20 +426,23 @@ void GameScene::EnemyAttack(const uint32_t& enemyAttackYIndex, const Enemy::Beha
 	enemyAttackWorldTransform_.UpdateMatrix();
 
 	switch (behavior) {
-	case Enemy::Behavior::kRoot:
-		Vector3 playerWorldPosition = player_->GetWorldPosition();
-		enemy_->SetPreliminaryYIndex(mapChipField_->GetMapChipIndexSetByPosition(playerWorldPosition).yIndex);
-		break;
-	case Enemy::Behavior::kPreliminary:
+		case Enemy::Behavior::kRoot:
+			Vector3 playerWorldPosition = player_->GetWorldPosition();
+			enemy_->SetPreliminaryYIndex(mapChipField_->GetMapChipIndexSetByPosition(playerWorldPosition).yIndex);
+			player_->SetIsHitEnemyAttack(false);
+			break;
+		case Enemy::Behavior::kPreliminary:
+			player_->SetIsHitEnemyAttack(false);
+			break;
+		case Enemy::Behavior::kAttack:
 
-		break;
-	case Enemy::Behavior::kAttack:
-
-		if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
-			// 攻撃がヒットした時の処理
-
-		}
-		break;
+			if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
+				// 攻撃がヒットした時の処理
+				player_->SetIsHitEnemyAttack(true);
+			} else {
+				player_->SetIsHitEnemyAttack(false);
+			}
+			break;
 	}
 }
 

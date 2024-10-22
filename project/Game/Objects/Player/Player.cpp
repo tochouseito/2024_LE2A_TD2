@@ -19,7 +19,7 @@ Player::Player() = default;
 
 Player::~Player() = default;
 
-void Player::Initialize(const std::vector<Model*>& models,const std::vector<Model::Animation*>& animas, ViewProjection* viewProjection, const Vector3& position) {
+void Player::Initialize(const std::vector<Model*>& models, const std::vector<Model::Animation*>& animas, ViewProjection* viewProjection, const Vector3& position) {
 	//assert(model);
 
 	// ファイル名を指定してテクスチャを読み込む
@@ -173,20 +173,19 @@ void Player::Update() {
 	if (land) {
 		nowAnima_ = Animation::Land;
 		animationTime = 0.0f;
-		limitAnimaTime = (1.0f / 60.0f)*8.0f;
+		limitAnimaTime = (1.0f / 60.0f) * 8.0f;
 	}
-	if (limitAnimaTime<0.0f) {
+	if (limitAnimaTime < 0.0f) {
 		if (isRun) {
 			nowAnima_ = Animation::Run;
 		} else {
 			nowAnima_ = Animation::idle;
 		}
-		if (!onGround_)
-		{
+		if (!onGround_) {
 			nowAnima_ = Animation::JumpLoop;
 		}
 	}
- 	limitAnimaTime -= 1.0f / 60.0f;
+	limitAnimaTime -= 1.0f / 60.0f;
 	animationTime += 1.0f / 60.0f;// 時刻を進める。1/60で固定してあるが、計測した時間を使って可変フレーム対応するほうが望ましい
 	animationTime = std::fmod(animationTime, animas_[nowAnima_]->duration);
 
@@ -202,8 +201,10 @@ void Player::Draw() {
 	/*if (isAlive_) {
 		models_[nowAnima_]->Draw(worldTransform_, *viewProjection_);
 	}*/
-	models_[nowAnima_]->ApplyCS();
-	models_[nowAnima_]->DrawCS(worldTransform_, *viewProjection_, "none");
+	if (isAlive_) {
+		models_[nowAnima_]->ApplyCS();
+		models_[nowAnima_]->DrawCS(worldTransform_, *viewProjection_, "none");
+	}
 }
 
 // 移動入力
@@ -268,7 +269,11 @@ void Player::CharMove() {
 			velocity_.y += acceleration.y;
 			velocity_.z += acceleration.z;
 			// 最大速度制限
-			velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed, kLimitRunSpeed);
+			if (isHitEnemyAttack_) {
+				velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed / 4.0f, kLimitRunSpeed / 4.0f);
+			} else {
+				velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed, kLimitRunSpeed);
+			}
 		} else {
 			// 非入力時は移動減衰をかける
 			velocity_.x *= (1.0f - kAttenuation);
@@ -400,8 +405,7 @@ void Player::OnGround(const CollisionMapInfo& info) {
 	}
 	if (!preLand && onGround_) {
 		land = true;
-	} else
-	{
+	} else {
 		land = false;
 	}
 	preLand = onGround_;
@@ -503,6 +507,10 @@ void Player::SetLandingTexture(const std::string& handle) {
 
 void Player::SetIsAllive(const bool& isAllive) {
 	isAlive_ = isAllive;
+}
+
+void Player::SetIsHitEnemyAttack(const bool& isHitEnemyAttack) {
+	isHitEnemyAttack_ = isHitEnemyAttack;
 }
 
 //void Player::OnCollision(const Enemy* enemy) {

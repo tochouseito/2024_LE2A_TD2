@@ -122,6 +122,8 @@ public: // メンバ関数
 
 	void SetIsAllive(const bool& isAllive);
 
+	void SetIsHitEnemyAttack(const bool& isHitEnemyAttack);
+
 	// 接地したか
 	bool IsLand()const { return land; }
 
@@ -198,5 +200,7 @@ private: // メンバ変数
 	float slownessTimer = 0.0f;
 	// 針に接触しているか?
 	bool isHitNeedle = false;
+	// エネミーの攻撃を食らっているかどうか
+	bool isHitEnemyAttack_ = false;
 };
 
