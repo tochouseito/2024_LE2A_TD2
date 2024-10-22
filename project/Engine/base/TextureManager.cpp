@@ -197,3 +197,8 @@ const DirectX::TexMetadata& TextureManager::GetMetaData(const std::string& fileP
 uint32_t TextureManager::GetSrvIndex(const std::string& filePath) {
 	return textureDatas[filePath].srvIndex;
 }
+
+void TextureManager::TexReset()
+{
+	textureDatas.clear();
+}

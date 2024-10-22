@@ -37,7 +37,7 @@ public:
 	/*シーン切り替え*/
 	void ChangeScene(const std::string& sceneName);
 
-
+	void SetIndex(uint32_t index) { defaultIndex = index; }
 private:
 	/*今のシーン*/
 	BaseScene* scene_ = nullptr;
@@ -45,5 +45,7 @@ private:
 	BaseScene* nextScene_ = nullptr;
 	/*シーンファクトリー*/
 	AbstractSceneFactory* sceneFactory_ = nullptr;
+
+	uint32_t defaultIndex;
 };
 
