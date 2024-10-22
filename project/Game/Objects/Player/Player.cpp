@@ -399,24 +399,13 @@ void Player::OnGround(const CollisionMapInfo& info) {
 			onGround_ = true;
 		}
 	}
-	if (isGravityInvert) {
-		if (!preLand && hit) {
-			land = true;
-		} else
-		{
-			land = false;
-		}
-		preLand = hit;
+	if (!preLand && onGround_) {
+		land = true;
 	} else
 	{
-		if (!preLand && onGround_) {
-			land = true;
-		} else
-		{
-			land = false;
-		}
-		preLand = onGround_;
+		land = false;
 	}
+	preLand = onGround_;
 }
 
 void Player::TurnControl() {
