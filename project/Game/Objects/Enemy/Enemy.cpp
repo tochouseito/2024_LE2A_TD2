@@ -107,7 +107,11 @@ void Enemy::Move() {
 		velocity_.x += acceleration_;
 	}
 	// 移動量を加算
-	worldTransform_.translation_ += velocity_;
+	if (playerPos_.x > worldTransform_.translation_.x) {
+		worldTransform_.translation_ += velocity_;
+	} else {
+		worldTransform_.translation_ -= velocity_;
+	}
 	faceTransform_.translation_ = worldTransform_.translation_;
 
 	// 左目の位置からプレイヤーの方向を計算
@@ -131,8 +135,13 @@ void Enemy::Move() {
 }
 
 void Enemy::AttackMove() {
-	// 通常のは半分の移動量を加算
-	worldTransform_.translation_ += velocity_ / 2.0f;
+	// 移動量を加算
+	if (playerPos_.x > worldTransform_.translation_.x) {
+		// 通常のは半分の移動量を加算
+		worldTransform_.translation_ += velocity_ / 2.0f;
+	} else {
+		worldTransform_.translation_ -= velocity_ / 2.0f;
+	}
 	faceTransform_.translation_ = worldTransform_.translation_;
 
 	// 左目の位置からプレイヤーの方向を計算
