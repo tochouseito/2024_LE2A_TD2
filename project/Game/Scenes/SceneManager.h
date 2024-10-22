@@ -1,7 +1,6 @@
 #pragma once
 #include"SceneFactory.h"
-class SceneManager
-{
+class SceneManager {
 public:
 	/// <summary>
 	/// シングルトンインスタンスの取得
@@ -38,6 +37,11 @@ public:
 	void ChangeScene(const std::string& sceneName);
 
 	void SetIndex(uint32_t index) { defaultIndex = index; }
+
+	void SetCurrentStageNum(const uint32_t& currentStageNumber);
+
+	uint32_t GetCurrentStageNumber()const;
+
 private:
 	/*今のシーン*/
 	BaseScene* scene_ = nullptr;
@@ -47,5 +51,9 @@ private:
 	AbstractSceneFactory* sceneFactory_ = nullptr;
 
 	uint32_t defaultIndex;
+
+	// 現在のステージ
+	uint32_t currentStageNumber_ = 1;
+
 };
 

@@ -49,5 +49,15 @@ private:
 	std::string selectAllowTextureHandle_;
 	std::unique_ptr<Sprite> selectAllowSceneSprite_;
 
+	// 数字
+	std::string numberTextureHandle_;
+	std::unique_ptr<Sprite> numberSprite_;
+
+	// 最大ステージ数
+	const uint32_t kMaxStageNum_ = 3;
+	
+	// 現在選択しているステージ数
+	uint32_t currentStageNum_ = 1;
+
 };
 
