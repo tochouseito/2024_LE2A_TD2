@@ -167,9 +167,9 @@ void Player::Update() {
 
 void Player::Draw() {
 	// 3Dモデルを描画
-	if (isAlive_) {
+	//if (isAlive_) {
 		model_->Draw(worldTransform_, *viewProjection_);
-	}
+	//}
 }
 
 // 移動入力
@@ -355,6 +355,24 @@ void Player::OnGround(const CollisionMapInfo& info) {
 			// 設置状態に移行
 			onGround_ = true;
 		}
+	}
+	if (isGravityInvert) {
+		if (!preLand && hit) {
+			land = true;
+		} else
+		{
+			land = false;
+		}
+		preLand = hit;
+	} else
+	{
+		if (!preLand && landing) {
+			land = true;
+		} else
+		{
+			land = false;
+		}
+		preLand = landing;
 	}
 }
 
