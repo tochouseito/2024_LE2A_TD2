@@ -206,7 +206,7 @@ void GameScene::Update() {
 
 	// player
 	player_->Update();
-	particleManager_->SetEmit(player_->IsLand(),player_->GetWorldPosition());
+	particleManager_->SetEmit(player_->IsLand(),player_->GetWorldPosition(),player_->GetIsGravityInvert());
 
 	// Enemy
 	enemy_->SetPlayerPos(player_->GetWorldPosition());

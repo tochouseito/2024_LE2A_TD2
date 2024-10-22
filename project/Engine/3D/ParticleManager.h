@@ -167,7 +167,7 @@ public:
 	std::list<Particle> Emit(const Emitter& emitter, std::mt19937& randomEngine);
 
 
-	void SetEmit(bool flag,const Vector3& translate);
+	void SetEmit(bool flag,const Vector3& translate,bool Grav);
 private:
 	/*ビュープロジェクション*/
 	ViewProjection* viewProjection_;

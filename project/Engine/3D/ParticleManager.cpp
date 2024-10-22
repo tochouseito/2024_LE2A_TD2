@@ -443,12 +443,17 @@ std::list<ParticleManager::Particle> ParticleManager::Emit(const Emitter& emitte
 	return particles;
 }
 
-void ParticleManager::SetEmit(bool flag, const Vector3& translate)
+void ParticleManager::SetEmit(bool flag, const Vector3& translate, bool Grav)
 {
 	if (flag&&!plLand) {
 		gpuParticleGroup->emitterSphere->emit = 1;
 		gpuParticleGroup->emitterSphere->translate = translate;
-		gpuParticleGroup->emitterSphere->translate.y -= 1.0f;
+		if (Grav) {
+			gpuParticleGroup->emitterSphere->translate.y += 0.5f;
+		} else
+		{
+			gpuParticleGroup->emitterSphere->translate.y -= 0.5f;
+		}
 		plLand = true;
 	} else
 	{
