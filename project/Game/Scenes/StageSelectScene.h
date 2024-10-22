@@ -1,8 +1,12 @@
 #pragma once
 
+#include <memory>
+
+// 2D
+#include"Sprite.h"
+
 #include"BaseScene.h"
-class StageSelectScene:public BaseScene
-{
+class StageSelectScene :public BaseScene {
 public:
 	/// <summary>
 	/// 初期化
@@ -29,9 +33,21 @@ public:
 	/// </summary>
 	void ChangeScene()override;
 
-	void SetSceneManager(SceneManager* sceneManager) override{ sceneManager_ = sceneManager; }
+	void SetSceneManager(SceneManager* sceneManager) override { sceneManager_ = sceneManager; }
 
 private:
 	SceneManager* sceneManager_ = nullptr;
+
+	// カメラ
+	ViewProjection viewProjection_;
+
+	// セレクトシーンのテクスチャ
+	std::string selectSceneTextureHandle_;
+	std::unique_ptr<Sprite> selectSceneSprite_;
+
+	// 矢印
+	std::string selectAllowTextureHandle_;
+	std::unique_ptr<Sprite> selectAllowSceneSprite_;
+
 };
 
