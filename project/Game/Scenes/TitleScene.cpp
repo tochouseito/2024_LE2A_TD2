@@ -7,14 +7,9 @@ void TitleScene::Initialize() {
 	viewProjection_.Initialize();
 	DirectXCommon::GetInstance()->SetViewProjection(&viewProjection_);
 
-	titleLogoTextureHandle_ = TextureManager::Load("./Resources/GUI/TitleLogo.png");
+	titleLogoTextureHandle_ = TextureManager::Load("./Resources/GUI/title.png");
 	titleLogoSprite_ = std::make_unique<Sprite>();
 	titleLogoSprite_->Initialize({ 0.0f,0.0f,0.0f }, &viewProjection_, titleLogoTextureHandle_);
-
-	buttonUpTextureHandle_ = TextureManager::Load("./Resources/GUI/buttonUp.png");
-	buttonUpSprite_ = std::make_unique<Sprite>();
-	buttonUpSprite_->Initialize({ 640.0f,592.0f,0.0f }, &viewProjection_, buttonUpTextureHandle_);
-	buttonUpSprite_->SetAnchorPoint({ 0.5f,0.5f,0.0f });
 }
 
 void TitleScene::Finalize() {}
@@ -51,15 +46,19 @@ void TitleScene::Update() {
 	//	}
 	//}
 
+
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		/*シーン切り替え依頼*/
+		SceneManager::GetInstance()->ChangeScene("SELECT");
+	}
+
 	titleLogoSprite_->Update();
-	buttonUpSprite_->Update();
 
 	viewProjection_.UpdateMatrix();
 }
 
 void TitleScene::Draw() {
 	titleLogoSprite_->Draw();
-	buttonUpSprite_->Draw();
 }
 
 void TitleScene::ChangeScene() {

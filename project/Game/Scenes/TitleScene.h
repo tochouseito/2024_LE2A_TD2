@@ -40,8 +40,5 @@ private:
 
 	std::string titleLogoTextureHandle_;
 	std::unique_ptr<Sprite> titleLogoSprite_;
-
-	std::string buttonUpTextureHandle_;
-	std::unique_ptr<Sprite> buttonUpSprite_;
 };
 
