@@ -2,32 +2,27 @@
 #include"SrvManager.h"
 #include"TextureManager.h"
 
-SceneManager* SceneManager::GetInstance()
-{
+SceneManager* SceneManager::GetInstance() {
 	static SceneManager instance;
 	return &instance;
 }
 
-SceneManager::~SceneManager()
-{
-	
+SceneManager::~SceneManager() {
+
 }
 
-void SceneManager::Initialize()
-{
+void SceneManager::Initialize() {
 	sceneFactory_ = new SceneFactory();
 }
 
-void SceneManager::Finalize()
-{
+void SceneManager::Finalize() {
 	delete sceneFactory_;
 	/*最後のシーンの終了と解放*/
 	scene_->Finalize();
 	delete scene_;
 }
 
-void SceneManager::Update()
-{
+void SceneManager::Update() {
 	if (nextScene_) {
 		/*旧シーンの終了*/
 		if (scene_) {
@@ -47,16 +42,22 @@ void SceneManager::Update()
 	scene_->Update();
 }
 
-void SceneManager::Draw()
-{
+void SceneManager::Draw() {
 	scene_->Draw();
 }
 
-void SceneManager::ChangeScene(const std::string& sceneName)
-{
+void SceneManager::ChangeScene(const std::string& sceneName) {
 	assert(sceneFactory_);
 	assert(nextScene_ == nullptr);
 
 	/*次のシーン生成*/
 	nextScene_ = sceneFactory_->CreateScene(sceneName);
+}
+
+void SceneManager::SetCurrentStageNum(const uint32_t& currentStageNumber) {
+	currentStageNumber_ = currentStageNumber;
+}
+
+uint32_t SceneManager::GetCurrentStageNumber() const {
+	return currentStageNumber_;
 }
