@@ -166,6 +166,8 @@ public:
 	/// <returns></returns>
 	std::list<Particle> Emit(const Emitter& emitter, std::mt19937& randomEngine);
 
+
+	void SetEmit(bool flag,const Vector3& translate);
 private:
 	/*ビュープロジェクション*/
 	ViewProjection* viewProjection_;
@@ -184,5 +186,7 @@ private:
 	GPUParticleGroup* gpuParticleGroup = nullptr;
 
 	bool init = true;
+
+	bool plLand = false;
 };
 

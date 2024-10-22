@@ -111,6 +111,9 @@ public: // メンバ関数
 	
 	void SetIsAllive(const bool& isAllive);
 
+	// 接地したか
+	bool IsLand()const { return land; }
+
 private: // メンバ変数
 
 	// マップチップフィールドによるフィールド
@@ -141,6 +144,8 @@ private: // メンバ変数
 	bool isGravityInvert = false;
 	bool isJumping = false;
 	bool landing;
+	bool preLand = false;
+	bool land;
 
 	// 旋回開始時の角度
 	float turnFirstRotationY_ = 0.0f;

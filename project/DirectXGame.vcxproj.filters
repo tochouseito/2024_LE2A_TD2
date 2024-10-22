@@ -29,6 +29,7 @@
     <FxCompile Include="Resources\Shader\ToHSV.PS.hlsl" />
     <FxCompile Include="Resources\Shader\UpdateParticle.CS.hlsl" />
     <FxCompile Include="Resources\Shader\Vignette.PS.hlsl" />
+    <FxCompile Include="Resources\Shader\UpdatePlayerLandingParticles.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Scenes\BaseScene.cpp" />
