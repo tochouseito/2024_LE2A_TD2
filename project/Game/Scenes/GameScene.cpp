@@ -297,7 +297,7 @@ void GameScene::Draw() {
 	player_->Draw();
 
 	// エネミー
-	enemy_->Draw();
+	//enemy_->Draw();
 	switch (enemy_->GetBehavior()) {
 	case Enemy::Behavior::kRoot:
 

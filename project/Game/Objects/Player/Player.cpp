@@ -170,6 +170,23 @@ void Player::Update() {
 	// 行列を定数バッファに転送
 	//worldTransform_.TransferMatrix();
 
+	if (land) {
+		nowAnima_ = Animation::Land;
+		animationTime = 0.0f;
+		limitAnimaTime = (1.0f / 60.0f)*8.0f;
+	}
+	if (limitAnimaTime<0.0f) {
+		if (isRun) {
+			nowAnima_ = Animation::Run;
+		} else {
+			nowAnima_ = Animation::idle;
+		}
+		if (!onGround_)
+		{
+			nowAnima_ = Animation::JumpLoop;
+		}
+	}
+ 	limitAnimaTime -= 1.0f / 60.0f;
 	animationTime += 1.0f / 60.0f;// 時刻を進める。1/60で固定してあるが、計測した時間を使って可変フレーム対応するほうが望ましい
 	animationTime = std::fmod(animationTime, animas_[nowAnima_]->duration);
 
@@ -205,6 +222,15 @@ void Player::CharMove() {
 		bool keyboardMoveRight = Input::GetInstance()->PushKey(DIK_D);
 		bool controllerMoveLeft = stickX < -0.2f;
 		bool controllerMoveRight = stickX > 0.2f;
+
+		if (keyboardMoveLeft ||
+			keyboardMoveRight ||
+			controllerMoveLeft ||
+			controllerMoveRight) {
+			isRun = true;
+		} else {
+			isRun = false;
+		}
 
 		if (keyboardMoveLeft || keyboardMoveRight || controllerMoveLeft || controllerMoveRight) {
 			// 左右処理
@@ -372,24 +398,13 @@ void Player::OnGround(const CollisionMapInfo& info) {
 			onGround_ = true;
 		}
 	}
-	if (isGravityInvert) {
-		if (!preLand && hit) {
-			land = true;
-		} else
-		{
-			land = false;
-		}
-		preLand = hit;
+	if (!preLand && onGround_) {
+		land = true;
 	} else
 	{
-		if (!preLand && onGround_) {
-			land = true;
-		} else
-		{
-			land = false;
-		}
-		preLand = onGround_;
+		land = false;
 	}
+	preLand = onGround_;
 }
 
 void Player::TurnControl() {
