@@ -49,7 +49,7 @@ struct PixelShaderOutput
 Texture2D<float4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
 // 環境マップによるライティング
-TextureCube<float4> gEnvironmentTexture : register(t1);
+//TextureCube<float4> gEnvironmentTexture : register(t1);
 PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
@@ -153,7 +153,7 @@ PixelShaderOutput main(VertexShaderOutput input)
         // 映り込み
         float3 cameraToPosition = normalize(input.worldPosition - input.cameraPosition);
         float3 reflectedVector = reflect(cameraToPosition, normalize(input.normal));
-        float4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
+        //float4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
         
         // 拡散反射+鏡面反射
         output.colorPS.rgb = diffuseDirectionalLight + specularDirectionalLight + diffusePointLight + specularPointLight + diffuseSpotLight + specularSpotLight;

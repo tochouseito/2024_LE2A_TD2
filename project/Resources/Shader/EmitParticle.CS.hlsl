@@ -44,7 +44,8 @@ void main( uint3 DTid : SV_DispatchThreadID )
                 
                 
                 gParticles[particleIndex].scale = float3(1.5f, 1.5f, 1.5f);
-                gParticles[particleIndex].translate = generator.Generate3d();
+                //gParticles[particleIndex].translate = generator.Generate3d();
+                gParticles[particleIndex].translate = gEmitter.translate;
                 gParticles[particleIndex].color.rgb = generator.Generate3d();
                 gParticles[particleIndex].color.a = 1.0f;
                 gParticles[particleIndex].velocity = generator.Generate3d();

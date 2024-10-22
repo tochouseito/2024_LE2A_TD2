@@ -2,7 +2,7 @@
 #include"imgui.h"
 
 void DeltaTime::Update() {
-	value = 1.0f / 60.0f; // RELEASE
+	value = 1.0f / 60.0f; // 応急処置
 #ifdef _DEBUG
 	value = ImGui::GetIO().DeltaTime;
 	ImGui::Begin("DeltaTime");

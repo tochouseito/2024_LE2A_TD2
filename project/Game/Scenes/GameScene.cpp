@@ -18,6 +18,12 @@ GameScene::~GameScene() {
 	delete particles_;
 	delete primitive_;
 	delete serial;
+	for (auto& model : playerModels_) {
+		delete model;
+	}
+	for (auto& plAnima : plAnimas_) {
+		delete plAnima;
+	}
 }
 
 void GameScene::Finalize() {
@@ -51,7 +57,7 @@ void GameScene::Initialize() {
 
 	// メインカメラの生成
 	mainCamera_ = std::make_unique<MainCamera>();
-	mainCamera_->Initialize(Vector3(4.5f, 17.0f, -15.0f), &viewProjection_); // HACK : 動画提出用
+	mainCamera_->Initialize(Vector3(4.5f, 17.0f, -45.0f), &viewProjection_); // HACK : 動画提出用
 	mainCamera_->rotation_ = Vector3(0.0f, 0.0f, 0.0f); // HACK : 動画提出用
 
 	deltaTime_ = std::make_unique<DeltaTime>();
@@ -64,7 +70,7 @@ void GameScene::Initialize() {
 
 	// MapChip
 	mapChipField_ = std::make_unique<MapChipField>();
-	mapChipField_->LoadMapChipCsv("Resources/Map1.csv");
+	mapChipField_->LoadMapChipCsv("Resources/Map2.csv");
 
 	// 針
 	upNeedleModel_.reset(Model::LordModel("UpNeedle"));
@@ -124,6 +130,18 @@ void GameScene::Initialize() {
 
 	// Player
 	playerModel_.reset(Model::LordModel("Player"));
+	playerModels_.push_back(Model::LordModel("Idle",true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "Idle"));
+	playerModels_.push_back(Model::LordModel("Jump", true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "Jump"));
+	playerModels_.push_back(Model::LordModel("JumpLoop", true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "JumpLoop"));
+	playerModels_.push_back(Model::LordModel("JumpStart", true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "JumpStart"));
+	playerModels_.push_back(Model::LordModel("Land", true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "Land"));
+	playerModels_.push_back(Model::LordModel("Run", true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "Run"));
 	player_ = std::make_unique<Player>();
 	// CSVからプレイヤーの開始位置を見つける
 	Vector3 playerPosition{};
@@ -136,7 +154,7 @@ void GameScene::Initialize() {
 		}
 	}
 
-	player_->Initialize(playerModel_.get(), &viewProjection_, playerPosition);
+	player_->Initialize(playerModels_,plAnimas_, &viewProjection_, playerPosition);
 	player_->SetMapChipField(mapChipField_.get());
 
 	// Enemy
@@ -188,6 +206,7 @@ void GameScene::Update() {
 
 	// player
 	player_->Update();
+	particleManager_->SetEmit(player_->IsLand(),player_->GetWorldPosition());
 
 	// Enemy
 	enemy_->SetPlayerPos(player_->GetWorldPosition());
@@ -278,7 +297,7 @@ void GameScene::Draw() {
 	player_->Draw();
 
 	// エネミー
-	enemy_->Draw();
+	//enemy_->Draw();
 	switch (enemy_->GetBehavior()) {
 	case Enemy::Behavior::kRoot:
 
@@ -410,7 +429,7 @@ void GameScene::EnemyAttack(const uint32_t& enemyAttackYIndex, const Enemy::Beha
 
 		if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
 			// 攻撃がヒットした時の処理
-			player_->SetIsAllive(false);
+
 		}
 		break;
 	}

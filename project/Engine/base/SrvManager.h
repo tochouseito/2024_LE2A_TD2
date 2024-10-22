@@ -46,6 +46,10 @@ public:
 
 	void AddFreeList(uint32_t index) { freeSRVIndexList.push_back(index); }
 
+	uint32_t GetSRVIndex()const { return useIndex; }
+
+	void SetSRVIndex(uint32_t& index) { useIndex = index; }
+
 private:
 	SrvManager() = default;
 	~SrvManager() = default;

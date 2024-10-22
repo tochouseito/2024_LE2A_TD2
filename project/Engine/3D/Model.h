@@ -156,7 +156,7 @@ public:
 
 	OBJModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
 
-	static ModelData* LoadModelFile(const std::string& directory, const std::string& filename);
+	static ModelData* LoadModelFile(const std::string& directory, const std::string& filename, bool IsAnima);
 
 	static Node ReadNode(aiNode* node);
 
@@ -168,7 +168,7 @@ public:
 	/// <returns></returns>
 	Material::OBJMaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
-	static Model* LordModel(const std::string& filename);
+	static Model* LordModel(const std::string& filename,bool IsAnima=false);
 
 	static Animation* LordAnimationFile(const std::string& directoryPath, const std::string& filename);
 

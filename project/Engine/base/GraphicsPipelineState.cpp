@@ -573,6 +573,93 @@ void GraphicsPipelineState::CreateComputePipelineUpdate(ID3D12Device* device)
 		IID_PPV_ARGS(&computePipelineStateUpdate_));
 	assert(SUCCEEDED(hr));
 }
+void GraphicsPipelineState::CreateComputePipelineUpdatePLLand(ID3D12Device* device)
+{
+	InitializeDxcCompiler();
+	HRESULT hr;
+
+	// RootSignature作成
+	D3D12_ROOT_SIGNATURE_DESC descriptionRooTSignature{};
+	descriptionRooTSignature.Flags =
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+	// RootParameter作成。PixelShaderのMaterialとVertexShaderのTransform
+	D3D12_ROOT_PARAMETER rootParameter[4] = {};
+
+
+
+	D3D12_DESCRIPTOR_RANGE descriptorUAVRange = {};
+	descriptorUAVRange.BaseShaderRegister = 0;
+	descriptorUAVRange.NumDescriptors = 1;
+	descriptorUAVRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
+	descriptorUAVRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	rootParameter[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootParameter[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameter[0].DescriptorTable.pDescriptorRanges = &descriptorUAVRange;// Tableの中身の配列を指定
+	rootParameter[0].DescriptorTable.NumDescriptorRanges = 1;// Tableで利用する数
+
+	rootParameter[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;// CBVを使う
+	rootParameter[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;// PixelShaderを使う
+	rootParameter[1].Descriptor.ShaderRegister = 0;// レジスタ番号0とバインド
+
+	D3D12_DESCRIPTOR_RANGE descriptorUAVRange1 = {};
+	descriptorUAVRange1.BaseShaderRegister = 1;
+	descriptorUAVRange1.NumDescriptors = 1;
+	descriptorUAVRange1.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
+	descriptorUAVRange1.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	rootParameter[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootParameter[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameter[2].DescriptorTable.pDescriptorRanges = &descriptorUAVRange1;// Tableの中身の配列を指定
+	rootParameter[2].DescriptorTable.NumDescriptorRanges = 1;// Tableで利用する数
+
+	D3D12_DESCRIPTOR_RANGE descriptorUAVRange2 = {};
+	descriptorUAVRange2.BaseShaderRegister = 2;
+	descriptorUAVRange2.NumDescriptors = 1;
+	descriptorUAVRange2.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
+	descriptorUAVRange2.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	rootParameter[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootParameter[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameter[3].DescriptorTable.pDescriptorRanges = &descriptorUAVRange2;// Tableの中身の配列を指定
+	rootParameter[3].DescriptorTable.NumDescriptorRanges = 1;// Tableで利用する数
+
+
+	descriptionRooTSignature.pParameters = rootParameter;// ルートパラメータ配列へのポインタ
+	descriptionRooTSignature.NumParameters = _countof(rootParameter);// 配列の長さ
+
+
+	// シリアライズしてバイナリにする
+	Microsoft::WRL::ComPtr < ID3DBlob> signatureBlob = nullptr;
+	Microsoft::WRL::ComPtr < ID3DBlob> errorBlob = nullptr;
+	hr = D3D12SerializeRootSignature(&descriptionRooTSignature,
+		D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
+	if (FAILED(hr)) {
+		Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
+		assert(SUCCEEDED(hr));
+	}
+
+	// バイナリをもとに生成
+	hr = DirectXCommon::GetInstance()->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
+		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&computeRootSignatureUpdatePLLand_));
+	assert(SUCCEEDED(hr));
+
+	// Shaderをコンパイルする
+	Microsoft::WRL::ComPtr < IDxcBlob> computeShaderBlob = CompilerShader(L"Resources/Shader/UpdatePlayerLandingParticles.CS.hlsl",
+		L"cs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
+	assert(computeShaderBlob != nullptr);
+
+	D3D12_COMPUTE_PIPELINE_STATE_DESC computePipelineStateDesc{};
+	computePipelineStateDesc.CS = {
+	.pShaderBytecode = computeShaderBlob->GetBufferPointer(),
+	.BytecodeLength = computeShaderBlob->GetBufferSize() };                       // VertexShader
+	computePipelineStateDesc.pRootSignature = computeRootSignatureUpdatePLLand_.Get();
+	// 実際に生成
+	hr = DirectXCommon::GetInstance()->GetDevice()->CreateComputePipelineState(&computePipelineStateDesc,
+		IID_PPV_ARGS(&computePipelineStateUpdatePLLand_));
+	assert(SUCCEEDED(hr));
+}
 /// <summary>
 /// dxcCompilerを初期化
 /// </summary>
@@ -2524,7 +2611,7 @@ void GraphicsPipelineState::CreateGraphicsPipelineSkinning(ID3D12Device* device)
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	// RootParameter作成。PixelShaderのMaterialとVertexShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameter[10] = {};
+	D3D12_ROOT_PARAMETER rootParameter[9] = {};
 	rootParameter[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;// CBVを使う
 	rootParameter[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;// PixelShaderを使う
 	rootParameter[0].Descriptor.ShaderRegister = 0;// レジスタ番号０とバインド
@@ -2592,16 +2679,20 @@ void GraphicsPipelineState::CreateGraphicsPipelineSkinning(ID3D12Device* device)
 	rootParameter[7].DescriptorTable.pDescriptorRanges = &srvDescriptorRangeVS2;// Tableの中身の配列を指定
 	rootParameter[7].DescriptorTable.NumDescriptorRanges = 1;// Tableで利用する数
 
-	// 環境マップ
-	rootParameter[8].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;// DescriptorTableを使う
-	rootParameter[8].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;// PixelShaderを使う
-	rootParameter[8].DescriptorTable.pDescriptorRanges = &srvDescriptorRangePS1;// Tableの中身の配列
-	rootParameter[8].DescriptorTable.NumDescriptorRanges = 1;// Tableで利用する数
+	//// 環境マップ
+	//rootParameter[8].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;// DescriptorTableを使う
+	//rootParameter[8].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;// PixelShaderを使う
+	//rootParameter[8].DescriptorTable.pDescriptorRanges = &srvDescriptorRangePS1;// Tableの中身の配列
+	//rootParameter[8].DescriptorTable.NumDescriptorRanges = 1;// Tableで利用する数
 
-	// スポットライト
-	rootParameter[9].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;// CBVを使う
-	rootParameter[9].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;// PixelShaderを使う
-	rootParameter[9].Descriptor.ShaderRegister = 4;// レジスタ番号3とバインド
+	//// 
+	//rootParameter[9].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;// CBVを使う
+	//rootParameter[9].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;// PixelShaderを使う
+	//rootParameter[9].Descriptor.ShaderRegister = 4;// レジスタ番号3とバインド
+
+	rootParameter[8].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;// CBVを使う
+	rootParameter[8].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;// PixelShaderを使う
+	rootParameter[8].Descriptor.ShaderRegister = 4;// レジスタ番号3とバインド
 
 	descriptionRooTSignature.pParameters = rootParameter;// ルートパラメータ配列へのポインタ
 	descriptionRooTSignature.NumParameters = _countof(rootParameter);// 配列の長さ
