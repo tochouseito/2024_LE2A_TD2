@@ -342,7 +342,6 @@ void Player::OnGround(const CollisionMapInfo& info) {
 		onGround_ = false;
 	}
 
-
 	if (!onGround_) {// 空中状態
 		// 落下速度
 		velocity_.x += 0.0f;
@@ -383,13 +382,13 @@ void Player::OnGround(const CollisionMapInfo& info) {
 		preLand = hit;
 	} else
 	{
-		if (!preLand && landing) {
+		if (!preLand && onGround_) {
 			land = true;
 		} else
 		{
 			land = false;
 		}
-		preLand = landing;
+		preLand = onGround_;
 	}
 }
 
