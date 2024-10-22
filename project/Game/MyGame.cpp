@@ -22,7 +22,7 @@ void MyGame::Initialize()
 	//baseScene->Initialize();
 
 	/*最初のシーン生成*/
-	sceneManager->ChangeScene("SELECT");
+	sceneManager->ChangeScene("TITLE");
 	sceneManager->SetIndex(SrvManager::GetInstance()->GetSRVIndex());
 }
 

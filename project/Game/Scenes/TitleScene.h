@@ -1,7 +1,10 @@
 #pragma once
+#include <memory>
+
 #include"BaseScene.h"
-class TitleScene:public BaseScene
-{
+#include "Sprite.h"
+
+class TitleScene :public BaseScene {
 public:
 	/// <summary>
 	/// 初期化
@@ -28,9 +31,17 @@ public:
 	/// </summary>
 	void ChangeScene()override;
 
-	void SetSceneManager(SceneManager* sceneManager) override{ sceneManager_ = sceneManager; }
+	void SetSceneManager(SceneManager* sceneManager) override { sceneManager_ = sceneManager; }
 
 private:
 	SceneManager* sceneManager_ = nullptr;
+
+	ViewProjection viewProjection_;
+
+	std::string titleLogoTextureHandle_;
+	std::unique_ptr<Sprite> titleLogoSprite_;
+
+	std::string pressButtonTextureHandle_;
+	std::unique_ptr<Sprite> pressButtonSprite_;
 };
 
