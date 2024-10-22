@@ -1,4 +1,6 @@
 #include "SceneManager.h"
+#include"SrvManager.h"
+#include"TextureManager.h"
 
 SceneManager* SceneManager::GetInstance()
 {
@@ -37,6 +39,8 @@ void SceneManager::Update()
 		nextScene_ = nullptr;
 		/*シーンマネージャをセット*/
 		scene_->SetSceneManager(this);
+		SrvManager::GetInstance()->SetSRVIndex(defaultIndex);
+		TextureManager::GetInstance()->TexReset();
 		/*次のシーンを初期化する*/
 		scene_->Initialize();
 	}
