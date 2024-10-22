@@ -108,7 +108,7 @@ public: // メンバ関数
 	void OnCollision(Collider* other) override;
 
 	void SetLandingTexture(const std::string& handle);
-	
+
 	void SetIsAllive(const bool& isAllive);
 
 	// 接地したか
@@ -152,7 +152,7 @@ private: // メンバ変数
 	// 旋回タイマー
 	float turnTimer_ = 0.0f;
 
-	float kLimitRunSpeed = 0.125f;
+	float kLimitRunSpeed = 0.11f;
 	float kAcceleration = 0.03f;
 	float kAttenuation = 0.3f;
 	float kAttenuationLanding = 0.3f;
