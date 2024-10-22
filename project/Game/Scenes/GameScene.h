@@ -188,4 +188,6 @@ private:
 	AABB playerAABB_{};
 	// エネミーの攻撃判定AABB
 	AABB enemyAttackAABB_{};
+
+	uint32_t currentStageNum_ = 1;
 };
