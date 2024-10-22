@@ -167,9 +167,9 @@ void Player::Update() {
 
 void Player::Draw() {
 	// 3Dモデルを描画
-	//if (isAlive_) {
+	if (isAlive_) {
 		model_->Draw(worldTransform_, *viewProjection_);
-	//}
+	}
 }
 
 // 移動入力
