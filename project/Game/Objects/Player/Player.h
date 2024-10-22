@@ -139,6 +139,8 @@ private: // メンバ変数
 	std::vector<Model::Animation*> animas_;
 	std::vector<Model::Skeleton*> skeletons_;
 	float animationTime = 0.0f;
+	float limitAnimaTime = 0.0f;
+	bool isRun = false;
 
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0;

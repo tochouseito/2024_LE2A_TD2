@@ -297,16 +297,16 @@ void GameScene::Draw() {
 	player_->Draw();
 
 	// エネミー
-	enemy_->Draw();
+	//enemy_->Draw();
 	switch (enemy_->GetBehavior()) {
 	case Enemy::Behavior::kRoot:
 
 		break;
 	case Enemy::Behavior::kPreliminary:
-		enemyPreliminaryModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+		//enemyPreliminaryModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
 		break;
 	case Enemy::Behavior::kAttack:
-		enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+		//enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
 		break;
 	}
 
@@ -336,7 +336,7 @@ void GameScene::Draw() {
 
 	collisionManager_->Draw(viewProjection_);
 
-	particleManager_->DrawGPU();
+	//particleManager_->DrawGPU();
 
 }
 
