@@ -13,6 +13,7 @@
 #include<assert.h>
 #include"ConvertString.h"
 #include"LightGroup.h"
+#include"ConvertString.h"
 Model::Model() {
 	material_ = new Material();
 	/*directionalLight_ = new DirectionalLight();
@@ -365,13 +366,14 @@ void Model::DrawSkybox(WorldTransform& worldTransform, ViewProjection& viewProje
 }
 Model* Model::LordModel(const std::string& filename) {
 	Model* model = new Model();
-	model->modelData_= LoadModelFile("./Resources", filename);
+	model->modelData_ = LoadModelFile("./Resources", filename);
+
 	//model->modelData_.material.textureFilePath=TextureManager::GetInstance()->Load(model->modelData_.material.textureFilePath);
 	GraphicsPipelineState::GetInstance()->CreateGraphicsPipeline(DirectXCommon::GetInstance()->GetDevice());
 	GraphicsPipelineState::GetInstance()->CreateGraphicsPipelineSkinning(DirectXCommon::GetInstance()->GetDevice());
-	for (const std::string& name:model->modelData_->names) {
-		model->mesh_->SetDataVertices(static_cast<UINT>(model->modelData_->object[name].vertices.size()),name);
-		model->mesh_->CreateDateResource(model->modelData_->object[name].vertices.size(),name);
+	for (const std::string& name : model->modelData_->names) {
+		model->mesh_->SetDataVertices(static_cast<UINT>(model->modelData_->object[name].vertices.size()), name);
+		model->mesh_->CreateDateResource(model->modelData_->object[name].vertices.size(), name);
 		model->mesh_->CreateModelIndexResource(model->modelData_->object[name].indices.size(), name);
 		// 頂点データをリソースにコピー
 		std::memcpy(model->mesh_->GetData(name)
@@ -649,7 +651,13 @@ Model::ModelData*  Model::LoadModelFile(const std::string& directoryPath, const 
 	//assert(file.is_open());//とりあえず開けなかったら止める
 	// assimp
 	Assimp::Importer importer;
-	std::string filePath = directoryPath + "/" + filename+"/"+filename+".obj";
+	std::wstring filePathW = ConvertString(filename);
+	std::string filePath;
+	if (filePathW.ends_with(L".gltf")) {
+		filePath = directoryPath + "/" + filename + "/" + filename + ".gltf";
+	} else {
+		filePath = directoryPath + "/" + filename + "/" + filename + ".obj";
+	}
 	//const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_Triangulate | aiProcess_GenSmoothNormals);
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder|aiProcess_FlipUVs);
 	assert(scene->HasMeshes());// メッシュがないのは対応しない
