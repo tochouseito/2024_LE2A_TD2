@@ -36,7 +36,9 @@ void Sprite::Initialize(const Vector3& position, ViewProjection* viewProjection,
 	translation_ = position;
 	textureHandle_ = textureHandle;
 	viewProjection_ = viewProjection;
-	
+
+	AdjustTextureSize();
+
 }
 
 /// <summary>
@@ -54,8 +56,8 @@ void Sprite::Update() {
 	ImGui::DragFloat3("UVTransform##Sprite", &UVtranslation_.x, 0.01f);
 	ImGui::DragFloat3("UVrotation##Sprite", &UVrotation_.x, 0.01f);
 	ImGui::DragFloat3("UVscale##Sprite", &UVscale_.x, 0.01f);
-		
-	ImGui::End(); 
+
+	ImGui::End();
 
 #endif
 	UpdateTransform();
@@ -95,7 +97,7 @@ void Sprite::TransformResource() {
 	// Sprite用のTransformationMatrix用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
 	transformationMatrixResourceSprite_ = DirectXCommon::GetInstance()->CreateBufferResource(DirectXCommon::GetInstance()->GetDevice(), sizeof(ConstBufferDataSpriteWorldTransform));
 	// データを書き込む
-	
+
 	// 書き込むためのアドレスを取得
 	transformationMatrixResourceSprite_->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixDataSprite_));
 	// 単位行列を書き込んでいく
@@ -112,8 +114,7 @@ void Sprite::UpdateTransform() {
 	float tex_right = (textureLeftTop.x + textureSize.x) / metadata.width;
 	float tex_top = textureLeftTop.y / metadata.height;
 	float tex_bottom = (textureLeftTop.y + textureSize.y) / metadata.height;
-	mesh_->SetVertexDataSprite(left, right, top, bottom,tex_left,tex_right,tex_top,tex_bottom);
-	AdjustTextureSize();
+	mesh_->SetVertexDataSprite(left, right, top, bottom, tex_left, tex_right, tex_top, tex_bottom);
 	scale_ = { size.x,size.y,1.0f };
 	// Sprite用のWorldViewProjectionMatrixを作る
 	Matrix4x4 worldMatrixSprite = MakeAffineMatrix(scale_, rotation_, translation_);
@@ -149,8 +150,7 @@ void Sprite::CreateIndexResource() {
 	indexDataSprite_[3] = 1; indexDataSprite_[4] = 3; indexDataSprite_[5] = 2;
 }
 
-void Sprite::AdjustTextureSize()
-{
+void Sprite::AdjustTextureSize() {
 	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureHandle_);
 
 	textureSize.x = static_cast<float>(metadata.width);

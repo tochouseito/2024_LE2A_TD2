@@ -68,9 +68,14 @@ void GameScene::Initialize() {
 
 	///////////////////////////////////////////////////////////////////////////////////////
 
+
+	// 現在のステージ
+	currentStageNum_ = sceneManager_->GetCurrentStageNumber();
+	std::string str = std::to_string(currentStageNum_);
+
 	// MapChip
 	mapChipField_ = std::make_unique<MapChipField>();
-	mapChipField_->LoadMapChipCsv("Resources/Map2.csv");
+	mapChipField_->LoadMapChipCsv("Resources/Map"+str+".csv");
 
 	// 針
 	upNeedleModel_.reset(Model::LordModel("UpNeedle"));
@@ -130,7 +135,7 @@ void GameScene::Initialize() {
 
 	// Player
 	playerModel_.reset(Model::LordModel("Player"));
-	playerModels_.push_back(Model::LordModel("Idle",true));
+	playerModels_.push_back(Model::LordModel("Idle", true));
 	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "Idle"));
 	playerModels_.push_back(Model::LordModel("Jump", true));
 	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "Jump"));
@@ -154,7 +159,7 @@ void GameScene::Initialize() {
 		}
 	}
 
-	player_->Initialize(playerModels_,plAnimas_, &viewProjection_, playerPosition);
+	player_->Initialize(playerModels_, plAnimas_, &viewProjection_, playerPosition);
 	player_->SetMapChipField(mapChipField_.get());
 
 	// Enemy
@@ -206,7 +211,7 @@ void GameScene::Update() {
 
 	// player
 	player_->Update();
-	particleManager_->SetEmit(player_->IsLand(),player_->GetWorldPosition(),player_->GetIsGravityInvert());
+	particleManager_->SetEmit(player_->IsLand(), player_->GetWorldPosition(), player_->GetIsGravityInvert());
 
 	// Enemy
 	enemy_->SetPlayerPos(player_->GetWorldPosition());

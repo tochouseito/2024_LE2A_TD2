@@ -22,9 +22,10 @@ void StageSelectScene::Initialize() {
 
 	numberTextureHandle_ = TextureManager::Load("./Resources/GUI/numbers.png");
 	numberSprite_ = std::make_unique<Sprite>();
-	numberSprite_->Initialize({ 0.0f,0.0f,0.0f }, &viewProjection_, numberTextureHandle_);
-
-
+	numberSprite_->Initialize({ 764.0f,650.0f,0.0f }, &viewProjection_, numberTextureHandle_);
+	numberSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
+	numberSprite_->SetSize(Vector3(48.0f, 48.0f, 0.0f));
+	numberSprite_->SetTexSize(Vector3(48.0f, 48.0f, 0.0f));
 }
 
 void StageSelectScene::Finalize() {
@@ -59,13 +60,17 @@ void StageSelectScene::Update() {
 		currentStageNum_ = kMaxStageNum_;
 	}
 
+	numberSprite_->SetTexLeftTop(Vector3(currentStageNum_ * numberSprite_->GetTexSize().x, 0.0f, 0.0f));
+
 	selectSceneSprite_->Update();
 	selectAllowSceneSprite_->Update();
+	numberSprite_->Update();
 }
 
 void StageSelectScene::Draw() {
 	selectSceneSprite_->Draw();
 	selectAllowSceneSprite_->Draw();
+	numberSprite_->Draw();
 }
 
 void StageSelectScene::ChangeScene() {
