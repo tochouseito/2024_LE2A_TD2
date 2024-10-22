@@ -411,7 +411,7 @@ void GameScene::EnemyAttack(const uint32_t& enemyAttackYIndex, const Enemy::Beha
 
 		if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
 			// 攻撃がヒットした時の処理
-			player_->SetIsAllive(false);
+
 		}
 		break;
 	}
