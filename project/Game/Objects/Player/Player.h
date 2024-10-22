@@ -3,6 +3,7 @@
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 #include "Model.h"
+#include<vector>
 
 class MapChipField;
 
@@ -13,6 +14,16 @@ enum Corner {
 	kLeftTop,     // 左上
 
 	kNumCorner // 要素数
+};
+
+enum Animation {
+	idle,
+	Jump,
+	JumpLoop,
+	JumpStart,
+	Land,
+	Run,
+	kCount,
 };
 
 class Player : public BaseCharacter {
@@ -31,7 +42,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position);
+	void Initialize(const std::vector<Model*>& models,const std::vector<Model::Animation*>& animas, ViewProjection* viewProjection, const Vector3& position);
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -124,6 +135,10 @@ private: // メンバ変数
 
 	// 3Dモデル
 	Model* model_ = nullptr;
+	std::vector<Model*> models_;
+	std::vector<Model::Animation*> animas_;
+	std::vector<Model::Skeleton*> skeletons_;
+	float animationTime = 0.0f;
 
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0;
@@ -140,6 +155,8 @@ private: // メンバ変数
 	};
 	bool isAlive_ = true;
 	LRDirection lrDirection_ = LRDirection::kRight;
+
+	Animation nowAnima_ = Animation::idle;
 
 	bool isGravityInvert = false;
 	bool isJumping = false;

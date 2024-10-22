@@ -138,6 +138,8 @@ private:
 	// Player
 	std::unique_ptr<Player> player_ = nullptr;
 	std::unique_ptr<Model> playerModel_ = nullptr;
+	std::vector < Model*> playerModels_;
+	std::vector<Model::Animation*> plAnimas_;
 
 	// Enemy
 	std::unique_ptr<Enemy> enemy_ = nullptr;

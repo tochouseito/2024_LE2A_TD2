@@ -2611,7 +2611,7 @@ void GraphicsPipelineState::CreateGraphicsPipelineSkinning(ID3D12Device* device)
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	// RootParameter作成。PixelShaderのMaterialとVertexShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameter[10] = {};
+	D3D12_ROOT_PARAMETER rootParameter[9] = {};
 	rootParameter[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;// CBVを使う
 	rootParameter[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;// PixelShaderを使う
 	rootParameter[0].Descriptor.ShaderRegister = 0;// レジスタ番号０とバインド
@@ -2679,16 +2679,20 @@ void GraphicsPipelineState::CreateGraphicsPipelineSkinning(ID3D12Device* device)
 	rootParameter[7].DescriptorTable.pDescriptorRanges = &srvDescriptorRangeVS2;// Tableの中身の配列を指定
 	rootParameter[7].DescriptorTable.NumDescriptorRanges = 1;// Tableで利用する数
 
-	// 環境マップ
-	rootParameter[8].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;// DescriptorTableを使う
-	rootParameter[8].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;// PixelShaderを使う
-	rootParameter[8].DescriptorTable.pDescriptorRanges = &srvDescriptorRangePS1;// Tableの中身の配列
-	rootParameter[8].DescriptorTable.NumDescriptorRanges = 1;// Tableで利用する数
+	//// 環境マップ
+	//rootParameter[8].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;// DescriptorTableを使う
+	//rootParameter[8].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;// PixelShaderを使う
+	//rootParameter[8].DescriptorTable.pDescriptorRanges = &srvDescriptorRangePS1;// Tableの中身の配列
+	//rootParameter[8].DescriptorTable.NumDescriptorRanges = 1;// Tableで利用する数
 
-	// スポットライト
-	rootParameter[9].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;// CBVを使う
-	rootParameter[9].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;// PixelShaderを使う
-	rootParameter[9].Descriptor.ShaderRegister = 4;// レジスタ番号3とバインド
+	//// 
+	//rootParameter[9].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;// CBVを使う
+	//rootParameter[9].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;// PixelShaderを使う
+	//rootParameter[9].Descriptor.ShaderRegister = 4;// レジスタ番号3とバインド
+
+	rootParameter[8].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;// CBVを使う
+	rootParameter[8].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;// PixelShaderを使う
+	rootParameter[8].Descriptor.ShaderRegister = 4;// レジスタ番号3とバインド
 
 	descriptionRooTSignature.pParameters = rootParameter;// ルートパラメータ配列へのポインタ
 	descriptionRooTSignature.NumParameters = _countof(rootParameter);// 配列の長さ
