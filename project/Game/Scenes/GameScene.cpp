@@ -24,6 +24,9 @@ GameScene::~GameScene() {
 	for (auto& plAnima : plAnimas_) {
 		delete plAnima;
 	}
+	for (auto& arrowModels : gravityArrowModels_) {
+		delete arrowModels;
+	}
 }
 
 void GameScene::Finalize() {
@@ -123,11 +126,11 @@ void GameScene::Initialize() {
 	enemyAttackWorldTransform_.Initialize();
 
 	// 矢印の生成
-	gravityArrowModel_.resize(2);
-	gravityArrowModel_[0].reset(Model::LordModel("GravityUpArrow"));
-	gravityArrowModel_[1].reset(Model::LordModel("GravityDownArrow"));
+	gravityArrowModels_.push_back(Model::LordModel("GravityUpArrow"));
+	gravityArrowModels_.push_back(Model::LordModel("GravityDownArrow"));
+	gravityArrowModels_.push_back(Model::LordModel("Background"));
 	gravityArrow_ = std::make_unique<GravityArrow>();
-	gravityArrow_->Initialize(gravityArrowModel_[0].get(), gravityArrowModel_[1].get(), &viewProjection_);
+	gravityArrow_->Initialize(gravityArrowModels_, &viewProjection_);
 
 	// 衝突マネージャの生成
 	collisionManager_ = std::make_unique<CollisionManager>();

@@ -1,13 +1,20 @@
 #include "GravityArrow.h"
 
+#include <utility>
+
 #include "Mymath.h"
 
 constexpr float parallaxFactor = 0.0125f;
 constexpr float scrollSpeed = 0.0005f;
 
-void GravityArrow::Initialize(Model* upModel, Model* downModel, ViewProjection* viewProjection) {
-	upModel_ = upModel;
-	downModel_ = downModel;
+enum GravityArrowModels {
+	UpArrow = 0,
+	DownArrow,
+	Bg
+};
+
+void GravityArrow::Initialize(const std::vector<Model*>& models, ViewProjection* viewProjection) {
+	models_ = models;
 
 	worldTransform_.Initialize();
 	worldTransform_.UpdateMatrix();
@@ -29,19 +36,23 @@ void GravityArrow::Update() {
 
 	float uvYTarget = uvY + parallaxY;
 
-	upModel_->GetMaterial()->GetMaterialData()->uvTransform.m[3][0] = uvX; // 横
-	upModel_->GetMaterial()->GetMaterialData()->uvTransform.m[3][1] = uvY; // 縦
-	downModel_->GetMaterial()->GetMaterialData()->uvTransform.m[3][0] = uvX;
-	downModel_->GetMaterial()->GetMaterialData()->uvTransform.m[3][1] = uvY;
+	models_[UpArrow]->GetMaterial()->GetMaterialData()->uvTransform.m[3][0] = uvX; // 横
+	models_[UpArrow]->GetMaterial()->GetMaterialData()->uvTransform.m[3][1] = uvYTarget; // 縦
+	models_[DownArrow]->GetMaterial()->GetMaterialData()->uvTransform.m[3][0] = uvX;
+	models_[DownArrow]->GetMaterial()->GetMaterialData()->uvTransform.m[3][1] = uvYTarget;
+	models_[Bg]->GetMaterial()->GetMaterialData()->uvTransform.m[3][0] = uvX * 20.0f;
+	models_[Bg]->GetMaterial()->GetMaterialData()->uvTransform.m[3][1] = uvYTarget * 20.0f;
 
 	worldTransform_.UpdateMatrix();
 }
 
 void GravityArrow::Draw() {
+	models_[Bg]->Draw(worldTransform_, *viewProjection_);
+
 	if (isUp_) {
-		upModel_->Draw(worldTransform_, *viewProjection_);
+		models_[UpArrow]->Draw(worldTransform_, *viewProjection_);
 	} else {
-		downModel_->Draw(worldTransform_, *viewProjection_);
+		models_[DownArrow]->Draw(worldTransform_, *viewProjection_);
 	}
 }
 

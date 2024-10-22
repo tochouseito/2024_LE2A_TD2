@@ -167,9 +167,6 @@ private:
 	std::vector<std::unique_ptr<PlayerBullet>> bullets_;
 	std::unique_ptr<Model> bulletModel_ = nullptr;
 
-
-	// 動画提出用
-
 	// 針
 	std::vector<std::unique_ptr<Needle>> needles_;
 
@@ -177,7 +174,7 @@ private:
 	std::unique_ptr<Model> downNeedleModel_ = nullptr;
 
 	std::unique_ptr<GravityArrow> gravityArrow_ = nullptr;
-	std::vector<std::unique_ptr<Model>> gravityArrowModel_;
+	std::vector<Model*> gravityArrowModels_;
 
 	// 衝突マネージャ
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
