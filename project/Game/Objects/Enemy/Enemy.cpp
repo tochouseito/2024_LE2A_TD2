@@ -184,6 +184,8 @@ void Enemy::BehaviorUpdate() {
 void Enemy::RootInitialize() {
 	// タイマーをリセット
 	behaviorTimer_ = 0;
+	// 速度をリセット
+	velocity_ = { 0.0f,0.0f,0.0f };
 }
 
 void Enemy::RootUpdate() {
@@ -205,6 +207,10 @@ void Enemy::PreliminaryInitialize() {
 }
 
 void Enemy::PreliminaryUpdate() {
+
+	// 移動処理
+	Move();
+
 	if (behaviorTimer_ < kPreliminaryTime_) {
 		behaviorTimer_++;
 	} else {

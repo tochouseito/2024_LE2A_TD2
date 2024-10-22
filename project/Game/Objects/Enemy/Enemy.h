@@ -82,7 +82,7 @@ private:
 	const float acceleration_ = 0.0006f;
 
 	// 最大速度
-	const float kMaxSpeed_ = 0.12f;
+	const float kMaxSpeed_ = 0.08f;
 
 	// 減速速度
 	const float kSubtractSpeed_ = 0.03f;
