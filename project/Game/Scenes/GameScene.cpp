@@ -18,6 +18,12 @@ GameScene::~GameScene() {
 	delete particles_;
 	delete primitive_;
 	delete serial;
+	for (auto& model : playerModels_) {
+		delete model;
+	}
+	for (auto& plAnima : plAnimas_) {
+		delete plAnima;
+	}
 }
 
 void GameScene::Finalize() {
@@ -124,6 +130,18 @@ void GameScene::Initialize() {
 
 	// Player
 	playerModel_.reset(Model::LordModel("Player"));
+	playerModels_.push_back(Model::LordModel("Idle",true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "Idle"));
+	playerModels_.push_back(Model::LordModel("Jump", true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "Jump"));
+	playerModels_.push_back(Model::LordModel("JumpLoop", true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "JumpLoop"));
+	playerModels_.push_back(Model::LordModel("JumpStart", true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "JumpStart"));
+	playerModels_.push_back(Model::LordModel("Land", true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "Land"));
+	playerModels_.push_back(Model::LordModel("Run", true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "Run"));
 	player_ = std::make_unique<Player>();
 	// CSVからプレイヤーの開始位置を見つける
 	Vector3 playerPosition{};
@@ -136,7 +154,7 @@ void GameScene::Initialize() {
 		}
 	}
 
-	player_->Initialize(playerModel_.get(), &viewProjection_, playerPosition);
+	player_->Initialize(playerModels_,plAnimas_, &viewProjection_, playerPosition);
 	player_->SetMapChipField(mapChipField_.get());
 
 	// Enemy
