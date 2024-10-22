@@ -10,6 +10,11 @@ void TitleScene::Initialize() {
 	titleLogoTextureHandle_ = TextureManager::Load("./Resources/GUI/title.png");
 	titleLogoSprite_ = std::make_unique<Sprite>();
 	titleLogoSprite_->Initialize({ 0.0f,0.0f,0.0f }, &viewProjection_, titleLogoTextureHandle_);
+
+	pressButtonTextureHandle_ = TextureManager::Load("./Resources/GUI/pressbutton.png");
+	pressButtonSprite_ = std::make_unique<Sprite>();
+	pressButtonSprite_->Initialize({ 640.0f,512.0f,0.0f }, &viewProjection_, pressButtonTextureHandle_);
+	pressButtonSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
 }
 
 void TitleScene::Finalize() {}
@@ -53,12 +58,14 @@ void TitleScene::Update() {
 	}
 
 	titleLogoSprite_->Update();
+	pressButtonSprite_->Update();
 
 	viewProjection_.UpdateMatrix();
 }
 
 void TitleScene::Draw() {
 	titleLogoSprite_->Draw();
+	pressButtonSprite_->Draw();
 }
 
 void TitleScene::ChangeScene() {

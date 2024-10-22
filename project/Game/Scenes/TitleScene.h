@@ -40,5 +40,8 @@ private:
 
 	std::string titleLogoTextureHandle_;
 	std::unique_ptr<Sprite> titleLogoSprite_;
+
+	std::string pressButtonTextureHandle_;
+	std::unique_ptr<Sprite> pressButtonSprite_;
 };
 
