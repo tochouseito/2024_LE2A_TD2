@@ -16,12 +16,12 @@ void TitleScene::Initialize() {
 	pressButtonSprite_->Initialize({ 640.0f,512.0f,0.0f }, &viewProjection_, pressButtonTextureHandle_);
 	pressButtonSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
 
-	fadeTerxtureHandle_ = TextureManager::Load("./Resources/white.png");
-	fadeSprite_ = std::make_unique<Sprite>();
-	fadeSprite_->Initialize({ 640.0f,360.0f,0.0f }, &viewProjection_, fadeTerxtureHandle_);
-	fadeSprite_->SetSize(Vector3(1280.0f, 720.0f));
-	fadeSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
-	fadeSprite_->SetColor(color);
+	transitionTerxtureHandle_ = TextureManager::Load("./Resources/white.png");
+	transitionSprite_ = std::make_unique<Sprite>();
+	transitionSprite_->Initialize({ 640.0f,360.0f,0.0f }, &viewProjection_, transitionTerxtureHandle_);
+	transitionSprite_->SetSize(Vector3(1280.0f, 720.0f));
+	transitionSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
+	transitionSprite_->SetColor(color);
 
 	state = { 0.0f, 1 };
 
@@ -51,14 +51,14 @@ void TitleScene::Update() {
 
 	if (keyboardStart || controllerStart) {
 		/*シーン切り替え依頼*/
-		SceneManager::GetInstance()->ChangeScene("SELECT");
+		isTransition_ = true;
 	}
 
 	pressButtonSprite_->SetPosition(EaseInOutBetweenTwoPoints(kButtonStartPos_, kButtonEndPos_, state, deltaTime, speed));
 
 	titleLogoSprite_->Update();
 	pressButtonSprite_->Update();
-	fadeSprite_->Update();
+	transitionSprite_->Update();
 
 	viewProjection_.UpdateMatrix();
 }
@@ -66,7 +66,10 @@ void TitleScene::Update() {
 void TitleScene::Draw() {
 	titleLogoSprite_->Draw();
 	pressButtonSprite_->Draw();
-	//fadeSprite_->Draw();
+
+	if (isTransition_) {
+		transitionSprite_->Draw();
+	}
 }
 
 void TitleScene::ChangeScene() {

@@ -67,9 +67,13 @@ private:
 	std::unique_ptr<Sprite> pressButtonSprite_;
 
 	// フェードスプライト
-	std::string fadeTerxtureHandle_;
-	std::unique_ptr<Sprite> fadeSprite_ = nullptr;
-	Color color = { 1.0f,0.0f,0.0f,1.0f };
+	std::string transitionTerxtureHandle_;
+	std::unique_ptr<Sprite> transitionSprite_ = nullptr;
+	Color color = { 0.0f,0.0f,0.0f,1.0f };
+
+	bool isTransition_ = false;
+	uint32_t transitionTimer_ = 0;
+	const uint32_t kTransitionTime_ = 120;
 
 	//Audio::SoundData titleBGM;
 };
