@@ -56,6 +56,7 @@ public:
 
 	uint32_t GetIsCleared(uint32_t stage);
 
+
 private:
 	/*今のシーン*/
 	BaseScene* scene_ = nullptr;

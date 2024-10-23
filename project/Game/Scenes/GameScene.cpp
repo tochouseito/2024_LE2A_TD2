@@ -230,6 +230,16 @@ void GameScene::Initialize() {
 	isPlayGoalAnimation_ = false;
 
 	cameraZMove_ = 0.05f;
+
+	transitionPos = startPos;
+
+	transitionTerxtureHandle_ = TextureManager::Load("./Resources/white.png");
+	transitionSprite_ = std::make_unique<Sprite>();
+	transitionSprite_->Initialize(transitionPos, &viewProjection_, transitionTerxtureHandle_);
+	transitionSprite_->SetSize(Vector3(1280.0f, 720.0f));
+	transitionSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
+	transitionSprite_->SetColor(color);
+
 }
 
 void GameScene::Update() {
@@ -275,6 +285,24 @@ void GameScene::Update() {
 			mainCamera_->translation_.z = -9.0f;
 		}
 		if (goalAnimationTimer_ == 0) {
+			isTransition_ = true;
+		}
+	}
+
+	if (isTransition_) {
+		// フレームごとにタイマーを進行
+		transitionTimer_ += 1.0f;
+
+		// t の計算 (0.0f から 1.0f の範囲にクランプ)
+		float t = transitionTimer_ / kTransitionTime_;
+		t = std::min(t, 1.0f); // tを1.0fでクランプ
+
+		// `EaseInBetweenTwoPoints` を使ってトランジションの位置を計算
+		transitionPos = EaseInBetweenTwoPoints(startPos, endPos, t);
+		transitionSprite_->SetPosition(transitionPos); // スプライトの位置を更新
+
+		if (t >= 1.0f) {
+			// トランジションが完了したらシーンを切り替える
 			SceneManager::GetInstance()->ChangeScene("SELECT");
 		}
 	}
@@ -314,6 +342,9 @@ void GameScene::Update() {
 
 	// Goal
 	goal_->Update();
+
+	transitionSprite_->Update();
+
 
 	// カメラ移動
 	mainCamera_->translation_.x = std::lerp(mainCamera_->translation_.x, player_->GetWorldPosition().x + player_->GetVelocity().x * deltaTime_->GetDeltaTime(), deltaTime_->GetDeltaTime() * 5.0f);
@@ -447,6 +478,10 @@ void GameScene::Draw() {
 		countNumberSprite_->Draw();
 	}
 
+	if (isTransition_) {
+		transitionSprite_->Draw();
+	}
+
 }
 
 void GameScene::GenerateBlocks() {
@@ -559,5 +594,21 @@ bool GameScene::AABBIntersects(const AABB& a, const AABB& b) {
 
 void GameScene::StartAnimation() {
 
+}
+
+Vector3 GameScene::EaseInBetweenTwoPoints(const Vector3& start, const Vector3& end, float t) {
+	// tを0.0fから1.0fの範囲にクランプ
+	t = std::max(0.0f, std::min(1.0f, t));
+
+	// イーズインのための計算 (tの二乗を使ったイーズイン)
+	float easedT = std::powf(t, 2); // より強いイーズインをするには、2ではなく3や4なども試してみてください
+
+	// 線形補間を使って2点の間を移動
+	Vector3 result;
+	result.x = start.x + (end.x - start.x) * easedT;
+	result.y = start.y + (end.y - start.y) * easedT;
+	result.z = start.z + (end.z - start.z) * easedT;
+
+	return result;
 }
 

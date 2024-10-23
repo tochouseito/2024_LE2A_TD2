@@ -6,7 +6,7 @@
 #include"Sprite.h"
 
 #include"BaseScene.h"
-class StageSelectScene :public BaseScene {
+class StageSelectScene:public BaseScene {
 public:
 	/// <summary>
 	/// 初期化
@@ -33,7 +33,12 @@ public:
 	/// </summary>
 	void ChangeScene()override;
 
-	void SetSceneManager(SceneManager* sceneManager) override { sceneManager_ = sceneManager; }
+	void SetSceneManager(SceneManager* sceneManager) override {
+		sceneManager_ = sceneManager;
+	}
+
+
+	Vector3 EaseInBetweenTwoPoints(const Vector3& start, const Vector3& end, float t);
 
 private:
 	SceneManager* sceneManager_ = nullptr;
@@ -109,6 +114,21 @@ private:
 
 	// 前のフレームで選択していたステージ
 	uint32_t oldStageNum_ = 0;
+
+
+	// フェードスプライト
+	std::string transitionTerxtureHandle_;
+	std::unique_ptr<Sprite> transitionSprite_ = nullptr;
+	Color color = { 0.0f,0.0f,0.0f,1.0f };
+
+
+	Vector3 transitionPos = { 0.0f,0.0f,0.0f };
+	Vector3 endPos = { 640.f,360.0f,0.0f };
+	Vector3 startPos = { 1920.0f,360.0f,0.0f };
+
+	bool isTransition_ = false;
+	float transitionTimer_ = 0.0f;
+	const float kTransitionTime_ = 45.0f;
 
 };
 

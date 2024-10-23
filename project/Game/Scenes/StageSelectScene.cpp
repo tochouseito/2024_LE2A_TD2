@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include "StageSelectScene.h"
 #include"SceneManager.h"
 #include"imgui.h"
@@ -93,6 +95,16 @@ void StageSelectScene::Initialize() {
 	map4Sprite_->SetTexSize({ 2280.0f, 1092.0f,0.0f });
 
 	currentStageNum_ = 1;
+
+	transitionPos = startPos;
+
+	transitionTerxtureHandle_ = TextureManager::Load("./Resources/white.png");
+	transitionSprite_ = std::make_unique<Sprite>();
+	transitionSprite_->Initialize(transitionPos, &viewProjection_, transitionTerxtureHandle_);
+	transitionSprite_->SetSize(Vector3(1280.0f, 720.0f));
+	transitionSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
+	transitionSprite_->SetColor(color);
+
 }
 
 void StageSelectScene::Finalize() {
@@ -217,6 +229,27 @@ void StageSelectScene::Update() {
 		stickX = static_cast<float>(controllerState.Gamepad.sThumbLX) / 32767.0f;  // 正規化したスティックのX入力（-1.0 ~ 1.0）
 	}
 
+
+	if (isTransition_) {
+		// フレームごとにタイマーを進行
+		transitionTimer_ += 1.0f;
+
+		// t の計算 (0.0f から 1.0f の範囲にクランプ)
+		float t = transitionTimer_ / kTransitionTime_;
+		t = std::min(t, 1.0f); // tを1.0fでクランプ
+
+		// `EaseInBetweenTwoPoints` を使ってトランジションの位置を計算
+		transitionPos = EaseInBetweenTwoPoints(startPos, endPos, t);
+		transitionSprite_->SetPosition(transitionPos); // スプライトの位置を更新
+
+		if (t >= 1.0f) {
+			// トランジションが完了したらシーンを切り替える
+			SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+		}
+	}
+
+	transitionSprite_->Update();
+
 	// 左右移動入力
 	bool keyboardMoveLeft = Input::GetInstance()->PushKey(DIK_A);
 	bool keyboardMoveRight = Input::GetInstance()->PushKey(DIK_D);
@@ -231,7 +264,11 @@ void StageSelectScene::Update() {
 	// ステージ番号の選択と決定
 	if (keyboardStart || controllerStart) {
 		sceneManager_->SetCurrentStageNum(currentStageNum_);
-		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+
+		if (!isTransition_) {
+			isTransition_ = true;
+			transitionTimer_ = 0.0f; // リセットしてトランジションの開始
+		}
 	}
 
 	// 初回入力の処理
@@ -347,20 +384,20 @@ void StageSelectScene::Draw() {
 
 	// map1
 	switch (currentStageNum_) {
-	case 1:
-		map1Sprite_->Draw();
-		break;
-	case 2:
-		map2Sprite_->Draw();
-		break;
-	case 3:
-		map3Sprite_->Draw();
-		break;
-	case 4:
-		map4Sprite_->Draw();
-		break;
-	default:
-		break;
+		case 1:
+			map1Sprite_->Draw();
+			break;
+		case 2:
+			map2Sprite_->Draw();
+			break;
+		case 3:
+			map3Sprite_->Draw();
+			break;
+		case 4:
+			map4Sprite_->Draw();
+			break;
+		default:
+			break;
 	}
 
 
@@ -369,6 +406,28 @@ void StageSelectScene::Draw() {
 	for (uint32_t i = 0; i < 5; i++) {
 		smallNumberSprite_[i]->Draw();
 	}
+
+	if (isTransition_) {
+		transitionSprite_->Draw();
+	}
+
 }
 
 void StageSelectScene::ChangeScene() {}
+
+Vector3 StageSelectScene::EaseInBetweenTwoPoints(const Vector3& start, const Vector3& end, float t) {
+	// tを0.0fから1.0fの範囲にクランプ
+	t = std::max(0.0f, std::min(1.0f, t));
+
+	// イーズインのための計算 (tの二乗を使ったイーズイン)
+	float easedT = std::powf(t, 2); // より強いイーズインをするには、2ではなく3や4なども試してみてください
+
+	// 線形補間を使って2点の間を移動
+	Vector3 result;
+	result.x = start.x + (end.x - start.x) * easedT;
+	result.y = start.y + (end.y - start.y) * easedT;
+	result.z = start.z + (end.z - start.z) * easedT;
+
+	return result;
+
+}
