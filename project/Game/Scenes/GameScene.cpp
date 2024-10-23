@@ -144,6 +144,8 @@ void GameScene::Initialize() {
 	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "Land"));
 	playerModels_.push_back(Model::LordModel("Run", true));
 	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "Run"));
+	playerModels_.push_back(Model::LordModel("GoalPose", true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "GoalPose"));
 	player_ = std::make_unique<Player>();
 	// CSVからプレイヤーの開始位置を見つける
 	Vector3 playerPosition{};
@@ -189,7 +191,8 @@ void GameScene::Initialize() {
 	enemy_->Initialize(models, &viewProjection_, enemyPosition);
 
 	// Goal
-	goalModel_.reset(Model::CreateSphere());
+	goalModels_.push_back(Model::LordModel("Exit"));
+	goalModels_.push_back(Model::LordModel("ExitEmissive"));
 	goal_ = std::make_unique<Goal>();
 	// CSVからエネミーの開始位置を見つける
 	Vector3 goalPosition{};
@@ -201,7 +204,7 @@ void GameScene::Initialize() {
 			}
 		}
 	}
-	goal_->Initialize(goalModel_.get(), &viewProjection_, goalPosition);
+	goal_->Initialize(goalModels_, &viewProjection_, goalPosition);
 
 	isPlayStartAnimation_ = true;
 	sceneStartAnimationTimer_ = kSceneStartAnimationTime_;
@@ -241,9 +244,13 @@ void GameScene::Update() {
 	// もしゴールしていたら
 	if (goal_->GetIsGoal()) {
 		/*シーン切り替え依頼*/
-		SceneManager::GetInstance()->ChangeScene("RESULT");
+
+		player_->SetIsGoal(true);
+		player_->SetPos(goal_->GetCenterPosition() - Vector3(0.0f, 1.0f, 0.0f)
+		);
+		//SceneManager::GetInstance()->ChangeScene("RESULT");
 	} else if (!player_->GetIsAlive()) {
-		SceneManager::GetInstance()->ChangeScene("RESULT");
+		//SceneManager::GetInstance()->ChangeScene("RESULT");
 	}
 
 	// player

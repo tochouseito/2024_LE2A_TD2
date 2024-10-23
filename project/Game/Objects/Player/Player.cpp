@@ -56,23 +56,26 @@ void Player::Update() {
 	CollisionMapInfo collisionMapInfo;
 	// 移動入力
 	// 設置状態
-	if (!isPlayStartAnimation_) {
+	if (!isPlayStartAnimation_ && !isGoal_) {
 		CharMove();
 	}
-	// 移動量に速度の値をコピー
-	collisionMapInfo.movement = velocity_;
-	// 移動量を加味して衝突判定する
-	MapCollision(collisionMapInfo);
-	// 判定結果を反映して移動させる
-	HitMove(collisionMapInfo);
-	// 天井に接触している場合の処理
-	HitCeiling(collisionMapInfo);
-	// 壁に接触している場合の処理
-	HitWall(collisionMapInfo);
-	// 設置状態の切り替え
-	OnGround(collisionMapInfo);
-	// 旋回制御
-	TurnControl();
+
+	if (!isGoal_) {
+		// 移動量に速度の値をコピー
+		collisionMapInfo.movement = velocity_;
+		// 移動量を加味して衝突判定する
+		MapCollision(collisionMapInfo);
+		// 判定結果を反映して移動させる
+		HitMove(collisionMapInfo);
+		// 天井に接触している場合の処理
+		HitCeiling(collisionMapInfo);
+		// 壁に接触している場合の処理
+		HitWall(collisionMapInfo);
+		// 設置状態の切り替え
+		OnGround(collisionMapInfo);
+		// 旋回制御
+		TurnControl();
+	}
 
 	if (isGravityInvert) {
 		targetRotZ = std::numbers::pi_v<float>;
@@ -100,6 +103,12 @@ void Player::Update() {
 
 	// 徐々に回転
 	worldTransform_.rotation_.z = std::lerp(worldTransform_.rotation_.z, targetRotZ, 1.0f / 60.0f * 16.0f); // TODO : deltaTimeにする
+
+	if (isGoal_) {
+		worldTransform_.rotation_.x = 0.0f;
+		worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
+		worldTransform_.rotation_.z = 0.0f;
+	}
 
 #ifdef _DEBUG
 	ImGui::Begin("Player");
@@ -186,6 +195,11 @@ void Player::Update() {
 			nowAnima_ = Animation::JumpLoop;
 		}
 	}
+
+	if (isGoal_) {
+		nowAnima_ = Animation::GoalPose;
+	}
+
 	limitAnimaTime -= 1.0f / 60.0f;
 	animationTime += 1.0f / 60.0f;// 時刻を進める。1/60で固定してあるが、計測した時間を使って可変フレーム対応するほうが望ましい
 	animationTime = std::fmod(animationTime, animas_[nowAnima_]->duration);
@@ -195,7 +209,6 @@ void Player::Update() {
 	models_[nowAnima_]->SkinClusterUpdata(models_[nowAnima_]->GetSkinCluster(), skeletons_[nowAnima_]);
 
 	worldTransform_.UpdateMatrix();
-
 }
 
 void Player::Draw() {
@@ -204,9 +217,14 @@ void Player::Draw() {
 		models_[nowAnima_]->Draw(worldTransform_, *viewProjection_);
 	}*/
 	if (isAlive_) {
-		models_[nowAnima_]->ApplyCS();
-		models_[nowAnima_]->DrawCS(worldTransform_, *viewProjection_, "none");
+
 	}
+	models_[nowAnima_]->ApplyCS();
+	models_[nowAnima_]->DrawCS(worldTransform_, *viewProjection_, "none");
+}
+
+void Player::SetIsGoal(const bool newIsGoal) {
+	isGoal_ = newIsGoal;
 }
 
 // 移動入力
@@ -517,6 +535,10 @@ void Player::SetIsHitEnemyAttack(const bool& isHitEnemyAttack) {
 
 void Player::SetIsPlayStartAnimation(const bool& isStartAnimation) {
 	isPlayStartAnimation_ = isStartAnimation;
+}
+
+void Player::SetPos(const Vector3 newPos) {
+	worldTransform_.translation_ = newPos;
 }
 
 //void Player::OnCollision(const Enemy* enemy) {

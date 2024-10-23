@@ -1,15 +1,12 @@
 #include "Goal.h"
 #include <cassert>
 #include "numbers"
-#include "algorithm"
-#include "imgui.h"
 #include "Input.h"
 #include "Mymath.h"
 #include "CollisionManager/CollisionTypeIdDef.h"
-#include "math/Easing.h"
 
 
-void Goal::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position) {
+void Goal::Initialize(const std::vector<Model*>& models, ViewProjection* viewProjection, const Vector3& position) {
 	assert(model);
 
 	// ファイル名を指定してテクスチャを読み込む
@@ -21,7 +18,9 @@ void Goal::Initialize(Model* model, ViewProjection* viewProjection, const Vector
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
 	worldTransform_.scale_ *= 0.5f;
 	// 3Dモデルの生成
-	model_ = model;
+	models_ = models;
+
+	models_[1]->GetMaterial()->GetMaterialData()->enableLighting = false;
 
 	viewProjection_ = viewProjection;
 
@@ -40,7 +39,9 @@ void Goal::Update() {
 
 void Goal::Draw() {
 	// 3Dモデルを描画
-	model_->Draw(worldTransform_, *viewProjection_);
+	for (const auto value : models_) {
+		value->Draw(worldTransform_, *viewProjection_);
+	}
 }
 
 void Goal::OnCollision(Collider* other) {
