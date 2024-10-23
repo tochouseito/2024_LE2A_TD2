@@ -43,5 +43,9 @@ private:
 
 	std::string pressButtonTextureHandle_;
 	std::unique_ptr<Sprite> pressButtonSprite_;
+
+	std::string fadeTerxtureHandle_;
+	// フェードスプライト
+	std::unique_ptr<Sprite> fadeSprite_ = nullptr;
 };
 

@@ -15,6 +15,9 @@ void TitleScene::Initialize() {
 	pressButtonSprite_ = std::make_unique<Sprite>();
 	pressButtonSprite_->Initialize({ 640.0f,512.0f,0.0f }, &viewProjection_, pressButtonTextureHandle_);
 	pressButtonSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
+
+	fadeTerxtureHandle_ = TextureManager::Load("./Resources/white.png");
+
 }
 
 void TitleScene::Finalize() {}
