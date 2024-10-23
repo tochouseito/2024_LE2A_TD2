@@ -228,6 +228,8 @@ void GameScene::Initialize() {
 	animationSubtractScale_ = 0.01f;
 
 	isPlayGoalAnimation_ = false;
+
+	cameraZMove_ = 0.05f;
 }
 
 void GameScene::Update() {
@@ -266,9 +268,14 @@ void GameScene::Update() {
 
 	if (isPlayGoalAnimation_) {
 		goalAnimationTimer_--;
-		mainCamera_->translation_.z += 0.1f;
+		cameraZMove_ += kCameraZMove_;
+		if (mainCamera_->translation_.z < -10.0f) {
+			mainCamera_->translation_.z += cameraZMove_;
+		} else {
+			mainCamera_->translation_.z = -9.0f;
+		}
 		if (goalAnimationTimer_ == 0) {
-			SceneManager::GetInstance()->ChangeScene("RESULT");
+			SceneManager::GetInstance()->ChangeScene("SELECT");
 		}
 	}
 
@@ -293,7 +300,7 @@ void GameScene::Update() {
 		sceneManager_->SetIsCleared(true, sceneManager_->GetCurrentStageNumber());
 		sceneManager_->SetIsClear(true);
 	} else if (!player_->GetIsAlive()) {
-		SceneManager::GetInstance()->ChangeScene("RESULT");
+		SceneManager::GetInstance()->ChangeScene("SELECT");
 		sceneManager_->SetIsClear(false);
 	}
 
