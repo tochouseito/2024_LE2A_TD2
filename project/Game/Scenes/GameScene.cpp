@@ -210,6 +210,8 @@ void GameScene::Update() {
 	if (goal_->GetIsGoal()) {
 		/*シーン切り替え依頼*/
 		SceneManager::GetInstance()->ChangeScene("RESULT");
+	} else if (!player_->GetIsAlive()) {
+		SceneManager::GetInstance()->ChangeScene("RESULT");
 	}
 
 	// player
@@ -306,17 +308,7 @@ void GameScene::Draw() {
 
 	// エネミー
 	enemy_->Draw();
-	switch (enemy_->GetBehavior()) {
-		case Enemy::Behavior::kRoot:
 
-			break;
-		case Enemy::Behavior::kPreliminary:
-			enemyPreliminaryModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
-			break;
-		case Enemy::Behavior::kAttack:
-			enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
-			break;
-	}
 
 	// ゴール
 	goal_->Draw();
@@ -340,6 +332,18 @@ void GameScene::Draw() {
 	for (std::unique_ptr<Needle>& needle : needles_) {
 		needle->Draw();
 
+	}
+
+	switch (enemy_->GetBehavior()) {
+	case Enemy::Behavior::kRoot:
+
+		break;
+	case Enemy::Behavior::kPreliminary:
+		enemyPreliminaryModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+		break;
+	case Enemy::Behavior::kAttack:
+		enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+		break;
 	}
 
 	collisionManager_->Draw(viewProjection_);
@@ -426,23 +430,23 @@ void GameScene::EnemyAttack(const uint32_t& enemyAttackYIndex, const Enemy::Beha
 	enemyAttackWorldTransform_.UpdateMatrix();
 
 	switch (behavior) {
-		case Enemy::Behavior::kRoot:
-			Vector3 playerWorldPosition = player_->GetWorldPosition();
-			enemy_->SetPreliminaryYIndex(mapChipField_->GetMapChipIndexSetByPosition(playerWorldPosition).yIndex);
-			player_->SetIsHitEnemyAttack(false);
-			break;
-		case Enemy::Behavior::kPreliminary:
-			player_->SetIsHitEnemyAttack(false);
-			break;
-		case Enemy::Behavior::kAttack:
+	case Enemy::Behavior::kRoot:
+		Vector3 playerWorldPosition = player_->GetWorldPosition();
+		enemy_->SetPreliminaryYIndex(mapChipField_->GetMapChipIndexSetByPosition(playerWorldPosition).yIndex);
+		player_->SetIsHitEnemyAttack(false);
+		break;
+	case Enemy::Behavior::kPreliminary:
+		player_->SetIsHitEnemyAttack(false);
+		break;
+	case Enemy::Behavior::kAttack:
 
-			if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
-				// 攻撃がヒットした時の処理
-				player_->SetIsHitEnemyAttack(true);
-			} else {
-				player_->SetIsHitEnemyAttack(false);
-			}
-			break;
+		if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
+			// 攻撃がヒットした時の処理
+			player_->SetIsHitEnemyAttack(true);
+		} else {
+			player_->SetIsHitEnemyAttack(false);
+		}
+		break;
 	}
 }
 
