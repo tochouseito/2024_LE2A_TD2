@@ -5,6 +5,8 @@
 // 2D
 #include"Sprite.h"
 
+#include"Audio.h"
+
 #include"BaseScene.h"
 class StageSelectScene :public BaseScene {
 public:
@@ -110,5 +112,6 @@ private:
 	// 前のフレームで選択していたステージ
 	uint32_t oldStageNum_ = 0;
 
+	Audio::SoundData titleBGM;
 };
 

@@ -7,10 +7,18 @@ void ResultScene::Initialize() {
 	isClear_ = sceneManager_->GetIsClear();
 	// クリア時間をセット
 	clearTime_ = sceneManager_->GetClearTime(sceneManager_->GetCurrentStageNumber());
+	if (isClear_) {
+		fanfare = Audio::GetInstance()->SoundLordWave("./Resources/Victory.wav");
+	} else
+	{
+		fanfare = Audio::GetInstance()->SoundLordWave("./Resources/Icy-Game-Over.wav");
+	}
+	Audio::GetInstance()->SoundPlayWave(Audio::GetInstance()->GetXAudio2(), fanfare);
 }
 
 void ResultScene::Finalize() {
-
+	Audio::GetInstance()->SoundStop(fanfare);
+	Audio::GetInstance()->SoundUnLord(&fanfare);
 }
 
 void ResultScene::Update() {

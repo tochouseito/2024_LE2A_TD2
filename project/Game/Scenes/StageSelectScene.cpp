@@ -16,6 +16,9 @@ void StageSelectScene::Initialize() {
 
 	viewProjection_.Initialize();
 	DirectXCommon::GetInstance()->SetViewProjection(&viewProjection_);
+	Audio::GetInstance()->Initialize();
+	titleBGM = Audio::GetInstance()->SoundLordWave("./Resources/it_takes_a_hero.wav");
+	Audio::GetInstance()->SoundPlayWave(Audio::GetInstance()->GetXAudio2(), titleBGM, true);
 
 	selectSceneTextureHandle_ = TextureManager::Load("./Resources/GUI/select.png");
 	selectSceneSprite_ = std::make_unique<Sprite>();
@@ -96,9 +99,13 @@ void StageSelectScene::Initialize() {
 }
 
 void StageSelectScene::Finalize() {
+	Audio::GetInstance()->SoundStop(titleBGM);
+	Audio::GetInstance()->SoundUnLord(&titleBGM);
+
 	for (Sprite* const graySprite : graySprite_) {
 		delete graySprite;
 	}
+
 }
 
 void StageSelectScene::Update() {
