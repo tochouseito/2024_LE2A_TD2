@@ -163,38 +163,31 @@ bool Input::TriggerKey(uint8_t keyNumber) const {
 	return false;
 }
 
-const DIMOUSESTATE2& Input::GetAllMouse() const
-{
+const DIMOUSESTATE2& Input::GetAllMouse() const {
 	return mouse;
 }
 
-bool Input::IsPressMouse(int32_t mouseNumber) const
-{
+bool Input::IsPressMouse(int32_t mouseNumber) const {
 	return mouse.rgbButtons[mouseNumber] & 0x80;
 }
 
-bool Input::IsTriggerMouse(int32_t buttonNumber) const
-{
+bool Input::IsTriggerMouse(int32_t buttonNumber) const {
 	return (mouse.rgbButtons[buttonNumber] & 0x80) && !(mousePre.rgbButtons[buttonNumber] & 0x80);
 }
 
-Input::MouseMove Input::GetMouseMove()
-{
+Input::MouseMove Input::GetMouseMove() {
 	MouseMove move = { mouse.lX, mouse.lY, mouse.lZ };
 	return move;
 }
 
-int32_t Input::GetWheel() const
-{
+int32_t Input::GetWheel() const {
 	return mouse.lZ;
 }
 
-const Vector2& Input::GetMousePosition() const
-{
+const Vector2& Input::GetMousePosition() const {
 	return mousePosition_;
 }
-bool Input::GetJoystickState(int32_t stickNo, XINPUT_STATE& out) const
-{
+bool Input::GetJoystickState(int32_t stickNo, XINPUT_STATE& out) const {
 	if (stickNo < 0 || stickNo >= devJoysticks_.size()) return false;
 	if (devJoysticks_[stickNo].type_ != PadType::XInput) return false;
 
@@ -202,8 +195,7 @@ bool Input::GetJoystickState(int32_t stickNo, XINPUT_STATE& out) const
 	return true;
 }
 
-bool Input::GetJoystickStatePrevious(int32_t stickNo, XINPUT_STATE& out) const
-{
+bool Input::GetJoystickStatePrevious(int32_t stickNo, XINPUT_STATE& out) const {
 	if (stickNo < 0 || stickNo >= devJoysticks_.size()) return false;
 	if (devJoysticks_[stickNo].type_ != PadType::XInput) return false;
 
@@ -211,21 +203,27 @@ bool Input::GetJoystickStatePrevious(int32_t stickNo, XINPUT_STATE& out) const
 	return true;
 }
 
-void Input::SetJoystickDeadZone(int32_t stickNo, int32_t deadZoneL, int32_t deadZoneR)
-{
+void Input::SetJoystickDeadZone(int32_t stickNo, int32_t deadZoneL, int32_t deadZoneR) {
 }
 
-size_t Input::GetNumberOfJoysticks()
-{
+size_t Input::GetNumberOfJoysticks() {
 	return size_t();
 }
 
-bool Input::TriggerControllerButton(int32_t stickNo, WORD button)
-{
+bool Input::TriggerControllerButton(int32_t stickNo, WORD button) {
 	XINPUT_STATE currentState;
 	XINPUT_STATE previousState;
 	if (GetJoystickState(stickNo, currentState) && GetJoystickStatePrevious(stickNo, previousState)) {
 		return ((currentState.Gamepad.wButtons & button) != 0) && ((previousState.Gamepad.wButtons & button) == 0);
+	}
+	return false;
+}
+
+bool Input::PushControllerButton(int32_t stickNo, WORD button) {
+	XINPUT_STATE currentState;
+	if (GetJoystickState(stickNo, currentState)) {
+		// 押されている場合は true を返す
+		return (currentState.Gamepad.wButtons & button) != 0;
 	}
 	return false;
 }

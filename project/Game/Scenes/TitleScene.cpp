@@ -29,30 +29,13 @@ void TitleScene::Update() {
 	ImGui::End();
 #endif // _DEBUG
 
-	//XINPUT_STATE controllerState;
-	//bool controllerConnected = Input::GetInstance()->GetJoystickState(0, controllerState);
+	XINPUT_STATE controllerState;
+	bool controllerConnected = Input::GetInstance()->GetJoystickState(0, controllerState);
 
-	//float stickX = 0.0f;
-	//if (controllerConnected) {s
-	//	stickX = static_cast<float>(controllerState.Gamepad.sThumbLX) / 32767.0f;  // 正規化したスティックのX入力（-1.0 ~ 1.0）
-	//}
-	//// 左右移動入力
-	//bool keyboardMoveLeft = Input::GetInstance()->PushKey(DIK_A);
-	//bool keyboardMoveRight = Input::GetInstance()->PushKey(DIK_D);
-	//bool controllerMoveLeft = stickX < -0.2f;
-	//bool controllerMoveRight = stickX > 0.2f;
-	//if (keyboardMoveLeft || keyboardMoveRight || controllerMoveLeft || controllerMoveRight) {
-	//	// 左右処理
-	//	Vector3 acceleration = {};
-	//	if (keyboardMoveRight || controllerMoveRight) {
-	//		// 左移動中の右入力
-	//	} else if (keyboardMoveLeft || controllerMoveLeft) {
-	//		// 右移動中の左入力
-	//	}
-	//}
+	bool keyboardStart = Input::GetInstance()->TriggerKey(DIK_SPACE);
+	bool controllerStart = controllerConnected && Input::GetInstance()->TriggerControllerButton(0, XINPUT_GAMEPAD_A);
 
-
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+	if (keyboardStart || controllerStart) {
 		/*シーン切り替え依頼*/
 		SceneManager::GetInstance()->ChangeScene("SELECT");
 	}

@@ -72,13 +72,22 @@ private:
 	std::unique_ptr<Sprite> map3Sprite_;
 
 
+	// キーリピート用のタイマー
+	float keyRepeatDelay = 0.2f;    // 初回リピート遅延時間（0.5秒）
+	float keyRepeatInterval = 0.1f; // リピート間隔（0.1秒）
+	float moveTimer = 0.0f;         // タイマーの初期化
+	bool moveTriggered = false;     // 初回の移動がトリガーされたかどうか
+
 	// 時間
-	float t = 0.0f;
+	float scrollTimer_ = 0.0f;
 
 	// 最大ステージ数
 	const uint32_t kMaxStageNum_ = 3;
 
 	// 現在選択しているステージ数
 	uint32_t currentStageNum_ = 1;
+
+	// 前のフレームで選択していたステージ
+	uint32_t oldStageNum_ = 0;
 };
 
