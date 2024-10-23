@@ -47,7 +47,7 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	audio_ = Audio::GetInstance();
 	BGM = audio_->SoundLordWave("./Resources/8.bit_.dub_.wav");
-	audio_->SoundPlayWave(audio_->GetXAudio2(),BGM);
+	audio_->SoundPlayWave(audio_->GetXAudio2(), BGM);
 	// カメラ
 	viewProjection_.Initialize();
 
@@ -244,6 +244,7 @@ void GameScene::Initialize() {
 	transitionSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
 	transitionSprite_->SetColor(color);
 
+	transitionTimer_ = 0.0f;
 }
 
 void GameScene::Update() {
