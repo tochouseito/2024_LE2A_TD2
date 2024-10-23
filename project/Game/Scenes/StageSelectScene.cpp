@@ -29,6 +29,22 @@ void StageSelectScene::Initialize() {
 	numberSprite_->SetSize(Vector3(48.0f, 48.0f, 0.0f));
 	numberSprite_->SetTexSize(Vector3(48.0f, 48.0f, 0.0f));
 
+
+	smallNumberTextureHandle_ = TextureManager::Load("./Resources/GUI/timeNumbers.png");
+	for (uint32_t i = 0; i < 5; i++) {
+		smallNumberSprite_[i] = std::make_unique<Sprite>();
+		smallNumberSprite_[i]->Initialize({ 810.0f - 64.0f + i * 32.0f,94.0f }, &viewProjection_, smallNumberTextureHandle_);
+		smallNumberSprite_[i]->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
+		smallNumberSprite_[i]->SetSize(Vector3(32.0f, 32.0f, 0.0f));
+		smallNumberSprite_[i]->SetTexSize(Vector3(32.0f, 32.0f, 0.0f));
+	}
+	smallNumberSprite_[0]->SetTexLeftTop(Vector3(0.0f, 0.0f, 0.0f));
+	smallNumberSprite_[1]->SetTexLeftTop(Vector3(0.0f, 0.0f, 0.0f));
+	smallNumberSprite_[2]->SetTexLeftTop(Vector3(32.0f * 10.0f, 0.0f, 0.0f));
+	smallNumberSprite_[3]->SetTexLeftTop(Vector3(0.0f, 0.0f, 0.0f));
+	smallNumberSprite_[4]->SetTexLeftTop(Vector3(0.0f, 0.0f, 0.0f));
+
+
 	baseTextureHandle_ = TextureManager::Load("./Resources/GUI/selectBase.png");
 	baseSprite_ = std::make_unique<Sprite>();
 	baseSprite_->Initialize({ 640.0f,360.0f + 3.0f,0.0f }, &viewProjection_, baseTextureHandle_);
@@ -38,6 +54,7 @@ void StageSelectScene::Initialize() {
 	greenSprite_ = std::make_unique<Sprite>();
 	greenSprite_->Initialize({ 640.0f,360.0f,0.0f }, &viewProjection_, greenTextureHandle_);
 	greenSprite_->SetAnchorPoint({ 0.5f,0.5f,0.0f });
+
 
 	map1TextureHandle_ = TextureManager::Load("./Resources/Map1.png");
 	map1Sprite_ = std::make_unique<Sprite>();
@@ -125,6 +142,10 @@ void StageSelectScene::Update() {
 	baseSprite_->Update();
 	greenSprite_->Update();
 
+	for (uint32_t i = 0; i < 5; i++) {
+		smallNumberSprite_[i]->Update();
+	}
+
 	map1Sprite_->Update();
 	map2Sprite_->Update();
 	map3Sprite_->Update();
@@ -144,17 +165,21 @@ void StageSelectScene::Draw() {
 
 	// map1
 	switch (currentStageNum_) {
-	case 1:
-		map1Sprite_->Draw();
-		break;
-	case 2:
-		map2Sprite_->Draw();
-		break;
-	case 3:
-		map3Sprite_->Draw();
-		break;
-	default:
-		break;
+		case 1:
+			map1Sprite_->Draw();
+			break;
+		case 2:
+			map2Sprite_->Draw();
+			break;
+		case 3:
+			map3Sprite_->Draw();
+			break;
+		default:
+			break;
+	}
+
+	for (uint32_t i = 0; i < 5; i++) {
+		smallNumberSprite_[i]->Draw();
 	}
 
 	greenSprite_->Draw();

@@ -53,6 +53,10 @@ private:
 	std::string numberTextureHandle_;
 	std::unique_ptr<Sprite> numberSprite_;
 
+	// 小さい数字
+	std::string smallNumberTextureHandle_;
+	std::unique_ptr<Sprite> smallNumberSprite_[5];
+
 	// 後ろのやつ
 	std::string baseTextureHandle_;
 	std::unique_ptr<Sprite> baseSprite_;
