@@ -161,6 +161,8 @@ public:
 	size_t GetNumberOfJoysticks();
 
 	bool TriggerControllerButton(int32_t stickNo, WORD button);
+
+	bool PushControllerButton(int32_t stickNo, WORD button);
 private:
 	Input() = default;
 	~Input() = default;

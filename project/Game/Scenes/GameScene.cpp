@@ -252,7 +252,7 @@ void GameScene::Update() {
 
 	// Enemy
 	enemy_->SetPlayerPos(player_->GetWorldPosition());
-	enemy_->Update();
+	//enemy_->Update();
 
 	// Goal
 	goal_->Update();
