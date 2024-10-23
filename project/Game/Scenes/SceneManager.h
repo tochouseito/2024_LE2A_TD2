@@ -78,7 +78,11 @@ private:
 	uint32_t clearTime_[kMaxStageNum_] = { 0,0,0 };
 	uint32_t clearTimeMinutes_[kMaxStageNum_][4]{};
 
+
+	Audio::SoundData titleBGM;
+
 	bool isCleared_[kMaxStageNum_] = {};
+
 
 };
 

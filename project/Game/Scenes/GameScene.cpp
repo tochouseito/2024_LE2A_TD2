@@ -30,8 +30,8 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Finalize() {
-	audio_->Finalize();
-	audio_->SoundUnLord(&SoundData1);
+	
+	//audio_->SoundUnLord(&SoundData1);
 }
 
 void GameScene::Initialize() {

@@ -23,9 +23,13 @@ void TitleScene::Initialize() {
 	fadeSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
 	fadeSprite_->SetColor(color);
 
+	/*titleBGM = Audio::GetInstance()->SoundLordWave("./Resources/it_takes_a_hero.wav");
+	Audio::GetInstance()->SoundPlayWave(Audio::GetInstance()->GetXAudio2(), titleBGM, true);*/
 }
 
-void TitleScene::Finalize() {}
+void TitleScene::Finalize() {
+	/*Audio::GetInstance()->SoundUnLord(&titleBGM);*/
+}
 
 void TitleScene::Update() {
 #ifdef _DEBUG

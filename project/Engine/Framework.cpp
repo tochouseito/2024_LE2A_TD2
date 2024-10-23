@@ -35,6 +35,7 @@ void Framework::Initialize()
 
 void Framework::Finalize()
 {
+	audio->Finalize();
 	dxCommon->FenceClose();
 	// ImGui解放
 	imguiManager->Finalize();
