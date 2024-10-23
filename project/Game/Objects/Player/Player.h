@@ -127,6 +127,8 @@ public: // メンバ関数
 	// 接地したか
 	bool IsLand()const { return land; }
 
+	void SetIsPlayStartAnimation(const bool& isStartAnimation);
+
 private: // メンバ変数
 
 	// マップチップフィールドによるフィールド
@@ -202,5 +204,8 @@ private: // メンバ変数
 	bool isHitNeedle = false;
 	// エネミーの攻撃を食らっているかどうか
 	bool isHitEnemyAttack_ = false;
+
+	// スタートアニメーションフラグ
+	bool isPlayStartAnimation_ = true;
 };
 

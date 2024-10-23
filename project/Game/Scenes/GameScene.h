@@ -90,6 +90,9 @@ public:
 
 	bool AABBIntersects(const AABB& a, const AABB& b);
 
+
+	void StartAnimation();
+
 private:
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -187,4 +190,12 @@ private:
 	AABB enemyAttackAABB_{};
 
 	uint32_t currentStageNum_ = 1;
+
+	// アニメーションの時間
+	const uint32_t kSceneStartAnimationTime_ = 240;
+	// アニメーションの現在タイマー
+	uint32_t sceneStartAnimationTimer_ = 0;
+
+	// アニメーション
+	bool isPlayStartAnimation_ = true;
 };

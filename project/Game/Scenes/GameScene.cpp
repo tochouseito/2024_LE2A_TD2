@@ -41,7 +41,6 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	audio_ = Audio::GetInstance();
 
-
 	// カメラ
 	viewProjection_.Initialize();
 
@@ -203,9 +202,23 @@ void GameScene::Initialize() {
 		}
 	}
 	goal_->Initialize(goalModel_.get(), &viewProjection_, goalPosition);
+
+	isPlayStartAnimation_ = true;
+	sceneStartAnimationTimer_ = kSceneStartAnimationTime_;
+	player_->SetIsPlayStartAnimation(isPlayStartAnimation_);
+	enemy_->SetIsStartAnimation(isPlayStartAnimation_);
 }
 
 void GameScene::Update() {
+	if (isPlayStartAnimation_) {
+		sceneStartAnimationTimer_--;
+		if (sceneStartAnimationTimer_ == 0) {
+			isPlayStartAnimation_ = false;
+			player_->SetIsPlayStartAnimation(isPlayStartAnimation_);
+			enemy_->SetIsStartAnimation(isPlayStartAnimation_);
+		}
+	}
+
 	// もしゴールしていたら
 	if (goal_->GetIsGoal()) {
 		/*シーン切り替え依頼*/
@@ -458,5 +471,9 @@ bool GameScene::AABBIntersects(const AABB& a, const AABB& b) {
 
 	// すべての軸で重なっている場合に衝突と判断する
 	return xOverlap && yOverlap && zOverlap;
+}
+
+void GameScene::StartAnimation() {
+
 }
 

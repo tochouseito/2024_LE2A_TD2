@@ -56,8 +56,9 @@ void Player::Update() {
 	CollisionMapInfo collisionMapInfo;
 	// 移動入力
 	// 設置状態
-
-	CharMove();
+	if (!isPlayStartAnimation_) {
+		CharMove();
+	}
 	// 移動量に速度の値をコピー
 	collisionMapInfo.movement = velocity_;
 	// 移動量を加味して衝突判定する
@@ -194,6 +195,7 @@ void Player::Update() {
 	models_[nowAnima_]->SkinClusterUpdata(models_[nowAnima_]->GetSkinCluster(), skeletons_[nowAnima_]);
 
 	worldTransform_.UpdateMatrix();
+
 }
 
 void Player::Draw() {
@@ -511,6 +513,10 @@ void Player::SetIsAllive(const bool& isAllive) {
 
 void Player::SetIsHitEnemyAttack(const bool& isHitEnemyAttack) {
 	isHitEnemyAttack_ = isHitEnemyAttack;
+}
+
+void Player::SetIsPlayStartAnimation(const bool& isStartAnimation) {
+	isPlayStartAnimation_ = isStartAnimation;
 }
 
 //void Player::OnCollision(const Enemy* enemy) {
