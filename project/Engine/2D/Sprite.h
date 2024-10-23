@@ -6,8 +6,7 @@
 struct ConstBufferDataSpriteWorldTransform {
 	Matrix4x4 matWorld; // ローカル → ワールド変換行列
 };
-class Sprite
-{
+class Sprite {
 public:
 	Sprite();
 	~Sprite();
@@ -45,23 +44,44 @@ public:
 
 	void uvTransformUpdata();
 
-	const Vector3& GetSize()const { return size; };
+	const Vector3& GetSize()const {
+		return size;
+	};
 
-	void SetSize(const Vector3& size) { this->size = size; }
+	void SetSize(const Vector3& size) {
+		this->size = size;
+	}
 
-	const Vector3& GetAnchorPoint()const { anchorPoint; }
+	const Vector3& GetAnchorPoint()const {
+		anchorPoint;
+	}
 
-	void SetAnchorPoint(const Vector3& anchorPoint) { this->anchorPoint = anchorPoint; }
+	void SetAnchorPoint(const Vector3& anchorPoint) {
+		this->anchorPoint = anchorPoint;
+	}
 
-	const Vector3& GetTexLeftTop()const { return textureLeftTop; }
+	const Vector3& GetTexLeftTop()const {
+		return textureLeftTop;
+	}
 
-	const Vector3& GetTexSize()const { return textureSize; }
+	const Vector3& GetTexSize()const {
+		return textureSize;
+	}
 
-	void SetTexLeftTop(const Vector3& TexLeftTop) { this->textureLeftTop = TexLeftTop; }
+	void SetTexLeftTop(const Vector3& TexLeftTop) {
+		this->textureLeftTop = TexLeftTop;
+	}
 
-	void SetTexSize(const Vector3& TexSize) { this->textureSize = TexSize; }
+	void SetTexSize(const Vector3& TexSize) {
+		this->textureSize = TexSize;
+	}
+
+	void SetColor(const Color& color) {
+		this->color = color;
+	}
 
 	void AdjustTextureSize();
+
 private:
 	// Sprite用の頂点リソース
 	Microsoft::WRL::ComPtr< ID3D12Resource> vertexResourceSprite_;
@@ -106,5 +126,8 @@ private:
 
 	Vector3 textureLeftTop = { 0.0f,0.0f };
 	Vector3 textureSize = { 100.0f,100.0f };
+
+	Color color = { 1.0f,1.0f,1.0f,1.0f };
+
 };
 

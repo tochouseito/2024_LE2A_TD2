@@ -44,8 +44,9 @@ private:
 	std::string pressButtonTextureHandle_;
 	std::unique_ptr<Sprite> pressButtonSprite_;
 
-	std::string fadeTerxtureHandle_;
 	// フェードスプライト
+	std::string fadeTerxtureHandle_;
 	std::unique_ptr<Sprite> fadeSprite_ = nullptr;
+	Color color = { 1.0f,0.0f,0.0f,1.0f };
 };
 
