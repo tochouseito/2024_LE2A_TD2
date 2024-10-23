@@ -52,9 +52,8 @@ public:
 		this->size = size;
 	}
 
-	const Vector3& GetAnchorPoint()const {
-		anchorPoint;
-	}
+	const Vector3& GetAnchorPoint()const { return anchorPoint; }
+
 
 	void SetAnchorPoint(const Vector3& anchorPoint) {
 		this->anchorPoint = anchorPoint;
