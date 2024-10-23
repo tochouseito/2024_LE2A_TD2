@@ -81,6 +81,10 @@ private:
 	std::string map3TextureHandle_;
 	std::unique_ptr<Sprite> map3Sprite_;
 
+	// map4Thumb
+	std::string map4TextureHandle_;
+	std::unique_ptr<Sprite> map4Sprite_;
+
 
 	// キーリピート用のタイマー
 	float keyRepeatDelay = 0.2f;    // 初回リピート遅延時間（0.5秒）

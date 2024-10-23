@@ -7,6 +7,7 @@
 constexpr float kMap1maxX = 7035.0f;
 constexpr float kMap2maxX = 3645.0f;
 constexpr float kMap3maxX = 3835.0f;
+constexpr float kMap4maxX = 5180.0f;
 
 void StageSelectScene::Initialize() {
 
@@ -84,6 +85,13 @@ void StageSelectScene::Initialize() {
 	map3Sprite_->SetSize({ 512.0f, 256.0f,0.0f });
 	map3Sprite_->SetTexSize({ 2280.0f, 1092.0f,0.0f });
 
+	map4TextureHandle_ = TextureManager::Load("./Resources/Map4.png");
+	map4Sprite_ = std::make_unique<Sprite>();
+	map4Sprite_->Initialize({ 640.0f,360.0f,0.0f }, &viewProjection_, map4TextureHandle_);
+	map4Sprite_->SetAnchorPoint({ 0.5f,0.5f,0.0f });
+	map4Sprite_->SetSize({ 512.0f, 256.0f,0.0f });
+	map4Sprite_->SetTexSize({ 2280.0f, 1092.0f,0.0f });
+
 	currentStageNum_ = 1;
 }
 
@@ -159,7 +167,7 @@ void StageSelectScene::Update() {
 			map3Sprite_->SetAnchorPoint(anchorPoint);
 		}
 
-		Vector3 size = map1Sprite_->GetSize();
+		Vector3 size = map3Sprite_->GetSize();
 		if (ImGui::DragFloat3("Size##map3", &size.x, 0.1f)) {
 			map3Sprite_->SetSize(size);
 		}
@@ -172,6 +180,30 @@ void StageSelectScene::Update() {
 		Vector3 texSize = map3Sprite_->GetTexSize();
 		if (ImGui::DragFloat3("Tex Size##map3", &texSize.x, 0.1f)) {
 			map3Sprite_->SetTexSize(texSize);
+		}
+		ImGui::End();
+	}
+
+	{
+		ImGui::Begin("map4");
+		Vector3 anchorPoint = map4Sprite_->GetAnchorPoint();
+		if (ImGui::DragFloat3("Anchor Point##map4", &anchorPoint.x, 0.1f)) {
+			map4Sprite_->SetAnchorPoint(anchorPoint);
+		}
+
+		Vector3 size = map4Sprite_->GetSize();
+		if (ImGui::DragFloat3("Size##map4", &size.x, 0.1f)) {
+			map4Sprite_->SetSize(size);
+		}
+
+		Vector3 texLeftTop = map4Sprite_->GetTexLeftTop();
+		if (ImGui::DragFloat3("Tex Left Top##map4", &texLeftTop.x, 0.1f)) {
+			map4Sprite_->SetTexLeftTop(texLeftTop);
+		}
+
+		Vector3 texSize = map4Sprite_->GetTexSize();
+		if (ImGui::DragFloat3("Tex Size##map4", &texSize.x, 0.1f)) {
+			map4Sprite_->SetTexSize(texSize);
 		}
 		ImGui::End();
 	}
@@ -292,10 +324,12 @@ void StageSelectScene::Update() {
 	map1Sprite_->Update();
 	map2Sprite_->Update();
 	map3Sprite_->Update();
+	map4Sprite_->Update();
 
 	map1Sprite_->SetTexLeftTop({ (1.0f - std::cos(scrollTimer_)) * (kMap1maxX * 0.5f),map1Sprite_->GetTexLeftTop().y,map1Sprite_->GetTexLeftTop().z });
 	map2Sprite_->SetTexLeftTop({ (1.0f - std::cos(scrollTimer_)) * (kMap2maxX * 0.5f),map2Sprite_->GetTexLeftTop().y,map2Sprite_->GetTexLeftTop().z });
 	map3Sprite_->SetTexLeftTop({ (1.0f - std::cos(scrollTimer_)) * (kMap3maxX * 0.5f),map3Sprite_->GetTexLeftTop().y,map3Sprite_->GetTexLeftTop().z });
+	map4Sprite_->SetTexLeftTop({ (1.0f - std::cos(scrollTimer_)) * (kMap4maxX * 0.5f),map4Sprite_->GetTexLeftTop().y,map4Sprite_->GetTexLeftTop().z });
 	scrollTimer_ += 0.0025f;
 }
 
@@ -321,6 +355,9 @@ void StageSelectScene::Draw() {
 		break;
 	case 3:
 		map3Sprite_->Draw();
+		break;
+	case 4:
+		map4Sprite_->Draw();
 		break;
 	default:
 		break;
