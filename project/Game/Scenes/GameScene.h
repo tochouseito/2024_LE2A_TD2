@@ -192,6 +192,8 @@ private:
 	// エネミーの攻撃判定AABB
 	AABB enemyAttackAABB_{};
 
+	static const uint32_t kMaxStageNum_ = 4;
+
 	uint32_t currentStageNum_ = 1;
 
 	// アニメーションの時間

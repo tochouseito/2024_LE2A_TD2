@@ -14,7 +14,7 @@ SceneManager::~SceneManager() {
 void SceneManager::Initialize() {
 	sceneFactory_ = new SceneFactory();
 
-	for (uint32_t i = 0; i < 3; i++) {
+	for (uint32_t i = 0; i < kMaxStageNum_; i++) {
 		isCleared_[i] = false;
 	}
 }

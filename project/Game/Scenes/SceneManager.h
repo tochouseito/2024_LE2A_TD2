@@ -66,6 +66,8 @@ private:
 
 	uint32_t defaultIndex;
 
+	static const uint32_t kMaxStageNum_ = 4;
+
 	// 現在のステージ
 	uint32_t currentStageNumber_ = 1;
 
@@ -73,10 +75,10 @@ private:
 	bool isClear_ = false;
 
 	// クリア時間
-	uint32_t clearTime_[3] = { 0,0,0 };
-	uint32_t clearTimeMinutes_[3][4]{};
+	uint32_t clearTime_[kMaxStageNum_] = { 0,0,0 };
+	uint32_t clearTimeMinutes_[kMaxStageNum_][4]{};
 
-	bool isCleared_[3] = {};
+	bool isCleared_[kMaxStageNum_] = {};
 
 };
 
