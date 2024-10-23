@@ -227,13 +227,16 @@ void Enemy::RootInitialize() {
 }
 
 void Enemy::RootUpdate() {
-	// 移動処理
-	Move();
-
-	if (behaviorTimer_ < kRootTime_) {
-		behaviorTimer_++;
+	if (isStartAnimstion_) {
+		worldTransform_.rotation_.z -= 0.05f;
 	} else {
-		behaviorRequest_ = Behavior::kPreliminary;
+		// 移動処理
+		Move();
+		if (behaviorTimer_ < kRootTime_) {
+			behaviorTimer_++;
+		} else {
+			behaviorRequest_ = Behavior::kPreliminary;
+		}
 	}
 }
 
@@ -294,4 +297,8 @@ Enemy::Behavior Enemy::GetBehavior() const {
 
 void Enemy::SetPreliminaryYIndex(const uint32_t& yIndex) {
 	preliminaryYIndex_ = yIndex;
+}
+
+void Enemy::SetIsStartAnimation(const bool& isStartAnimation) {
+	isStartAnimstion_ = isStartAnimation;
 }

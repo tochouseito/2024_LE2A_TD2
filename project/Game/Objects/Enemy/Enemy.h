@@ -52,6 +52,8 @@ public:
 
 	void SetPreliminaryYIndex(const uint32_t& yIndex);
 
+	void SetIsStartAnimation(const bool& isStartAnimation);
+
 private:
 
 	// ワールドトランスフォーム
@@ -110,5 +112,5 @@ private:
 	const uint32_t kAttackTime_ = 90;
 	uint32_t behaviorTimer_ = 0;
 
-
+	bool isStartAnimstion_ = true;
 };

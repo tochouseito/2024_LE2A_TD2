@@ -41,7 +41,6 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	audio_ = Audio::GetInstance();
 
-
 	// カメラ
 	viewProjection_.Initialize();
 
@@ -203,9 +202,42 @@ void GameScene::Initialize() {
 		}
 	}
 	goal_->Initialize(goalModel_.get(), &viewProjection_, goalPosition);
+
+	isPlayStartAnimation_ = true;
+	sceneStartAnimationTimer_ = kSceneStartAnimationTime_;
+	currentStartNumber_ = 3;
+	player_->SetIsPlayStartAnimation(isPlayStartAnimation_);
+	enemy_->SetIsStartAnimation(isPlayStartAnimation_);
+
+	numberTextureHandle_ = TextureManager::Load("./Resources/GUI/numbers.png");
+	numberSprite_ = std::make_unique<Sprite>();
+	numberSprite_->Initialize({ 640.0f,360.0f,0.0f }, &viewProjection_, numberTextureHandle_);
+	numberSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
+	numberSprite_->SetSize(Vector3(48.0f, 48.0f, 0.0f));
+	numberSprite_->SetTexSize(Vector3(48.0f, 48.0f, 0.0f));
+
 }
 
 void GameScene::Update() {
+	if (isPlayStartAnimation_) {
+		sceneStartAnimationTimer_--;
+		if (sceneStartAnimationTimer_ == 240) {
+			currentStartNumber_ = 3;
+		} else if (sceneStartAnimationTimer_ == 180) {
+			currentStartNumber_ = 2;
+		} else if (sceneStartAnimationTimer_ == 120) {
+			currentStartNumber_ = 1;
+		} else if (sceneStartAnimationTimer_ == 60) {
+			currentStartNumber_ = 0;
+		} else if (sceneStartAnimationTimer_ == 0) {
+			isPlayStartAnimation_ = false;
+			player_->SetIsPlayStartAnimation(isPlayStartAnimation_);
+			enemy_->SetIsStartAnimation(isPlayStartAnimation_);
+		}
+		numberSprite_->SetTexLeftTop(Vector3(numberSprite_->GetTexSize().x * currentStartNumber_, 0.0f, 0.0f));
+		numberSprite_->Update();
+	}
+
 	// もしゴールしていたら
 	if (goal_->GetIsGoal()) {
 		/*シーン切り替え依頼*/
@@ -350,6 +382,11 @@ void GameScene::Draw() {
 
 	particleManager_->DrawGPU();
 
+
+	if (isPlayStartAnimation_) {
+		numberSprite_->Draw();
+	}
+
 }
 
 void GameScene::GenerateBlocks() {
@@ -458,5 +495,9 @@ bool GameScene::AABBIntersects(const AABB& a, const AABB& b) {
 
 	// すべての軸で重なっている場合に衝突と判断する
 	return xOverlap && yOverlap && zOverlap;
+}
+
+void GameScene::StartAnimation() {
+
 }
 
