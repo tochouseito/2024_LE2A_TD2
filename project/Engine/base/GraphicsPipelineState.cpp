@@ -7,11 +7,10 @@ GraphicsPipelineState* GraphicsPipelineState::GetInstance() {
 	static GraphicsPipelineState instance;
 	return &instance;
 }
-void GraphicsPipelineState::CreateComputePipeline(ID3D12Device* device)
-{
+void GraphicsPipelineState::CreateComputePipeline(ID3D12Device* device) {
 	InitializeDxcCompiler();
 	HRESULT hr;
-	
+
 	// RootSignature作成
 	D3D12_ROOT_SIGNATURE_DESC descriptionRooTSignature{};
 	descriptionRooTSignature.Flags =
@@ -88,23 +87,22 @@ void GraphicsPipelineState::CreateComputePipeline(ID3D12Device* device)
 	assert(SUCCEEDED(hr));
 
 	// Shaderをコンパイルする
-	Microsoft::WRL::ComPtr < IDxcBlob> computeShaderBlob = CompilerShader(L"Resources/Shader/Skinning.CS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> computeShaderBlob = CompilerShaderWithCache(L"Resources/Shader/Skinning.CS.hlsl",
 		L"cs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(computeShaderBlob != nullptr);
 
 	D3D12_COMPUTE_PIPELINE_STATE_DESC computePipelineStateDesc{};
 	computePipelineStateDesc.pRootSignature = rootSignature_.Get();  // RootSignature
-	computePipelineStateDesc.CS = { 
-	.pShaderBytecode=computeShaderBlob->GetBufferPointer(),
-	.BytecodeLength=computeShaderBlob->GetBufferSize() };                       // VertexShader
+	computePipelineStateDesc.CS = {
+	.pShaderBytecode = computeShaderBlob->GetBufferPointer(),
+	.BytecodeLength = computeShaderBlob->GetBufferSize() };                       // VertexShader
 	computePipelineStateDesc.pRootSignature = computeRootSignature_.Get();
 	// 実際に生成
 	hr = DirectXCommon::GetInstance()->GetDevice()->CreateComputePipelineState(&computePipelineStateDesc,
 		IID_PPV_ARGS(&computePipelineState_));
 	assert(SUCCEEDED(hr));
 }
-void GraphicsPipelineState::CreateComputePipelineParticle(ID3D12Device* device)
-{
+void GraphicsPipelineState::CreateComputePipelineParticle(ID3D12Device* device) {
 	InitializeDxcCompiler();
 	HRESULT hr;
 
@@ -172,7 +170,7 @@ void GraphicsPipelineState::CreateComputePipelineParticle(ID3D12Device* device)
 	assert(SUCCEEDED(hr));
 
 	// Shaderをコンパイルする
-	Microsoft::WRL::ComPtr < IDxcBlob> computeShaderBlob = CompilerShader(L"Resources/Shader/Particle.CS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> computeShaderBlob = CompilerShaderWithCache(L"Resources/Shader/Particle.CS.hlsl",
 		L"cs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(computeShaderBlob != nullptr);
 
@@ -186,8 +184,7 @@ void GraphicsPipelineState::CreateComputePipelineParticle(ID3D12Device* device)
 		IID_PPV_ARGS(&computePipelineStateParticle_));
 	assert(SUCCEEDED(hr));
 }
-void GraphicsPipelineState::CreateGraphicsPipelineGPUParticle(ID3D12Device* device)
-{
+void GraphicsPipelineState::CreateGraphicsPipelineGPUParticle(ID3D12Device* device) {
 	InitializeDxcCompiler();
 	HRESULT hr;
 	// RootSignature作成
@@ -299,11 +296,11 @@ void GraphicsPipelineState::CreateGraphicsPipelineGPUParticle(ID3D12Device* devi
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	// Shaderをコンパイルする
-	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShader(L"Resources/Shader/GPUParticle.VS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShaderWithCache(L"Resources/Shader/GPUParticle.VS.hlsl",
 		L"vs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShader(L"Resources/Shader/GPUParticle.PS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShaderWithCache(L"Resources/Shader/GPUParticle.PS.hlsl",
 		L"ps_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(pixelShaderBlob != nullptr);
 
@@ -395,8 +392,7 @@ void GraphicsPipelineState::CreateGraphicsPipelineGPUParticle(ID3D12Device* devi
 		IID_PPV_ARGS(&graphicsPipelineStateGPUParticle_[kBlendModeScreen]));
 	assert(SUCCEEDED(hr));
 }
-void GraphicsPipelineState::CreateComputePipelineEmit(ID3D12Device* device)
-{
+void GraphicsPipelineState::CreateComputePipelineEmit(ID3D12Device* device) {
 	InitializeDxcCompiler();
 	HRESULT hr;
 
@@ -472,7 +468,7 @@ void GraphicsPipelineState::CreateComputePipelineEmit(ID3D12Device* device)
 	assert(SUCCEEDED(hr));
 
 	// Shaderをコンパイルする
-	Microsoft::WRL::ComPtr < IDxcBlob> computeShaderBlob = CompilerShader(L"Resources/Shader/EmitParticle.CS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> computeShaderBlob = CompilerShaderWithCache(L"Resources/Shader/EmitParticle.CS.hlsl",
 		L"cs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(computeShaderBlob != nullptr);
 
@@ -486,8 +482,7 @@ void GraphicsPipelineState::CreateComputePipelineEmit(ID3D12Device* device)
 		IID_PPV_ARGS(&computePipelineStateEmit_));
 	assert(SUCCEEDED(hr));
 }
-void GraphicsPipelineState::CreateComputePipelineUpdate(ID3D12Device* device)
-{
+void GraphicsPipelineState::CreateComputePipelineUpdate(ID3D12Device* device) {
 	InitializeDxcCompiler();
 	HRESULT hr;
 
@@ -559,7 +554,7 @@ void GraphicsPipelineState::CreateComputePipelineUpdate(ID3D12Device* device)
 	assert(SUCCEEDED(hr));
 
 	// Shaderをコンパイルする
-	Microsoft::WRL::ComPtr < IDxcBlob> computeShaderBlob = CompilerShader(L"Resources/Shader/UpdateParticle.CS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> computeShaderBlob = CompilerShaderWithCache(L"Resources/Shader/UpdateParticle.CS.hlsl",
 		L"cs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(computeShaderBlob != nullptr);
 
@@ -573,8 +568,7 @@ void GraphicsPipelineState::CreateComputePipelineUpdate(ID3D12Device* device)
 		IID_PPV_ARGS(&computePipelineStateUpdate_));
 	assert(SUCCEEDED(hr));
 }
-void GraphicsPipelineState::CreateComputePipelineUpdatePLLand(ID3D12Device* device)
-{
+void GraphicsPipelineState::CreateComputePipelineUpdatePLLand(ID3D12Device* device) {
 	InitializeDxcCompiler();
 	HRESULT hr;
 
@@ -646,7 +640,7 @@ void GraphicsPipelineState::CreateComputePipelineUpdatePLLand(ID3D12Device* devi
 	assert(SUCCEEDED(hr));
 
 	// Shaderをコンパイルする
-	Microsoft::WRL::ComPtr < IDxcBlob> computeShaderBlob = CompilerShader(L"Resources/Shader/UpdatePlayerLandingParticles.CS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> computeShaderBlob = CompilerShaderWithCache(L"Resources/Shader/UpdatePlayerLandingParticles.CS.hlsl",
 		L"cs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(computeShaderBlob != nullptr);
 
@@ -831,7 +825,7 @@ void GraphicsPipelineState::CreateGraphicsPipeline(ID3D12Device* device) {
 	inputElementDescs[2].SemanticIndex = 0;
 	inputElementDescs[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	inputElementDescs[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	
+
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
 	inputLayoutDesc.NumElements = _countof(inputElementDescs);
@@ -852,7 +846,7 @@ void GraphicsPipelineState::CreateGraphicsPipeline(ID3D12Device* device) {
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	// Shaderをコンパイルする
-	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShader(L"Resources/Shader/obj.VS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShaderWithCache(L"Resources/Shader/obj.VS.hlsl",
 		L"vs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(vertexShaderBlob != nullptr);
 
@@ -860,7 +854,7 @@ void GraphicsPipelineState::CreateGraphicsPipeline(ID3D12Device* device) {
 		L"gs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(GeometryShaderBlob != nullptr);*/
 
-	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShader(L"Resources/Shader/obj.PS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShaderWithCache(L"Resources/Shader/obj.PS.hlsl",
 		L"ps_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(pixelShaderBlob != nullptr);
 
@@ -890,8 +884,8 @@ void GraphicsPipelineState::CreateGraphicsPipeline(ID3D12Device* device) {
 	// 利用するトポロジ（形状）のタイプ。三角形
 	graphicsPipelineStateDesc.PrimitiveTopologyType =
 		D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		//D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
-	// どのように画面に色を打ち込むかの設定（気にしなくてもいい）
+	//D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+// どのように画面に色を打ち込むかの設定（気にしなくてもいい）
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 	// DepthStencilの設定
@@ -912,7 +906,7 @@ void GraphicsPipelineState::CreateGraphicsPipeline(ID3D12Device* device) {
 	blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
 	blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
 	blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
-	
+
 	graphicsPipelineStateDesc.BlendState = blendDesc;          // BlendState
 	hr = DirectXCommon::GetInstance()->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc,
 		IID_PPV_ARGS(&graphicsPipelineState_[kBlendModeNormal]));
@@ -1021,15 +1015,15 @@ void GraphicsPipelineState::CreateParticleGraphicsPipeline(ID3D12Device* device)
 	// カラーデータ
 	rootParameter[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootParameter[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;// VertexShaderを使う
-	rootParameter[5].DescriptorTable.pDescriptorRanges =&srvDescriptorRangeVS2;// Tableの中身の配列を指定
+	rootParameter[5].DescriptorTable.pDescriptorRanges = &srvDescriptorRangeVS2;// Tableの中身の配列を指定
 	rootParameter[5].DescriptorTable.NumDescriptorRanges = 1;// Tableで利用する数
 
-	
+
 
 	descriptionRooTSignature.pParameters = rootParameter;// ルートパラメータ配列へのポインタ
 	descriptionRooTSignature.NumParameters = _countof(rootParameter);// 配列の長さ
 
-	
+
 
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
 	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;// バイリニアフィルタ
@@ -1098,11 +1092,11 @@ void GraphicsPipelineState::CreateParticleGraphicsPipeline(ID3D12Device* device)
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	// Shaderをコンパイルする
-	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShader(L"Resources/Shader/Particle.VS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShaderWithCache(L"Resources/Shader/Particle.VS.hlsl",
 		L"vs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShader(L"Resources/Shader/Particle.PS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShaderWithCache(L"Resources/Shader/Particle.PS.hlsl",
 		L"ps_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(pixelShaderBlob != nullptr);
 
@@ -1203,7 +1197,7 @@ void GraphicsPipelineState::CreateParticleGraphicsPipeline(ID3D12Device* device)
 void GraphicsPipelineState::CreateGraphicsPipelineGSO(ID3D12Device* device) {
 	InitializeDxcCompiler();
 	HRESULT hr;
-	
+
 
 	// RootSignature作成
 	// obj3d用
@@ -1243,14 +1237,14 @@ void GraphicsPipelineState::CreateGraphicsPipelineGSO(ID3D12Device* device) {
 	rootParameter[2].DescriptorTable.pDescriptorRanges = &srvDescriptorRangePS;// Tableの中身の配列
 	rootParameter[2].DescriptorTable.NumDescriptorRanges = 1;// Tableで利用する数
 
-	
+
 
 	// WVPデータ
 	rootParameter[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParameter[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;// VertexShaderを使う
 	rootParameter[3].Descriptor.ShaderRegister = 0;// レジスタ番号2とバインド
 
-	
+
 
 	descriptionRooTSignature.pParameters = rootParameter;// ルートパラメータ配列へのポインタ
 	descriptionRooTSignature.NumParameters = _countof(rootParameter);// 配列の長さ
@@ -1317,15 +1311,15 @@ void GraphicsPipelineState::CreateGraphicsPipelineGSO(ID3D12Device* device) {
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	// Shaderをコンパイルする
-	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShader(L"Resources/Shader/Primitive.VS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShaderWithCache(L"Resources/Shader/Primitive.VS.hlsl",
 		L"vs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr < IDxcBlob> GeometryShaderBlob = CompilerShader(L"Resources/Shader/BasicGeometryShader.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> GeometryShaderBlob = CompilerShaderWithCache(L"Resources/Shader/BasicGeometryShader.hlsl",
 		L"gs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(GeometryShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShader(L"Resources/Shader/Primitive.PS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShaderWithCache(L"Resources/Shader/Primitive.PS.hlsl",
 		L"ps_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(pixelShaderBlob != nullptr);
 
@@ -1355,8 +1349,8 @@ void GraphicsPipelineState::CreateGraphicsPipelineGSO(ID3D12Device* device) {
 	// 利用するトポロジ（形状）のタイプ。三角形
 	graphicsPipelineStateDesc.PrimitiveTopologyType =
 		//D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
-// どのように画面に色を打ち込むかの設定（気にしなくてもいい）
+		D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+	// どのように画面に色を打ち込むかの設定（気にしなくてもいい）
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 	// DepthStencilの設定
@@ -1425,9 +1419,9 @@ void GraphicsPipelineState::CreateGraphicsPipelineGSO(ID3D12Device* device) {
 void GraphicsPipelineState::CreateGraphicsPipelineSprite(ID3D12Device* device) {
 	InitializeDxcCompiler();
 	HRESULT hr;
-	
+
 	// RootSignature作成
-	
+
 	D3D12_ROOT_SIGNATURE_DESC descriptionRooTSignature{};
 	descriptionRooTSignature.Flags =
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
@@ -1463,14 +1457,14 @@ void GraphicsPipelineState::CreateGraphicsPipelineSprite(ID3D12Device* device) {
 	rootParameter[2].DescriptorTable.pDescriptorRanges = &srvDescriptorRangePS;// Tableの中身の配列
 	rootParameter[2].DescriptorTable.NumDescriptorRanges = 1;// Tableで利用する数
 
-	
+
 
 	// WVPデータ
 	rootParameter[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParameter[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;// VertexShaderを使う
 	rootParameter[3].Descriptor.ShaderRegister = 0;// レジスタ番号2とバインド
 
-	
+
 
 	descriptionRooTSignature.pParameters = rootParameter;// ルートパラメータ配列へのポインタ
 	descriptionRooTSignature.NumParameters = _countof(rootParameter);// 配列の長さ
@@ -1533,11 +1527,11 @@ void GraphicsPipelineState::CreateGraphicsPipelineSprite(ID3D12Device* device) {
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	// Shaderをコンパイルする
-	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShader(L"Resources/Shader/Sprite.VS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShaderWithCache(L"Resources/Shader/Sprite.VS.hlsl",
 		L"vs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShader(L"Resources/Shader/Sprite.PS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShaderWithCache(L"Resources/Shader/Sprite.PS.hlsl",
 		L"ps_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(pixelShaderBlob != nullptr);
 
@@ -1632,11 +1626,10 @@ void GraphicsPipelineState::CreateGraphicsPipelineSprite(ID3D12Device* device) {
 
 }
 
-void GraphicsPipelineState::CreateGraphicsPipelineDepthFilter(ID3D12Device* device)
-{
+void GraphicsPipelineState::CreateGraphicsPipelineDepthFilter(ID3D12Device* device) {
 	InitializeDxcCompiler();
 	HRESULT hr;
-	
+
 
 	// RootSignature作成
 	// copy用
@@ -1724,7 +1717,7 @@ void GraphicsPipelineState::CreateGraphicsPipelineDepthFilter(ID3D12Device* devi
 	assert(SUCCEEDED(hr));
 
 	// InputLayout
-	
+
 
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = nullptr;
@@ -1746,11 +1739,11 @@ void GraphicsPipelineState::CreateGraphicsPipelineDepthFilter(ID3D12Device* devi
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	// Shaderをコンパイルする
-	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShader(L"Resources/Shader/FullScreen.VS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShaderWithCache(L"Resources/Shader/FullScreen.VS.hlsl",
 		L"vs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShader(L"Resources/Shader/DepthBasedOutline.PS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShaderWithCache(L"Resources/Shader/DepthBasedOutline.PS.hlsl",
 		L"ps_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(pixelShaderBlob != nullptr);
 
@@ -1842,8 +1835,7 @@ void GraphicsPipelineState::CreateGraphicsPipelineDepthFilter(ID3D12Device* devi
 
 }
 
-void GraphicsPipelineState::CreateGraphicsPipelineCopy(ID3D12Device* device)
-{
+void GraphicsPipelineState::CreateGraphicsPipelineCopy(ID3D12Device* device) {
 	InitializeDxcCompiler();
 	HRESULT hr;
 
@@ -1931,11 +1923,11 @@ void GraphicsPipelineState::CreateGraphicsPipelineCopy(ID3D12Device* device)
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	// Shaderをコンパイルする
-	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShader(L"Resources/Shader/FullScreen.VS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShaderWithCache(L"Resources/Shader/FullScreen.VS.hlsl",
 		L"vs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShader(L"Resources/Shader/FullScreen.PS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShaderWithCache(L"Resources/Shader/FullScreen.PS.hlsl",
 		L"ps_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(pixelShaderBlob != nullptr);
 
@@ -2027,8 +2019,7 @@ void GraphicsPipelineState::CreateGraphicsPipelineCopy(ID3D12Device* device)
 
 }
 
-void GraphicsPipelineState::CreateGraphicsPipelineDissolve(ID3D12Device* device)
-{
+void GraphicsPipelineState::CreateGraphicsPipelineDissolve(ID3D12Device* device) {
 	InitializeDxcCompiler();
 	HRESULT hr;
 
@@ -2127,11 +2118,11 @@ void GraphicsPipelineState::CreateGraphicsPipelineDissolve(ID3D12Device* device)
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	// Shaderをコンパイルする
-	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShader(L"Resources/Shader/FullScreen.VS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShaderWithCache(L"Resources/Shader/FullScreen.VS.hlsl",
 		L"vs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShader(L"Resources/Shader/Dissolve.PS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShaderWithCache(L"Resources/Shader/Dissolve.PS.hlsl",
 		L"ps_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(pixelShaderBlob != nullptr);
 
@@ -2223,8 +2214,7 @@ void GraphicsPipelineState::CreateGraphicsPipelineDissolve(ID3D12Device* device)
 
 }
 
-void GraphicsPipelineState::CreateGraphicsPipelineRandom(ID3D12Device* device)
-{
+void GraphicsPipelineState::CreateGraphicsPipelineRandom(ID3D12Device* device) {
 	InitializeDxcCompiler();
 	HRESULT hr;
 
@@ -2316,11 +2306,11 @@ void GraphicsPipelineState::CreateGraphicsPipelineRandom(ID3D12Device* device)
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	// Shaderをコンパイルする
-	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShader(L"Resources/Shader/FullScreen.VS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShaderWithCache(L"Resources/Shader/FullScreen.VS.hlsl",
 		L"vs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShader(L"Resources/Shader/Random.PS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShaderWithCache(L"Resources/Shader/Random.PS.hlsl",
 		L"ps_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(pixelShaderBlob != nullptr);
 
@@ -2411,8 +2401,7 @@ void GraphicsPipelineState::CreateGraphicsPipelineRandom(ID3D12Device* device)
 	assert(SUCCEEDED(hr));
 }
 
-void GraphicsPipelineState::CreateGraphicsPipelineHSV(ID3D12Device* device)
-{
+void GraphicsPipelineState::CreateGraphicsPipelineHSV(ID3D12Device* device) {
 	InitializeDxcCompiler();
 	HRESULT hr;
 
@@ -2504,11 +2493,11 @@ void GraphicsPipelineState::CreateGraphicsPipelineHSV(ID3D12Device* device)
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	// Shaderをコンパイルする
-	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShader(L"Resources/Shader/FullScreen.VS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShaderWithCache(L"Resources/Shader/FullScreen.VS.hlsl",
 		L"vs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShader(L"Resources/Shader/ToHSV.PS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShaderWithCache(L"Resources/Shader/ToHSV.PS.hlsl",
 		L"ps_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(pixelShaderBlob != nullptr);
 
@@ -2599,8 +2588,7 @@ void GraphicsPipelineState::CreateGraphicsPipelineHSV(ID3D12Device* device)
 	assert(SUCCEEDED(hr));
 }
 
-void GraphicsPipelineState::CreateGraphicsPipelineSkinning(ID3D12Device* device)
-{
+void GraphicsPipelineState::CreateGraphicsPipelineSkinning(ID3D12Device* device) {
 	InitializeDxcCompiler();
 	HRESULT hr;
 
@@ -2769,7 +2757,7 @@ void GraphicsPipelineState::CreateGraphicsPipelineSkinning(ID3D12Device* device)
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	// Shaderをコンパイルする
-	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShader(L"Resources/Shader/SkinningObject3d.VS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShaderWithCache(L"Resources/Shader/SkinningObject3d.VS.hlsl",
 		L"vs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(vertexShaderBlob != nullptr);
 
@@ -2777,7 +2765,7 @@ void GraphicsPipelineState::CreateGraphicsPipelineSkinning(ID3D12Device* device)
 		L"gs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(GeometryShaderBlob != nullptr);*/
 
-	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShader(L"Resources/Shader/obj.PS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShaderWithCache(L"Resources/Shader/obj.PS.hlsl",
 		L"ps_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(pixelShaderBlob != nullptr);
 
@@ -2872,8 +2860,7 @@ void GraphicsPipelineState::CreateGraphicsPipelineSkinning(ID3D12Device* device)
 	assert(SUCCEEDED(hr));
 }
 
-void GraphicsPipelineState::CreateGraphicsPipelineSkybox(ID3D12Device* device)
-{
+void GraphicsPipelineState::CreateGraphicsPipelineSkybox(ID3D12Device* device) {
 	InitializeDxcCompiler();
 	HRESULT hr;
 
@@ -2983,11 +2970,11 @@ void GraphicsPipelineState::CreateGraphicsPipelineSkybox(ID3D12Device* device)
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	// Shaderをコンパイルする
-	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShader(L"Resources/Shader/Skybox.VS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> vertexShaderBlob = CompilerShaderWithCache(L"Resources/Shader/Skybox.VS.hlsl",
 		L"vs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShader(L"Resources/Shader/Skybox.PS.hlsl",
+	Microsoft::WRL::ComPtr < IDxcBlob> pixelShaderBlob = CompilerShaderWithCache(L"Resources/Shader/Skybox.PS.hlsl",
 		L"ps_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_);
 	assert(pixelShaderBlob != nullptr);
 
@@ -3088,8 +3075,7 @@ IDxcBlob* GraphicsPipelineState::CompilerShader(
 	// 初期化で生成したものを3つ
 	IDxcUtils* dxcUtils,
 	IDxcCompiler3* dxcCompiler,
-	IDxcIncludeHandler* includeHandler)
-{
+	IDxcIncludeHandler* includeHandler) {
 	// hlslファイルを読む
 	// これからシェーダーをコンパイルする旨をログに出す
 	Log(ConvertString(std::format(L"Begin CompilerShader,path:{},profile:{}\n", filePath, profile)));
@@ -3143,5 +3129,21 @@ IDxcBlob* GraphicsPipelineState::CompilerShader(
 	shaderResult->Release();
 	shaderError->Release();
 	// 実行用のバイナリを返却
+	return shaderBlob;
+}
+
+IDxcBlob* GraphicsPipelineState::CompilerShaderWithCache(const std::wstring& filePath, const wchar_t* profile, IDxcUtils* dxcUtils, IDxcCompiler3* dxcCompiler, IDxcIncludeHandler* includeHandler) {
+	// キャッシュに存在するか確認
+	auto it = shaderCache_.find(filePath);
+	if (it != shaderCache_.end()) {
+		return it->second.Get(); // キャッシュから取得
+	}
+
+	// シェーダーをコンパイル
+	IDxcBlob* shaderBlob = CompilerShader(filePath, profile, dxcUtils, dxcCompiler, includeHandler);
+	if (shaderBlob) {
+		// コンパイル結果をキャッシュに保存
+		shaderCache_[filePath] = shaderBlob;
+	}
 	return shaderBlob;
 }

@@ -3,7 +3,10 @@
 #include"imgui.h"
 #include "TextureManager.h"
 
+// マップの右端座標
 constexpr float kMap1maxX = 7035.0f;
+constexpr float kMap2maxX = 3645.0f;
+constexpr float kMap3maxX = 3835.0f;
 
 void StageSelectScene::Initialize() {
 
@@ -70,6 +73,8 @@ void StageSelectScene::Initialize() {
 	map3Sprite_->SetAnchorPoint({ 0.5f,0.5f,0.0f });
 	map3Sprite_->SetSize({ 512.0f, 256.0f,0.0f });
 	map3Sprite_->SetTexSize({ 2280.0f, 1092.0f,0.0f });
+
+	currentStageNum_ = 1;
 }
 
 void StageSelectScene::Finalize() {}
@@ -85,39 +90,137 @@ void StageSelectScene::Update() {
 	ImGui::Text("currentStage: %u", currentStageNum_);
 	ImGui::End();
 
-	ImGui::Begin("map1");
-	Vector3 anchorPoint = map1Sprite_->GetAnchorPoint();
-	if (ImGui::DragFloat3("Anchor Point", &anchorPoint.x, 0.1f)) {
-		map1Sprite_->SetAnchorPoint(anchorPoint);
+	{
+		ImGui::Begin("map1");
+		Vector3 anchorPoint = map1Sprite_->GetAnchorPoint();
+		if (ImGui::DragFloat3("Anchor Point##map1", &anchorPoint.x, 0.1f)) {
+			map1Sprite_->SetAnchorPoint(anchorPoint);
+		}
+
+		Vector3 size = map1Sprite_->GetSize();
+		if (ImGui::DragFloat3("Size##map1", &size.x, 0.1f)) {
+			map1Sprite_->SetSize(size);
+		}
+
+		Vector3 texLeftTop = map1Sprite_->GetTexLeftTop();
+		if (ImGui::DragFloat3("Tex Left Top", &texLeftTop.x, 0.1f)) {
+			map1Sprite_->SetTexLeftTop(texLeftTop);
+		}
+
+		Vector3 texSize = map1Sprite_->GetTexSize();
+		if (ImGui::DragFloat3("Tex Size##map1", &texSize.x, 0.1f)) {
+			map1Sprite_->SetTexSize(texSize);
+		}
+		ImGui::End();
 	}
 
-	Vector3 size = map1Sprite_->GetSize();
-	if (ImGui::DragFloat3("Size", &size.x, 0.1f)) {
-		map1Sprite_->SetSize(size);
+	{
+		ImGui::Begin("map2");
+		Vector3 anchorPoint = map2Sprite_->GetAnchorPoint();
+		if (ImGui::DragFloat3("Anchor Point##map2", &anchorPoint.x, 0.1f)) {
+			map2Sprite_->SetAnchorPoint(anchorPoint);
+		}
+
+		Vector3 size = map2Sprite_->GetSize();
+		if (ImGui::DragFloat3("Size##map2", &size.x, 0.1f)) {
+			map2Sprite_->SetSize(size);
+		}
+
+		Vector3 texLeftTop = map2Sprite_->GetTexLeftTop();
+		if (ImGui::DragFloat3("Tex Left Top##map2", &texLeftTop.x, 0.1f)) {
+			map2Sprite_->SetTexLeftTop(texLeftTop);
+		}
+
+		Vector3 texSize = map2Sprite_->GetTexSize();
+		if (ImGui::DragFloat3("Tex Size##map2", &texSize.x, 0.1f)) {
+			map2Sprite_->SetTexSize(texSize);
+		}
+		ImGui::End();
 	}
 
-	Vector3 texLeftTop = map1Sprite_->GetTexLeftTop();
-	if (ImGui::DragFloat3("Tex Left Top", &texLeftTop.x, 0.1f)) {
-		map1Sprite_->SetTexLeftTop(texLeftTop);
-	}
+	{
+		ImGui::Begin("map3");
+		Vector3 anchorPoint = map3Sprite_->GetAnchorPoint();
+		if (ImGui::DragFloat3("Anchor Point##map3", &anchorPoint.x, 0.1f)) {
+			map3Sprite_->SetAnchorPoint(anchorPoint);
+		}
 
-	Vector3 texSize = map1Sprite_->GetTexSize();
-	if (ImGui::DragFloat3("Tex Size", &texSize.x, 0.1f)) {
-		map1Sprite_->SetTexSize(texSize);
+		Vector3 size = map1Sprite_->GetSize();
+		if (ImGui::DragFloat3("Size##map3", &size.x, 0.1f)) {
+			map3Sprite_->SetSize(size);
+		}
+
+		Vector3 texLeftTop = map3Sprite_->GetTexLeftTop();
+		if (ImGui::DragFloat3("Tex Left Top##map3", &texLeftTop.x, 0.1f)) {
+			map3Sprite_->SetTexLeftTop(texLeftTop);
+		}
+
+		Vector3 texSize = map3Sprite_->GetTexSize();
+		if (ImGui::DragFloat3("Tex Size##map3", &texSize.x, 0.1f)) {
+			map3Sprite_->SetTexSize(texSize);
+		}
+		ImGui::End();
 	}
-	ImGui::End();
 #endif // _DEBUG
 
+	XINPUT_STATE controllerState;
+	bool controllerConnected = Input::GetInstance()->GetJoystickState(0, controllerState);
+
+	float stickX = 0.0f;
+	if (controllerConnected) {
+		stickX = static_cast<float>(controllerState.Gamepad.sThumbLX) / 32767.0f;  // 正規化したスティックのX入力（-1.0 ~ 1.0）
+	}
+
+	// 左右移動入力
+	bool keyboardMoveLeft = Input::GetInstance()->PushKey(DIK_A);
+	bool keyboardMoveRight = Input::GetInstance()->PushKey(DIK_D);
+	bool controllerStickMoveLeft = stickX < -0.5f;  // スティックをある程度倒したときに左移動
+	bool controllerStickMoveRight = stickX > 0.5f;  // スティックをある程度倒したときに右移動
+	bool controllerDPadMoveLeft = Input::GetInstance()->PushControllerButton(0, XINPUT_GAMEPAD_DPAD_LEFT);
+	bool controllerDPadMoveRight = Input::GetInstance()->PushControllerButton(0, XINPUT_GAMEPAD_DPAD_RIGHT);
+
+	bool keyboardStart = Input::GetInstance()->TriggerKey(DIK_SPACE);
+	bool controllerStart = controllerConnected && Input::GetInstance()->TriggerControllerButton(0, XINPUT_GAMEPAD_A);
+
 	// ステージ番号の選択と決定
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+	if (keyboardStart || controllerStart) {
 		sceneManager_->SetCurrentStageNum(currentStageNum_);
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
-	} else if (Input::GetInstance()->TriggerKey(DIK_A)) {
+	}
+
+	// 初回入力の処理
+	if (!moveTriggered && (keyboardMoveLeft || controllerStickMoveLeft || controllerDPadMoveLeft)) {
 		currentStageNum_--;
-		t = 0.0f;
-	} else if (Input::GetInstance()->TriggerKey(DIK_D)) {
+		scrollTimer_ = 0.0f;
+		moveTimer = keyRepeatDelay;  // タイマーをリピート遅延時間でリセット
+		moveTriggered = true;        // 初回移動トリガー
+	} else if (!moveTriggered && (keyboardMoveRight || controllerStickMoveRight || controllerDPadMoveRight)) {
 		currentStageNum_++;
-		t = 0.0f;
+		scrollTimer_ = 0.0f;
+		moveTimer = keyRepeatDelay;
+		moveTriggered = true;
+	}
+
+	// タイマーをリセットする（移動が止まったとき）
+	if (!keyboardMoveLeft && !controllerStickMoveLeft && !controllerDPadMoveLeft && !keyboardMoveRight && !controllerStickMoveRight && !controllerDPadMoveRight) {
+		moveTriggered = false;
+		moveTimer = 0.0f;  // タイマーをリセット
+	}
+
+	// リピート処理
+	if (moveTriggered && moveTimer > 0.0f) {
+		moveTimer -= 1.0f / 60.0f;  // タイマーを減少させる
+	} else if (moveTriggered && moveTimer <= 0.0f) {
+		// タイマーが0以下ならリピート処理を行う
+		if (keyboardMoveLeft || controllerStickMoveLeft || controllerDPadMoveLeft) {
+			currentStageNum_--;
+			scrollTimer_ = 0.0f;
+			moveTimer = keyRepeatInterval;  // リピート間隔でタイマーをリセット
+		} else if (keyboardMoveRight || controllerStickMoveRight || controllerDPadMoveRight) {
+			currentStageNum_++;
+			scrollTimer_ = 0.0f;
+			moveTimer = keyRepeatInterval;
+		}
 	}
 
 	// 値超過排斥処理
@@ -127,7 +230,15 @@ void StageSelectScene::Update() {
 		currentStageNum_ = kMaxStageNum_;
 	}
 
+	// ステージを切り替えたら
+	if (currentStageNum_ != oldStageNum_) {
+		numberSprite_->SetAnchorPoint({ 0.0f,-0.5f,0.0f });
+	}
+
+	oldStageNum_ = currentStageNum_;
+
 	numberSprite_->SetTexLeftTop(Vector3(currentStageNum_ * numberSprite_->GetTexSize().x, 0.0f, 0.0f));
+	numberSprite_->SetAnchorPoint({ numberSprite_->GetAnchorPoint().x,std::lerp(numberSprite_->GetAnchorPoint().y, 0.5f,1.0f / 60.0f * 15.0f),numberSprite_->GetAnchorPoint().z });
 
 	selectSceneSprite_->Update();
 	selectAllowSceneSprite_->Update();
@@ -151,10 +262,10 @@ void StageSelectScene::Update() {
 	map2Sprite_->Update();
 	map3Sprite_->Update();
 
-	map1Sprite_->SetTexLeftTop({ (kMap1maxX * 0.5f) + std::cos(t) * (kMap1maxX * 0.5f),map1Sprite_->GetTexLeftTop().y,map1Sprite_->GetTexLeftTop().z });
-	map2Sprite_->SetTexLeftTop({ (kMap1maxX * 0.5f) + std::cos(t) * (kMap1maxX * 0.5f),map2Sprite_->GetTexLeftTop().y,map2Sprite_->GetTexLeftTop().z });
-	map3Sprite_->SetTexLeftTop({ (kMap1maxX * 0.5f) + std::cos(t) * (kMap1maxX * 0.5f),map3Sprite_->GetTexLeftTop().y,map3Sprite_->GetTexLeftTop().z });
-	t += 0.0025f;
+	map1Sprite_->SetTexLeftTop({ (1.0f - std::cos(scrollTimer_)) * (kMap1maxX * 0.5f),map1Sprite_->GetTexLeftTop().y,map1Sprite_->GetTexLeftTop().z });
+	map2Sprite_->SetTexLeftTop({ (1.0f - std::cos(scrollTimer_)) * (kMap2maxX * 0.5f),map2Sprite_->GetTexLeftTop().y,map2Sprite_->GetTexLeftTop().z });
+	map3Sprite_->SetTexLeftTop({ (1.0f - std::cos(scrollTimer_)) * (kMap3maxX * 0.5f),map3Sprite_->GetTexLeftTop().y,map3Sprite_->GetTexLeftTop().z });
+	scrollTimer_ += 0.0025f;
 }
 
 void StageSelectScene::Draw() {
