@@ -228,9 +228,10 @@ void Player::Draw() {
 		models_[nowAnima_]->Draw(worldTransform_, *viewProjection_);
 	}*/
 	if (isAlive_) {
-		models_[nowAnima_]->ApplyCS();
-		models_[nowAnima_]->DrawCS(worldTransform_, *viewProjection_, "none");
 	}
+	models_[nowAnima_]->ApplyCS();
+	models_[nowAnima_]->DrawCS(worldTransform_, *viewProjection_, "none");
+
 }
 
 void Player::SetIsGoal(const bool newIsGoal) {
