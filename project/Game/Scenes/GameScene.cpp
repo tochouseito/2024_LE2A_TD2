@@ -58,11 +58,6 @@ void GameScene::Initialize() {
 
 	/*3D軸モデル*/
 
-	// メインカメラの生成
-	mainCamera_ = std::make_unique<MainCamera>();
-	mainCamera_->Initialize(Vector3(4.5f, 17.0f, -45.0f), &viewProjection_); // HACK : 動画提出用
-	mainCamera_->rotation_ = Vector3(0.0f, 0.0f, 0.0f); // HACK : 動画提出用
-
 	deltaTime_ = std::make_unique<DeltaTime>();
 	deltaTime_->Update();
 
@@ -165,6 +160,11 @@ void GameScene::Initialize() {
 	player_->Initialize(playerModels_, plAnimas_, &viewProjection_, playerPosition);
 	player_->SetMapChipField(mapChipField_.get());
 
+	// メインカメラの生成
+	mainCamera_ = std::make_unique<MainCamera>();
+	mainCamera_->Initialize(Vector3(playerPosition.x, playerPosition.y, -45.0f), &viewProjection_); // HACK : 動画提出用
+	mainCamera_->rotation_ = Vector3(0.0f, 0.0f, 0.0f); // HACK : 動画提出用
+
 	// Enemy
 	enemyModel_.reset(Model::LordModel("EnemySaw"));
 	enemyFace_.reset(Model::LordModel("EnemyFace"));
@@ -209,6 +209,8 @@ void GameScene::Update() {
 	// もしゴールしていたら
 	if (goal_->GetIsGoal()) {
 		/*シーン切り替え依頼*/
+		SceneManager::GetInstance()->ChangeScene("RESULT");
+	} else if (!player_->GetIsAlive()) {
 		SceneManager::GetInstance()->ChangeScene("RESULT");
 	}
 
@@ -306,17 +308,7 @@ void GameScene::Draw() {
 
 	// エネミー
 	enemy_->Draw();
-	switch (enemy_->GetBehavior()) {
-		case Enemy::Behavior::kRoot:
 
-			break;
-		case Enemy::Behavior::kPreliminary:
-			enemyPreliminaryModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
-			break;
-		case Enemy::Behavior::kAttack:
-			enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
-			break;
-	}
 
 	// ゴール
 	goal_->Draw();
@@ -340,6 +332,18 @@ void GameScene::Draw() {
 	for (std::unique_ptr<Needle>& needle : needles_) {
 		needle->Draw();
 
+	}
+
+	switch (enemy_->GetBehavior()) {
+	case Enemy::Behavior::kRoot:
+
+		break;
+	case Enemy::Behavior::kPreliminary:
+		enemyPreliminaryModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+		break;
+	case Enemy::Behavior::kAttack:
+		enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+		break;
 	}
 
 	collisionManager_->Draw(viewProjection_);
@@ -426,23 +430,23 @@ void GameScene::EnemyAttack(const uint32_t& enemyAttackYIndex, const Enemy::Beha
 	enemyAttackWorldTransform_.UpdateMatrix();
 
 	switch (behavior) {
-		case Enemy::Behavior::kRoot:
-			Vector3 playerWorldPosition = player_->GetWorldPosition();
-			enemy_->SetPreliminaryYIndex(mapChipField_->GetMapChipIndexSetByPosition(playerWorldPosition).yIndex);
-			player_->SetIsHitEnemyAttack(false);
-			break;
-		case Enemy::Behavior::kPreliminary:
-			player_->SetIsHitEnemyAttack(false);
-			break;
-		case Enemy::Behavior::kAttack:
+	case Enemy::Behavior::kRoot:
+		Vector3 playerWorldPosition = player_->GetWorldPosition();
+		enemy_->SetPreliminaryYIndex(mapChipField_->GetMapChipIndexSetByPosition(playerWorldPosition).yIndex);
+		player_->SetIsHitEnemyAttack(false);
+		break;
+	case Enemy::Behavior::kPreliminary:
+		player_->SetIsHitEnemyAttack(false);
+		break;
+	case Enemy::Behavior::kAttack:
 
-			if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
-				// 攻撃がヒットした時の処理
-				player_->SetIsHitEnemyAttack(true);
-			} else {
-				player_->SetIsHitEnemyAttack(false);
-			}
-			break;
+		if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
+			// 攻撃がヒットした時の処理
+			player_->SetIsHitEnemyAttack(true);
+		} else {
+			player_->SetIsHitEnemyAttack(false);
+		}
+		break;
 	}
 }
 

@@ -1,8 +1,12 @@
 #pragma once
 
 #include"BaseScene.h"
-class ResultScene:public BaseScene
-{
+class ResultScene :public BaseScene {
+private:
+	enum NextScene {
+		kTitle = 0,
+		kSelect,
+	};
 public:
 	/// <summary>
 	/// 初期化
@@ -29,9 +33,14 @@ public:
 	/// </summary>
 	void ChangeScene()override;
 
-	void SetSceneManager(SceneManager* sceneManager) override{ sceneManager_ = sceneManager; }
+	void SetSceneManager(SceneManager* sceneManager) override { sceneManager_ = sceneManager; }
 
 private:
 	SceneManager* sceneManager_ = nullptr;
+
+	bool isClear_ = false;
+
+	uint32_t clearTime_ = 0;
+	uint32_t nextScene_ = kTitle;
 };
 

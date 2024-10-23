@@ -39,8 +39,12 @@ public:
 	void SetIndex(uint32_t index) { defaultIndex = index; }
 
 	void SetCurrentStageNum(const uint32_t& currentStageNumber);
+	void SetIsClear(const bool& isClear);
+	void SetClearTime(const uint32_t& clearTime);
 
 	uint32_t GetCurrentStageNumber()const;
+	bool GetIsClear()const;
+	uint32_t GetClearTime()const;
 
 private:
 	/*今のシーン*/
@@ -54,6 +58,12 @@ private:
 
 	// 現在のステージ
 	uint32_t currentStageNumber_ = 1;
+
+	// クリアしたかどうか
+	bool isClear_ = false;
+
+	// クリア時間
+	uint32_t clearTime_ = 0;
 
 };
 
