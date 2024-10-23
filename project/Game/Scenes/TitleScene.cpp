@@ -23,6 +23,8 @@ void TitleScene::Initialize() {
 	fadeSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
 	fadeSprite_->SetColor(color);
 
+	state = { 0.0f, 1 };
+
 	/*titleBGM = Audio::GetInstance()->SoundLordWave("./Resources/it_takes_a_hero.wav");
 	Audio::GetInstance()->SoundPlayWave(Audio::GetInstance()->GetXAudio2(), titleBGM, true);*/
 }
@@ -52,7 +54,7 @@ void TitleScene::Update() {
 		SceneManager::GetInstance()->ChangeScene("SELECT");
 	}
 
-	
+	pressButtonSprite_->SetPosition(EaseInOutBetweenTwoPoints(kButtonStartPos_, kButtonEndPos_, state, deltaTime, speed));
 
 	titleLogoSprite_->Update();
 	pressButtonSprite_->Update();
@@ -85,7 +87,7 @@ Vector3 TitleScene::EaseInOutBetweenTwoPoints(const Vector3& start, const Vector
 	}
 
 	// イーズインの関数 (t^2 を使用)
-	float easedT = state.t * state.t;
+	float easedT = std::powf(state.t, 6);
 
 	// 線形補間を使って2点の間を移動
 	Vector3 result;

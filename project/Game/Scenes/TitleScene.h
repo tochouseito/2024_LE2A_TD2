@@ -51,8 +51,12 @@ private:
 	// 状態を初期化
 	EaseState state = { 0.0f, 1 };
 
+	// アニメーション用変数
+	const Vector3 kButtonStartPos_ = { 640.0f,480.0f,0.0f };
+	const Vector3 kButtonEndPos_ = { 640.0f,512.0f,0.0f };
+
 	float deltaTime = 0.016f;
-	float speed = 0.5f;
+	float speed = 0.8f;
 
 	ViewProjection viewProjection_;
 
