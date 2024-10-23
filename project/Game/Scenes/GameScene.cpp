@@ -205,18 +205,37 @@ void GameScene::Initialize() {
 
 	isPlayStartAnimation_ = true;
 	sceneStartAnimationTimer_ = kSceneStartAnimationTime_;
+	currentStartNumber_ = 3;
 	player_->SetIsPlayStartAnimation(isPlayStartAnimation_);
 	enemy_->SetIsStartAnimation(isPlayStartAnimation_);
+
+	numberTextureHandle_ = TextureManager::Load("./Resources/GUI/numbers.png");
+	numberSprite_ = std::make_unique<Sprite>();
+	numberSprite_->Initialize({ 640.0f,360.0f,0.0f }, &viewProjection_, numberTextureHandle_);
+	numberSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
+	numberSprite_->SetSize(Vector3(48.0f, 48.0f, 0.0f));
+	numberSprite_->SetTexSize(Vector3(48.0f, 48.0f, 0.0f));
+
 }
 
 void GameScene::Update() {
 	if (isPlayStartAnimation_) {
 		sceneStartAnimationTimer_--;
-		if (sceneStartAnimationTimer_ == 0) {
+		if (sceneStartAnimationTimer_ == 240) {
+			currentStartNumber_ = 3;
+		} else if (sceneStartAnimationTimer_ == 180) {
+			currentStartNumber_ = 2;
+		} else if (sceneStartAnimationTimer_ == 120) {
+			currentStartNumber_ = 1;
+		} else if (sceneStartAnimationTimer_ == 60) {
+			currentStartNumber_ = 0;
+		} else if (sceneStartAnimationTimer_ == 0) {
 			isPlayStartAnimation_ = false;
 			player_->SetIsPlayStartAnimation(isPlayStartAnimation_);
 			enemy_->SetIsStartAnimation(isPlayStartAnimation_);
 		}
+		numberSprite_->SetTexLeftTop(Vector3(numberSprite_->GetTexSize().x * currentStartNumber_, 0.0f, 0.0f));
+		numberSprite_->Update();
 	}
 
 	// もしゴールしていたら
@@ -362,6 +381,11 @@ void GameScene::Draw() {
 	collisionManager_->Draw(viewProjection_);
 
 	particleManager_->DrawGPU();
+
+
+	if (isPlayStartAnimation_) {
+		numberSprite_->Draw();
+	}
 
 }
 

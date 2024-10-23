@@ -104,6 +104,9 @@ private:
 	std::string textureHandle_[6]{};
 	std::string electricGaugeTex_;
 
+	std::string numberTextureHandle_;
+	std::unique_ptr<Sprite> numberSprite_;
+
 	Particle* particles_ = nullptr;
 	Sprite* sprite_ = nullptr;
 
@@ -198,4 +201,6 @@ private:
 
 	// アニメーション
 	bool isPlayStartAnimation_ = true;
+	// 
+	uint32_t currentStartNumber_ = 3;
 };
