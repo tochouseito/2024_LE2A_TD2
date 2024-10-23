@@ -97,7 +97,7 @@ void StageSelectScene::Initialize() {
 	map4Sprite_->SetSize({ 512.0f, 256.0f,0.0f });
 	map4Sprite_->SetTexSize({ 2280.0f, 1092.0f,0.0f });
 
-	currentStageNum_ = 1;
+	currentStageNum_ = sceneManager_->GetCurrentStageNumber();
 
 	transitionPos = startPos;
 
