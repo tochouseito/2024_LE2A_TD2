@@ -166,7 +166,7 @@ private:
 
 	// Goal
 	std::unique_ptr<Goal> goal_ = nullptr;
-	std::unique_ptr<Model> goalModel_ = nullptr;
+	std::vector<Model*> goalModels_;
 
 
 	// Bullet
