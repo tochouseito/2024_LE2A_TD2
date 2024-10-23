@@ -125,6 +125,7 @@ void Sprite::UpdateTransform() {
 	Matrix4x4 worldViewProjectionMatrixSprite = Multiply(worldMatrixSprite, Multiply(viewMatrixSprite, projectionMatrixSprite));
 	transformationMatrixDataSprite_->matWorld = worldViewProjectionMatrixSprite;
 	material_->GetMaterialData()->uvTransform = MakeAffineMatrix(UVscale_, UVrotation_, UVtranslation_);
+	material_->GetMaterialData()->color = color;
 }
 void Sprite::CreateMaterial() {
 	// スプライト用のマテリアルリソースを作る。
@@ -133,7 +134,7 @@ void Sprite::CreateMaterial() {
 	// 書き込むためのアドレスを取得
 	materialResourceSprite_->Map(0, nullptr, reinterpret_cast<void**>(&materialDataSprite_));
 	// 今回は白を書き込んでいる
-	materialDataSprite_->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	materialDataSprite_->color = color;
 	// SpriteではLightingしないのでfalseを設定する
 	materialDataSprite_->enableLighting = false;
 	materialDataSprite_->uvTransform = MakeIdentity4x4();
