@@ -45,6 +45,9 @@ void Enemy::Initialize(Model* models[], ViewProjection* viewProjection, const Ve
 	// 速度をリセット
 	velocity_ = { 0.0f,0.0f,0.0f };
 
+	isStartAnimstion_ = true;
+	isGoalAnimation_ = false;
+
 	// コライダーの設定
 	Collider::Initialize();
 	// 半径を設定
@@ -66,7 +69,7 @@ void Enemy::Update() {
 		case Enemy::Behavior::kAttack:
 			ImGui::Text("Behavior: attack");
 			break;
-}
+	}
 
 	ImGui::End();
 #endif // _DEBUG
@@ -229,7 +232,7 @@ void Enemy::RootInitialize() {
 }
 
 void Enemy::RootUpdate() {
-	if (isStartAnimstion_) {
+	if (isStartAnimstion_ || isGoalAnimation_) {
 		worldTransform_.rotation_.z -= 0.05f;
 	} else {
 		// 移動処理
@@ -250,13 +253,17 @@ void Enemy::PreliminaryInitialize() {
 }
 
 void Enemy::PreliminaryUpdate() {
-	// 移動処理
-	Move();
 
-	if (behaviorTimer_ < kPreliminaryTime_) {
-		behaviorTimer_++;
+	if (isStartAnimstion_ || isGoalAnimation_) {
+		worldTransform_.rotation_.z -= 0.05f;
 	} else {
-		behaviorRequest_ = Behavior::kAttack;
+		// 移動処理
+		Move();
+		if (behaviorTimer_ < kPreliminaryTime_) {
+			behaviorTimer_++;
+		} else {
+			behaviorRequest_ = Behavior::kAttack;
+		}
 	}
 }
 
@@ -266,12 +273,16 @@ void Enemy::AttackInitialize() {
 }
 
 void Enemy::AttackUpdate() {
-	// 攻撃時は少し遅めの移動速度
-	AttackMove();
-	if (behaviorTimer_ < kAttackTime_) {
-		behaviorTimer_++;
+	if (isStartAnimstion_ || isGoalAnimation_) {
+		worldTransform_.rotation_.z -= 0.05f;
 	} else {
-		behaviorRequest_ = Behavior::kRoot;
+		// 攻撃時は少し遅めの移動速度
+		AttackMove();
+		if (behaviorTimer_ < kAttackTime_) {
+			behaviorTimer_++;
+		} else {
+			behaviorRequest_ = Behavior::kRoot;
+		}
 	}
 }
 
@@ -303,4 +314,8 @@ void Enemy::SetPreliminaryYIndex(const uint32_t& yIndex) {
 
 void Enemy::SetIsStartAnimation(const bool& isStartAnimation) {
 	isStartAnimstion_ = isStartAnimation;
+}
+
+void Enemy::SetIsGoalAnimation(const bool& isGoalAnimation) {
+	isGoalAnimation_ = isGoalAnimation;
 }

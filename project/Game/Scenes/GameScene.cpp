@@ -33,8 +33,11 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Finalize() {
+
 	Audio::GetInstance()->SoundStop(BGM);
 	audio_->SoundUnLord(&BGM);
+
+
 }
 
 void GameScene::Initialize() {
@@ -227,6 +230,10 @@ void GameScene::Initialize() {
 	clearTime_ = 0;
 	startAnimationScale_ = kStartAnimationScale;
 	animationSubtractScale_ = 0.01f;
+
+	isPlayGoalAnimation_ = false;
+
+	cameraZMove_ = 0.05f;
 }
 
 void GameScene::Update() {
@@ -258,8 +265,22 @@ void GameScene::Update() {
 		countNumberSprite_->SetSize(Vector3(180.0f * startAnimationScale_, 180.0f * startAnimationScale_, 0.0f));
 		countNumberSprite_->SetTexLeftTop(Vector3(countNumberSprite_->GetTexSize().x * currentStartAnimationNumber_, 0.0f, 0.0f));
 		countNumberSprite_->Update();
-	} else {
+	} else if (!isPlayGoalAnimation_) {
 		clearTime_++;
+	}
+
+
+	if (isPlayGoalAnimation_) {
+		goalAnimationTimer_--;
+		cameraZMove_ += kCameraZMove_;
+		if (mainCamera_->translation_.z < -10.0f) {
+			mainCamera_->translation_.z += cameraZMove_;
+		} else {
+			mainCamera_->translation_.z = -9.0f;
+		}
+		if (goalAnimationTimer_ == 0) {
+			SceneManager::GetInstance()->ChangeScene("SELECT");
+		}
 	}
 
 	// もしゴールしていたら
@@ -268,10 +289,11 @@ void GameScene::Update() {
 		player_->SetIsGoal(true);
 		player_->SetPos(goal_->GetCenterPosition() - Vector3(0.0f, 1.0f, 0.0f)
 		);
-		//SceneManager::GetInstance()->ChangeScene("RESULT");
-	} else if (!player_->GetIsAlive()) {
-		//SceneManager::GetInstance()->ChangeScene("RESULT");
-		SceneManager::GetInstance()->ChangeScene("RESULT");
+		if (!isPlayGoalAnimation_) {
+			goalAnimationTimer_ = kGoalAnimationTime_;
+			isPlayGoalAnimation_ = true;
+		}
+		enemy_->SetIsGoalAnimation(isPlayGoalAnimation_);
 		uint32_t clearTime = sceneManager_->GetClearTime(sceneManager_->GetCurrentStageNumber());
 
 		if (!sceneManager_->GetIsCleared(sceneManager_->GetCurrentStageNumber())) {
@@ -282,7 +304,7 @@ void GameScene::Update() {
 		sceneManager_->SetIsCleared(true, sceneManager_->GetCurrentStageNumber());
 		sceneManager_->SetIsClear(true);
 	} else if (!player_->GetIsAlive()) {
-		SceneManager::GetInstance()->ChangeScene("RESULT");
+		SceneManager::GetInstance()->ChangeScene("SELECT");
 		sceneManager_->SetIsClear(false);
 	}
 
@@ -406,16 +428,18 @@ void GameScene::Draw() {
 
 	}
 
-	switch (enemy_->GetBehavior()) {
-		case Enemy::Behavior::kRoot:
+	if (!isPlayGoalAnimation_) {
+		switch (enemy_->GetBehavior()) {
+			case Enemy::Behavior::kRoot:
 
-			break;
-		case Enemy::Behavior::kPreliminary:
-			enemyPreliminaryModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
-			break;
-		case Enemy::Behavior::kAttack:
-			enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
-			break;
+				break;
+			case Enemy::Behavior::kPreliminary:
+				enemyPreliminaryModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+				break;
+			case Enemy::Behavior::kAttack:
+				enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+				break;
+		}
 	}
 
 	collisionManager_->Draw(viewProjection_);

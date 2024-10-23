@@ -54,6 +54,8 @@ public:
 
 	void SetIsStartAnimation(const bool& isStartAnimation);
 
+	void SetIsGoalAnimation(const bool& isGoalAnimation);
+
 private:
 
 	// ワールドトランスフォーム
@@ -113,4 +115,5 @@ private:
 	uint32_t behaviorTimer_ = 0;
 
 	bool isStartAnimstion_ = true;
+	bool isGoalAnimation_ = false;
 };

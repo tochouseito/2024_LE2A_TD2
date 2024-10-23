@@ -214,4 +214,12 @@ private:
 
 	const float kStartAnimationScale = animationSubtractScale_ * 500.0f;
 
+
+	// アニメーションの時間
+	const uint32_t kGoalAnimationTime_ = 240;
+	// アニメーションの現在タイマー
+	uint32_t goalAnimationTimer_ = 0;
+	bool isPlayGoalAnimation_ = false;
+	float cameraZMove_ = 0.05f;
+	const float kCameraZMove_ = 0.003f;
 };
