@@ -283,8 +283,6 @@ void GameScene::Update() {
 			isPlayGoalAnimation_ = true;
 		}
 		enemy_->SetIsGoalAnimation(isPlayGoalAnimation_);
-	} else if (!player_->GetIsAlive()) {
-		SceneManager::GetInstance()->ChangeScene("RESULT");
 		uint32_t clearTime = sceneManager_->GetClearTime(sceneManager_->GetCurrentStageNumber());
 
 		if (!sceneManager_->GetIsCleared(sceneManager_->GetCurrentStageNumber())) {
