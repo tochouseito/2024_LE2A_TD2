@@ -7,8 +7,6 @@
 
 
 void Goal::Initialize(const std::vector<Model*>& models, ViewProjection* viewProjection, const Vector3& position) {
-	assert(model);
-
 	// ファイル名を指定してテクスチャを読み込む
 	//textureHandle_ = textureHandel;
 
