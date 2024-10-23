@@ -36,15 +36,25 @@ public:
 	/*シーン切り替え*/
 	void ChangeScene(const std::string& sceneName);
 
-	void SetIndex(uint32_t index) { defaultIndex = index; }
+	void SetIndex(uint32_t index) {
+		defaultIndex = index;
+	}
 
 	void SetCurrentStageNum(const uint32_t& currentStageNumber);
 	void SetIsClear(const bool& isClear);
-	void SetClearTime(const uint32_t& clearTime);
+	void SetClearTime(const uint32_t& clearTime, uint32_t stage);
+
+	void SetIsCleared(const bool& iscleared, uint32_t stage);
+
 
 	uint32_t GetCurrentStageNumber()const;
 	bool GetIsClear()const;
-	uint32_t GetClearTime()const;
+	uint32_t GetClearTime(uint32_t stage)const;
+
+	void CulAndSetClearTime(uint32_t totalSeconds, uint32_t stage);
+	uint32_t GetCulClearTime(uint32_t index, uint32_t stage);
+
+	uint32_t GetIsCleared(uint32_t stage);
 
 private:
 	/*今のシーン*/
@@ -63,7 +73,10 @@ private:
 	bool isClear_ = false;
 
 	// クリア時間
-	uint32_t clearTime_ = 0;
+	uint32_t clearTime_[3] = { 0,0,0 };
+	uint32_t clearTimeMinutes_[3][4]{};
+
+	bool isCleared_[3] = {};
 
 };
 

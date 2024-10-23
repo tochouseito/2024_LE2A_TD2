@@ -59,7 +59,7 @@
 #include"Game/DeltaTime/DeltaTime.h"
 #include "Needle/Needle.h"
 
-class GameScene :
+class GameScene:
 
 	public BaseScene {
 
@@ -201,6 +201,8 @@ private:
 
 	// アニメーション
 	bool isPlayStartAnimation_ = true;
-	// 
-	uint32_t currentStartNumber_ = 3;
+	uint32_t currentStartAnimationNumber_ = 3;
+
+	// クリアタイム
+	uint32_t clearTime_ = 0;
 };

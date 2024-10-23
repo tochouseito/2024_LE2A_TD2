@@ -6,7 +6,7 @@ void ResultScene::Initialize() {
 	// クリアしたかどうかをセット
 	isClear_ = sceneManager_->GetIsClear();
 	// クリア時間をセット
-	clearTime_ = sceneManager_->GetClearTime();
+	clearTime_ = sceneManager_->GetClearTime(sceneManager_->GetCurrentStageNumber());
 }
 
 void ResultScene::Finalize() {
