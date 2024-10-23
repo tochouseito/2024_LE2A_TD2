@@ -4,6 +4,7 @@
 #include "ViewProjection.h"
 #include "Model.h"
 #include<vector>
+#include"Audio.h"
 
 class MapChipField;
 
@@ -213,5 +214,7 @@ private: // メンバ変数
 	bool isPlayStartAnimation_ = true;
 
 	bool isGoal_ = false;
+
+	Audio::SoundData jumpSE;
 };
 

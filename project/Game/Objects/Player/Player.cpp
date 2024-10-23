@@ -17,7 +17,9 @@
 
 Player::Player() = default;
 
-Player::~Player() = default;
+Player::~Player() {
+	Audio::GetInstance()->SoundUnLord(&jumpSE);
+}
 
 void Player::Initialize(const std::vector<Model*>& models, const std::vector<Model::Animation*>& animas, ViewProjection* viewProjection, const Vector3& position) {
 	//assert(model);
@@ -39,6 +41,9 @@ void Player::Initialize(const std::vector<Model*>& models, const std::vector<Mod
 			models_[i]->SetSkinCluster(models_[i]->CreateSkinCluster(DirectXCommon::GetInstance()->GetDevice(), skeletons_[i], models_[i]->GetModelData()->object[name]));
 		}
 	}
+
+	jumpSE = Audio::GetInstance()->SoundLordWave("./Resources/slightscream-01_1.wav");
+
 	viewProjection_ = viewProjection;
 
 	// コライダーの設定
@@ -311,6 +316,7 @@ void Player::CharMove() {
 			// ジャンプ初速
 			velocity_ += Vector3(0, isGravityInvert ? -kJumpAcceleration : kJumpAcceleration, 0);
 			isJumping = true;
+			Audio::GetInstance()->SoundPlayWave(Audio::GetInstance()->GetXAudio2(), jumpSE);
 		}
 	}
 
