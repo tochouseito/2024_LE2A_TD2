@@ -65,13 +65,19 @@ private:
 	std::string greenTextureHandle_;
 	std::unique_ptr<Sprite> greenSprite_;
 
+	// 灰色のやつ
+	std::string grayTextureHandle_;
+	std::vector<Sprite*> graySprite_;
+
 	// map1Thumb
 	std::string map1TextureHandle_;
 	std::unique_ptr<Sprite> map1Sprite_;
 
+	// map2Thumb
 	std::string map2TextureHandle_;
 	std::unique_ptr<Sprite> map2Sprite_;
 
+	// map3Thumb
 	std::string map3TextureHandle_;
 	std::unique_ptr<Sprite> map3Sprite_;
 
