@@ -81,6 +81,6 @@ private:
 	float transitionTimer_ = 0.0f;
 	const float kTransitionTime_ = 45.0f;
 
-	//Audio::SoundData titleBGM;
+	Audio::SoundData titleBGM;
 };
 

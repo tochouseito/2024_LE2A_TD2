@@ -100,7 +100,7 @@ private:
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
-	//Audio::SoundData SoundData1;
+	Audio::SoundData BGM;
 	SceneManager* sceneManager_ = nullptr;
 
 	// テクスチャハンドル

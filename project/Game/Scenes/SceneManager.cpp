@@ -17,8 +17,7 @@ void SceneManager::Initialize() {
 	for (uint32_t i = 0; i < kMaxStageNum_; i++) {
 		isCleared_[i] = false;
 	}
-	/*titleBGM = Audio::GetInstance()->SoundLordWave("./Resources/it_takes_a_hero.wav");
-	Audio::GetInstance()->SoundPlayWave(Audio::GetInstance()->GetXAudio2(), titleBGM, true);*/
+	
 }
 
 void SceneManager::Finalize() {
@@ -55,12 +54,6 @@ void SceneManager::Draw() {
 void SceneManager::ChangeScene(const std::string& sceneName) {
 	assert(sceneFactory_);
 	assert(nextScene_ == nullptr);
-	/*if (sceneName == "GAMEPLAY") {
-		Audio::GetInstance()->SoundUnLord(&titleBGM);
-	}*/
-	/*if (sceneName == "TITLE") {
-		Audio::GetInstance()->SoundPlayWave(Audio::GetInstance()->GetXAudio2(), titleBGM, true);
-	}*/
 	/*次のシーン生成*/
 	nextScene_ = sceneFactory_->CreateScene(sceneName);
 }

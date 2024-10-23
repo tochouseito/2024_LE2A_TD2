@@ -43,7 +43,8 @@ void Player::Initialize(const std::vector<Model*>& models, const std::vector<Mod
 	}
 
 	jumpSE = Audio::GetInstance()->SoundLordWave("./Resources/slightscream-01_1.wav");
-
+	Audio::GetInstance()->SoundPlayWave(Audio::GetInstance()->GetXAudio2(), jumpSE);
+	Audio::GetInstance()->SoundStop(jumpSE);
 	viewProjection_ = viewProjection;
 
 	// コライダーの設定

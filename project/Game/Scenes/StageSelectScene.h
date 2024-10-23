@@ -5,6 +5,8 @@
 // 2D
 #include"Sprite.h"
 
+#include"Audio.h"
+
 #include"BaseScene.h"
 class StageSelectScene:public BaseScene {
 public:
@@ -129,6 +131,9 @@ private:
 	bool isTransition_ = false;
 	float transitionTimer_ = 0.0f;
 	const float kTransitionTime_ = 45.0f;
+
+
+	Audio::SoundData titleBGM;
 
 };
 

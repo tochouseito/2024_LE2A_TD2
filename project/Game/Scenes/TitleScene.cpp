@@ -32,13 +32,16 @@ void TitleScene::Initialize() {
 	transitionSprite_->SetColor(color);
 
 	state = { 0.0f, 1 };
-
-	/*titleBGM = Audio::GetInstance()->SoundLordWave("./Resources/it_takes_a_hero.wav");
-	Audio::GetInstance()->SoundPlayWave(Audio::GetInstance()->GetXAudio2(), titleBGM, true);*/
+	//Audio::GetInstance()->Initialize();
+	titleBGM = Audio::GetInstance()->SoundLordWave("./Resources/it_takes_a_hero.wav");
+	Audio::GetInstance()->SoundPlayWave(Audio::GetInstance()->GetXAudio2(), titleBGM, true);
 }
 
 void TitleScene::Finalize() {
-	/*Audio::GetInstance()->SoundUnLord(&titleBGM);*/
+	/*Audio::GetInstance()->SoundStop(titleBGM);
+	Audio::GetInstance()->Finalize();*/
+	Audio::GetInstance()->SoundStop(titleBGM);
+ 	Audio::GetInstance()->SoundUnLord(&titleBGM);
 }
 
 void TitleScene::Update() {
