@@ -41,12 +41,6 @@ void StageSelectScene::Initialize() {
 		smallNumberSprite_[i]->SetSize(Vector3(32.0f, 32.0f, 0.0f));
 		smallNumberSprite_[i]->SetTexSize(Vector3(32.0f, 32.0f, 0.0f));
 	}
-	smallNumberSprite_[0]->SetTexLeftTop(Vector3(0.0f, 0.0f, 0.0f));
-	smallNumberSprite_[1]->SetTexLeftTop(Vector3(0.0f, 0.0f, 0.0f));
-	smallNumberSprite_[2]->SetTexLeftTop(Vector3(32.0f * 10.0f, 0.0f, 0.0f));
-	smallNumberSprite_[3]->SetTexLeftTop(Vector3(0.0f, 0.0f, 0.0f));
-	smallNumberSprite_[4]->SetTexLeftTop(Vector3(0.0f, 0.0f, 0.0f));
-
 
 	baseTextureHandle_ = TextureManager::Load("./Resources/GUI/selectBase.png");
 	baseSprite_ = std::make_unique<Sprite>();
@@ -252,6 +246,13 @@ void StageSelectScene::Update() {
 
 	baseSprite_->Update();
 	greenSprite_->Update();
+
+	smallNumberSprite_[0]->SetTexLeftTop(Vector3(32.0f * sceneManager_->GetCulClearTime(0, currentStageNum_), 0.0f, 0.0f));
+	smallNumberSprite_[1]->SetTexLeftTop(Vector3(32.0f * sceneManager_->GetCulClearTime(1, currentStageNum_), 0.0f, 0.0f));
+	smallNumberSprite_[2]->SetTexLeftTop(Vector3(32.0f * 10.0f, 0.0f, 0.0f));
+	smallNumberSprite_[3]->SetTexLeftTop(Vector3(32.0f * sceneManager_->GetCulClearTime(2, currentStageNum_), 0.0f, 0.0f));
+	smallNumberSprite_[4]->SetTexLeftTop(Vector3(32.0f * sceneManager_->GetCulClearTime(3, currentStageNum_), 0.0f, 0.0f));
+
 
 	for (uint32_t i = 0; i < 5; i++) {
 		smallNumberSprite_[i]->Update();

@@ -208,49 +208,78 @@ void GameScene::Initialize() {
 
 	isPlayStartAnimation_ = true;
 	sceneStartAnimationTimer_ = kSceneStartAnimationTime_;
-	currentStartNumber_ = 3;
+	currentStartAnimationNumber_ = 3;
 	player_->SetIsPlayStartAnimation(isPlayStartAnimation_);
 	enemy_->SetIsStartAnimation(isPlayStartAnimation_);
 
-	numberTextureHandle_ = TextureManager::Load("./Resources/GUI/numbers.png");
-	numberSprite_ = std::make_unique<Sprite>();
-	numberSprite_->Initialize({ 640.0f,360.0f,0.0f }, &viewProjection_, numberTextureHandle_);
-	numberSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
-	numberSprite_->SetSize(Vector3(48.0f, 48.0f, 0.0f));
-	numberSprite_->SetTexSize(Vector3(48.0f, 48.0f, 0.0f));
+	countNumberTextureHandle_ = TextureManager::Load("./Resources/GUI/countNumbers.png");
+	countNumberSprite_ = std::make_unique<Sprite>();
+	countNumberSprite_->Initialize({ 640.0f,360.0f,0.0f }, &viewProjection_, countNumberTextureHandle_);
+	countNumberSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
+	countNumberSprite_->SetSize(Vector3(180.0f, 180.0f, 0.0f));
+	countNumberSprite_->SetTexSize(Vector3(180.0f, 180.0f, 0.0f));
 
+	// タイマーリセット
+	clearTime_ = 0;
+	startAnimationScale_ = kStartAnimationScale;
+	animationSubtractScale_ = 0.01f;
 }
 
 void GameScene::Update() {
 	if (isPlayStartAnimation_) {
 		sceneStartAnimationTimer_--;
 		if (sceneStartAnimationTimer_ == 240) {
-			currentStartNumber_ = 3;
+			currentStartAnimationNumber_ = 3;
+			animationSubtractScale_ = 0.01f;
+			startAnimationScale_ = kStartAnimationScale;
 		} else if (sceneStartAnimationTimer_ == 180) {
-			currentStartNumber_ = 2;
+			currentStartAnimationNumber_ = 2;
+			animationSubtractScale_ = 0.01f;
+			startAnimationScale_ = kStartAnimationScale;
 		} else if (sceneStartAnimationTimer_ == 120) {
-			currentStartNumber_ = 1;
+			currentStartAnimationNumber_ = 1;
+			animationSubtractScale_ = 0.01f;
+			startAnimationScale_ = kStartAnimationScale;
 		} else if (sceneStartAnimationTimer_ == 60) {
-			currentStartNumber_ = 0;
+			currentStartAnimationNumber_ = 0;
+			animationSubtractScale_ = 0.01f;
+			startAnimationScale_ = kStartAnimationScale;
 		} else if (sceneStartAnimationTimer_ == 0) {
 			isPlayStartAnimation_ = false;
 			player_->SetIsPlayStartAnimation(isPlayStartAnimation_);
 			enemy_->SetIsStartAnimation(isPlayStartAnimation_);
 		}
-		numberSprite_->SetTexLeftTop(Vector3(numberSprite_->GetTexSize().x * currentStartNumber_, 0.0f, 0.0f));
-		numberSprite_->Update();
+		animationSubtractScale_ += 0.002f;
+		startAnimationScale_ -= animationSubtractScale_;
+		countNumberSprite_->SetSize(Vector3(180.0f * startAnimationScale_, 180.0f * startAnimationScale_, 0.0f));
+		countNumberSprite_->SetTexLeftTop(Vector3(countNumberSprite_->GetTexSize().x * currentStartAnimationNumber_, 0.0f, 0.0f));
+		countNumberSprite_->Update();
+	} else {
+		clearTime_++;
 	}
 
 	// もしゴールしていたら
 	if (goal_->GetIsGoal()) {
 		/*シーン切り替え依頼*/
-
 		player_->SetIsGoal(true);
 		player_->SetPos(goal_->GetCenterPosition() - Vector3(0.0f, 1.0f, 0.0f)
 		);
 		//SceneManager::GetInstance()->ChangeScene("RESULT");
 	} else if (!player_->GetIsAlive()) {
 		//SceneManager::GetInstance()->ChangeScene("RESULT");
+		SceneManager::GetInstance()->ChangeScene("RESULT");
+		uint32_t clearTime = sceneManager_->GetClearTime(sceneManager_->GetCurrentStageNumber());
+
+		if (!sceneManager_->GetIsCleared(sceneManager_->GetCurrentStageNumber())) {
+			sceneManager_->CulAndSetClearTime(clearTime_ / 60, sceneManager_->GetCurrentStageNumber());
+		} else if (clearTime > clearTime_ / 60) {
+			sceneManager_->CulAndSetClearTime(clearTime_ / 60, sceneManager_->GetCurrentStageNumber());
+		}
+		sceneManager_->SetIsCleared(true, sceneManager_->GetCurrentStageNumber());
+		sceneManager_->SetIsClear(true);
+	} else if (!player_->GetIsAlive()) {
+		SceneManager::GetInstance()->ChangeScene("RESULT");
+		sceneManager_->SetIsClear(false);
 	}
 
 	// player
@@ -374,15 +403,15 @@ void GameScene::Draw() {
 	}
 
 	switch (enemy_->GetBehavior()) {
-	case Enemy::Behavior::kRoot:
+		case Enemy::Behavior::kRoot:
 
-		break;
-	case Enemy::Behavior::kPreliminary:
-		enemyPreliminaryModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
-		break;
-	case Enemy::Behavior::kAttack:
-		enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
-		break;
+			break;
+		case Enemy::Behavior::kPreliminary:
+			enemyPreliminaryModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+			break;
+		case Enemy::Behavior::kAttack:
+			enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+			break;
 	}
 
 	collisionManager_->Draw(viewProjection_);
@@ -391,7 +420,7 @@ void GameScene::Draw() {
 
 
 	if (isPlayStartAnimation_) {
-		numberSprite_->Draw();
+		countNumberSprite_->Draw();
 	}
 
 }
@@ -474,23 +503,23 @@ void GameScene::EnemyAttack(const uint32_t& enemyAttackYIndex, const Enemy::Beha
 	enemyAttackWorldTransform_.UpdateMatrix();
 
 	switch (behavior) {
-	case Enemy::Behavior::kRoot:
-		Vector3 playerWorldPosition = player_->GetWorldPosition();
-		enemy_->SetPreliminaryYIndex(mapChipField_->GetMapChipIndexSetByPosition(playerWorldPosition).yIndex);
-		player_->SetIsHitEnemyAttack(false);
-		break;
-	case Enemy::Behavior::kPreliminary:
-		player_->SetIsHitEnemyAttack(false);
-		break;
-	case Enemy::Behavior::kAttack:
-
-		if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
-			// 攻撃がヒットした時の処理
-			player_->SetIsHitEnemyAttack(true);
-		} else {
+		case Enemy::Behavior::kRoot:
+			Vector3 playerWorldPosition = player_->GetWorldPosition();
+			enemy_->SetPreliminaryYIndex(mapChipField_->GetMapChipIndexSetByPosition(playerWorldPosition).yIndex);
 			player_->SetIsHitEnemyAttack(false);
-		}
-		break;
+			break;
+		case Enemy::Behavior::kPreliminary:
+			player_->SetIsHitEnemyAttack(false);
+			break;
+		case Enemy::Behavior::kAttack:
+
+			if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
+				// 攻撃がヒットした時の処理
+				player_->SetIsHitEnemyAttack(true);
+			} else {
+				player_->SetIsHitEnemyAttack(false);
+			}
+			break;
 	}
 }
 

@@ -250,6 +250,6 @@ private:
 	uint32_t current_blend = 0;
 	//UINT vertices = 0;
 	std::string environmentTexture_;
-	float cullingValue = 12.0f;
+	float cullingValue = 16.0f;
 };
 

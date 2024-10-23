@@ -86,12 +86,19 @@ private:
 	float scrollTimer_ = 0.0f;
 
 	// 最大ステージ数
-	const uint32_t kMaxStageNum_ = 3;
+	const uint32_t kMaxStageNum_ = 4;
 
 	// 現在選択しているステージ数
 	uint32_t currentStageNum_ = 1;
 
+
+
+	uint32_t clearTime_ = 0;
+	uint32_t clearTimeMinutes_[4]{};
+
+
 	// 前のフレームで選択していたステージ
 	uint32_t oldStageNum_ = 0;
+
 };
 

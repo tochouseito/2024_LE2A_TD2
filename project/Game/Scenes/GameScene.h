@@ -59,7 +59,7 @@
 #include"Game/DeltaTime/DeltaTime.h"
 #include "Needle/Needle.h"
 
-class GameScene :
+class GameScene:
 
 	public BaseScene {
 
@@ -104,8 +104,8 @@ private:
 	std::string textureHandle_[6]{};
 	std::string electricGaugeTex_;
 
-	std::string numberTextureHandle_;
-	std::unique_ptr<Sprite> numberSprite_;
+	std::string countNumberTextureHandle_;
+	std::unique_ptr<Sprite> countNumberSprite_;
 
 	Particle* particles_ = nullptr;
 	Sprite* sprite_ = nullptr;
@@ -192,6 +192,8 @@ private:
 	// エネミーの攻撃判定AABB
 	AABB enemyAttackAABB_{};
 
+	static const uint32_t kMaxStageNum_ = 4;
+
 	uint32_t currentStageNum_ = 1;
 
 	// アニメーションの時間
@@ -201,6 +203,15 @@ private:
 
 	// アニメーション
 	bool isPlayStartAnimation_ = true;
-	// 
-	uint32_t currentStartNumber_ = 3;
+	uint32_t currentStartAnimationNumber_ = 3;
+
+	// クリアタイム
+	uint32_t clearTime_ = 0;
+
+	float startAnimationScale_ = 0.0f;
+
+	float animationSubtractScale_ = 0.01f;
+
+	const float kStartAnimationScale = animationSubtractScale_ * 500.0f;
+
 };
