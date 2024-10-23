@@ -42,6 +42,9 @@ void Enemy::Initialize(Model* models[], ViewProjection* viewProjection, const Ve
 
 	viewProjection_ = viewProjection;
 
+	// 速度をリセット
+	velocity_ = { 0.0f,0.0f,0.0f };
+
 	// コライダーの設定
 	Collider::Initialize();
 	// 半径を設定
@@ -54,16 +57,16 @@ void Enemy::Update() {
 #ifdef _DEBUG
 	ImGui::Begin("Enemy");
 	switch (behavior_) {
-	case Enemy::Behavior::kRoot:
-		ImGui::Text("Behavior: root");
-		break;
-	case Enemy::Behavior::kPreliminary:
-		ImGui::Text("Behavior: preliminary");
-		break;
-	case Enemy::Behavior::kAttack:
-		ImGui::Text("Behavior: attack");
-		break;
-	}
+		case Enemy::Behavior::kRoot:
+			ImGui::Text("Behavior: root");
+			break;
+		case Enemy::Behavior::kPreliminary:
+			ImGui::Text("Behavior: preliminary");
+			break;
+		case Enemy::Behavior::kAttack:
+			ImGui::Text("Behavior: attack");
+			break;
+}
 
 	ImGui::End();
 #endif // _DEBUG
@@ -80,6 +83,7 @@ void Enemy::Update() {
 	BehaviorInitialize();
 	// ビヘイビア更新処理
 	BehaviorUpdate();
+
 
 	worldTransform_.UpdateMatrix();
 	faceTransform_.UpdateMatrix();
@@ -190,15 +194,15 @@ void Enemy::BehaviorInitialize() {
 		behavior_ = behaviorRequest_.value();
 		// 各振る舞いごとの初期化を実行
 		switch (behavior_) {
-		case Enemy::Behavior::kRoot:
-			RootInitialize();
-			break;
-		case Enemy::Behavior::kPreliminary:
-			PreliminaryInitialize();
-			break;
-		case Enemy::Behavior::kAttack:
-			AttackInitialize();
-			break;
+			case Enemy::Behavior::kRoot:
+				RootInitialize();
+				break;
+			case Enemy::Behavior::kPreliminary:
+				PreliminaryInitialize();
+				break;
+			case Enemy::Behavior::kAttack:
+				AttackInitialize();
+				break;
 		}
 		// 振る舞いリクエストをリセット
 		behaviorRequest_ = std::nullopt;
@@ -207,23 +211,21 @@ void Enemy::BehaviorInitialize() {
 
 void Enemy::BehaviorUpdate() {
 	switch (behavior_) {
-	case Enemy::Behavior::kRoot:
-		RootUpdate();
-		break;
-	case Enemy::Behavior::kPreliminary:
-		PreliminaryUpdate();
-		break;
-	case Enemy::Behavior::kAttack:
-		AttackUpdate();
-		break;
+		case Enemy::Behavior::kRoot:
+			RootUpdate();
+			break;
+		case Enemy::Behavior::kPreliminary:
+			PreliminaryUpdate();
+			break;
+		case Enemy::Behavior::kAttack:
+			AttackUpdate();
+			break;
 	}
 }
 
 void Enemy::RootInitialize() {
 	// タイマーをリセット
 	behaviorTimer_ = 0;
-	// 速度をリセット
-	velocity_ = { 0.0f,0.0f,0.0f };
 }
 
 void Enemy::RootUpdate() {

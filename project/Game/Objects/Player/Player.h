@@ -23,6 +23,7 @@ enum Animation {
 	JumpStart,
 	Land,
 	Run,
+	GoalPose,
 	kCount,
 };
 
@@ -42,7 +43,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(const std::vector<Model*>& models,const std::vector<Model::Animation*>& animas, ViewProjection* viewProjection, const Vector3& position);
+	void Initialize(const std::vector<Model*>& models, const std::vector<Model::Animation*>& animas, ViewProjection* viewProjection, const Vector3& position);
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -59,6 +60,7 @@ public: // メンバ関数
 	const Vector3& GetVelocity() const { return velocity_; }
 
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; }
+	void SetIsGoal(bool newIsGoal);
 
 	struct CollisionMapInfo {
 		bool ceilingCollision_ = false;
@@ -128,6 +130,8 @@ public: // メンバ関数
 	bool IsLand()const { return land; }
 
 	void SetIsPlayStartAnimation(const bool& isStartAnimation);
+
+	void SetPos(Vector3 newPos);
 
 private: // メンバ変数
 
@@ -207,5 +211,7 @@ private: // メンバ変数
 
 	// スタートアニメーションフラグ
 	bool isPlayStartAnimation_ = true;
+
+	bool isGoal_ = false;
 };
 

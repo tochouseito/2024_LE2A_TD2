@@ -166,7 +166,7 @@ private:
 
 	// Goal
 	std::unique_ptr<Goal> goal_ = nullptr;
-	std::unique_ptr<Model> goalModel_ = nullptr;
+	std::vector<Model*> goalModels_;
 
 
 	// Bullet
@@ -191,6 +191,8 @@ private:
 	AABB playerAABB_{};
 	// エネミーの攻撃判定AABB
 	AABB enemyAttackAABB_{};
+
+	static const uint32_t kMaxStageNum_ = 4;
 
 	uint32_t currentStageNum_ = 1;
 

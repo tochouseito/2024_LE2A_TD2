@@ -9,7 +9,7 @@ public:
 	Goal() = default;
 	~Goal() = default;
 
-	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position);
+	void Initialize(const std::vector<Model*>& models, ViewProjection* viewProjection, const Vector3& position);
 	void Update();
 	void Draw();
 
@@ -27,7 +27,7 @@ private:
 	WorldTransform worldTransform_;
 
 	// 3Dモデル
-	Model* model_ = nullptr;
+	std::vector<Model*> models_;
 
 	// テクスチャハンドル
 	uint32_t texturehandle_ = 0;
