@@ -3,6 +3,8 @@
 #include"imgui.h"
 #include "TextureManager.h"
 
+constexpr float kMap1maxX = 7035.0f;
+
 void StageSelectScene::Initialize() {
 
 	// シーンマネージャからステージ番号を取得
@@ -26,10 +28,40 @@ void StageSelectScene::Initialize() {
 	numberSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
 	numberSprite_->SetSize(Vector3(48.0f, 48.0f, 0.0f));
 	numberSprite_->SetTexSize(Vector3(48.0f, 48.0f, 0.0f));
+
+	baseTextureHandle_ = TextureManager::Load("./Resources/GUI/selectBase.png");
+	baseSprite_ = std::make_unique<Sprite>();
+	baseSprite_->Initialize({ 640.0f,360.0f + 3.0f,0.0f }, &viewProjection_, baseTextureHandle_);
+	baseSprite_->SetAnchorPoint({ 0.5f,0.5f,0.0f });
+
+	greenTextureHandle_ = TextureManager::Load("./Resources/GUI/selectGreen.png");
+	greenSprite_ = std::make_unique<Sprite>();
+	greenSprite_->Initialize({ 640.0f,360.0f,0.0f }, &viewProjection_, greenTextureHandle_);
+	greenSprite_->SetAnchorPoint({ 0.5f,0.5f,0.0f });
+
+	map1TextureHandle_ = TextureManager::Load("./Resources/Map1.png");
+	map1Sprite_ = std::make_unique<Sprite>();
+	map1Sprite_->Initialize({ 640.0f,360.0f,0.0f }, &viewProjection_, map1TextureHandle_);
+	map1Sprite_->SetAnchorPoint({ 0.5f,0.5f,0.0f });
+	map1Sprite_->SetSize({ 512.0f, 256.0f,0.0f });
+	map1Sprite_->SetTexSize({ 2280.0f, 1092.0f,0.0f });
+
+	map2TextureHandle_ = TextureManager::Load("./Resources/Map2.png");
+	map2Sprite_ = std::make_unique<Sprite>();
+	map2Sprite_->Initialize({ 640.0f,360.0f,0.0f }, &viewProjection_, map2TextureHandle_);
+	map2Sprite_->SetAnchorPoint({ 0.5f,0.5f,0.0f });
+	map2Sprite_->SetSize({ 512.0f, 256.0f,0.0f });
+	map2Sprite_->SetTexSize({ 2280.0f, 1092.0f,0.0f });
+
+	map3TextureHandle_ = TextureManager::Load("./Resources/Map3.png");
+	map3Sprite_ = std::make_unique<Sprite>();
+	map3Sprite_->Initialize({ 640.0f,360.0f,0.0f }, &viewProjection_, map3TextureHandle_);
+	map3Sprite_->SetAnchorPoint({ 0.5f,0.5f,0.0f });
+	map3Sprite_->SetSize({ 512.0f, 256.0f,0.0f });
+	map3Sprite_->SetTexSize({ 2280.0f, 1092.0f,0.0f });
 }
 
-void StageSelectScene::Finalize() {
-}
+void StageSelectScene::Finalize() {}
 
 void StageSelectScene::Update() {
 #ifdef _DEBUG
@@ -41,6 +73,28 @@ void StageSelectScene::Update() {
 
 	ImGui::Text("currentStage: %u", currentStageNum_);
 	ImGui::End();
+
+	ImGui::Begin("map1");
+	Vector3 anchorPoint = map1Sprite_->GetAnchorPoint();
+	if (ImGui::DragFloat3("Anchor Point", &anchorPoint.x, 0.1f)) {
+		map1Sprite_->SetAnchorPoint(anchorPoint);
+	}
+
+	Vector3 size = map1Sprite_->GetSize();
+	if (ImGui::DragFloat3("Size", &size.x, 0.1f)) {
+		map1Sprite_->SetSize(size);
+	}
+
+	Vector3 texLeftTop = map1Sprite_->GetTexLeftTop();
+	if (ImGui::DragFloat3("Tex Left Top", &texLeftTop.x, 0.1f)) {
+		map1Sprite_->SetTexLeftTop(texLeftTop);
+	}
+
+	Vector3 texSize = map1Sprite_->GetTexSize();
+	if (ImGui::DragFloat3("Tex Size", &texSize.x, 0.1f)) {
+		map1Sprite_->SetTexSize(texSize);
+	}
+	ImGui::End();
 #endif // _DEBUG
 
 	// ステージ番号の選択と決定
@@ -49,8 +103,10 @@ void StageSelectScene::Update() {
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 	} else if (Input::GetInstance()->TriggerKey(DIK_A)) {
 		currentStageNum_--;
+		t = 0.0f;
 	} else if (Input::GetInstance()->TriggerKey(DIK_D)) {
 		currentStageNum_++;
+		t = 0.0f;
 	}
 
 	// 値超過排斥処理
@@ -65,13 +121,43 @@ void StageSelectScene::Update() {
 	selectSceneSprite_->Update();
 	selectAllowSceneSprite_->Update();
 	numberSprite_->Update();
+
+	baseSprite_->Update();
+	greenSprite_->Update();
+
+	map1Sprite_->Update();
+	map2Sprite_->Update();
+	map3Sprite_->Update();
+
+	map1Sprite_->SetTexLeftTop({ (kMap1maxX * 0.5f) + std::cos(t) * (kMap1maxX * 0.5f),map1Sprite_->GetTexLeftTop().y,map1Sprite_->GetTexLeftTop().z });
+	map2Sprite_->SetTexLeftTop({ (kMap1maxX * 0.5f) + std::cos(t) * (kMap1maxX * 0.5f),map2Sprite_->GetTexLeftTop().y,map2Sprite_->GetTexLeftTop().z });
+	map3Sprite_->SetTexLeftTop({ (kMap1maxX * 0.5f) + std::cos(t) * (kMap1maxX * 0.5f),map3Sprite_->GetTexLeftTop().y,map3Sprite_->GetTexLeftTop().z });
+	t += 0.0025f;
 }
 
 void StageSelectScene::Draw() {
 	selectSceneSprite_->Draw();
 	selectAllowSceneSprite_->Draw();
 	numberSprite_->Draw();
+
+	baseSprite_->Draw();
+
+	// map1
+	switch (currentStageNum_) {
+	case 1:
+		map1Sprite_->Draw();
+		break;
+	case 2:
+		map2Sprite_->Draw();
+		break;
+	case 3:
+		map3Sprite_->Draw();
+		break;
+	default:
+		break;
+	}
+
+	greenSprite_->Draw();
 }
 
-void StageSelectScene::ChangeScene() {
-}
+void StageSelectScene::ChangeScene() {}
