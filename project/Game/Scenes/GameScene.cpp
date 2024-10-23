@@ -209,17 +209,17 @@ void GameScene::Initialize() {
 	player_->SetIsPlayStartAnimation(isPlayStartAnimation_);
 	enemy_->SetIsStartAnimation(isPlayStartAnimation_);
 
-	numberTextureHandle_ = TextureManager::Load("./Resources/GUI/numbers.png");
-	numberSprite_ = std::make_unique<Sprite>();
-	numberSprite_->Initialize({ 640.0f,360.0f,0.0f }, &viewProjection_, numberTextureHandle_);
-	numberSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
-	numberSprite_->SetSize(Vector3(48.0f, 48.0f, 0.0f));
-	numberSprite_->SetTexSize(Vector3(48.0f, 48.0f, 0.0f));
-
+	countNumberTextureHandle_ = TextureManager::Load("./Resources/GUI/countNumbers.png");
+	countNumberSprite_ = std::make_unique<Sprite>();
+	countNumberSprite_->Initialize({ 640.0f,360.0f,0.0f }, &viewProjection_, countNumberTextureHandle_);
+	countNumberSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
+	countNumberSprite_->SetSize(Vector3(180.0f, 180.0f, 0.0f));
+	countNumberSprite_->SetTexSize(Vector3(180.0f, 180.0f, 0.0f));
 
 	// タイマーリセット
 	clearTime_ = 0;
-
+	startAnimationScale_ = kStartAnimationScale;
+	animationSubtractScale_ = 0.01f;
 }
 
 void GameScene::Update() {
@@ -227,19 +227,30 @@ void GameScene::Update() {
 		sceneStartAnimationTimer_--;
 		if (sceneStartAnimationTimer_ == 240) {
 			currentStartAnimationNumber_ = 3;
+			animationSubtractScale_ = 0.01f;
+			startAnimationScale_ = kStartAnimationScale;
 		} else if (sceneStartAnimationTimer_ == 180) {
 			currentStartAnimationNumber_ = 2;
+			animationSubtractScale_ = 0.01f;
+			startAnimationScale_ = kStartAnimationScale;
 		} else if (sceneStartAnimationTimer_ == 120) {
 			currentStartAnimationNumber_ = 1;
+			animationSubtractScale_ = 0.01f;
+			startAnimationScale_ = kStartAnimationScale;
 		} else if (sceneStartAnimationTimer_ == 60) {
 			currentStartAnimationNumber_ = 0;
+			animationSubtractScale_ = 0.01f;
+			startAnimationScale_ = kStartAnimationScale;
 		} else if (sceneStartAnimationTimer_ == 0) {
 			isPlayStartAnimation_ = false;
 			player_->SetIsPlayStartAnimation(isPlayStartAnimation_);
 			enemy_->SetIsStartAnimation(isPlayStartAnimation_);
 		}
-		numberSprite_->SetTexLeftTop(Vector3(numberSprite_->GetTexSize().x * currentStartAnimationNumber_, 0.0f, 0.0f));
-		numberSprite_->Update();
+		animationSubtractScale_ += 0.002f;
+		startAnimationScale_ -= animationSubtractScale_;
+		countNumberSprite_->SetSize(Vector3(180.0f * startAnimationScale_, 180.0f * startAnimationScale_, 0.0f));
+		countNumberSprite_->SetTexLeftTop(Vector3(countNumberSprite_->GetTexSize().x * currentStartAnimationNumber_, 0.0f, 0.0f));
+		countNumberSprite_->Update();
 	} else {
 		clearTime_++;
 	}
@@ -400,7 +411,7 @@ void GameScene::Draw() {
 
 
 	if (isPlayStartAnimation_) {
-		numberSprite_->Draw();
+		countNumberSprite_->Draw();
 	}
 
 }

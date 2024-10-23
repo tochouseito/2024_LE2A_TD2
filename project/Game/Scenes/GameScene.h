@@ -104,8 +104,8 @@ private:
 	std::string textureHandle_[6]{};
 	std::string electricGaugeTex_;
 
-	std::string numberTextureHandle_;
-	std::unique_ptr<Sprite> numberSprite_;
+	std::string countNumberTextureHandle_;
+	std::unique_ptr<Sprite> countNumberSprite_;
 
 	Particle* particles_ = nullptr;
 	Sprite* sprite_ = nullptr;
@@ -205,4 +205,11 @@ private:
 
 	// クリアタイム
 	uint32_t clearTime_ = 0;
+
+	float startAnimationScale_ = 0.0f;
+
+	float animationSubtractScale_ = 0.01f;
+
+	const float kStartAnimationScale = animationSubtractScale_ * 500.0f;
+
 };
