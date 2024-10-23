@@ -27,6 +27,9 @@ GameScene::~GameScene() {
 	for (auto& arrowModels : gravityArrowModels_) {
 		delete arrowModels;
 	}
+	for (auto& goalModel : goalModels_) {
+		delete goalModel;
+	}
 }
 
 void GameScene::Finalize() {
