@@ -1,7 +1,8 @@
 #pragma 
+#include <unordered_map>
+
 #include"DirectXCommon.h"
-class GraphicsPipelineState
-{
+class GraphicsPipelineState {
 public:
 	/// <summary>
 	/// シングルトンインスタンスの取得
@@ -56,7 +57,7 @@ public:
 	static ID3D12RootSignature* GetRootSignatureCopy() { return GetInstance()->rootSignatureCopy_.Get(); }
 	static ID3D12RootSignature* GetRootSignatureDepthFilter() { return GetInstance()->rootSignatureDepthFilter_.Get(); }
 	static ID3D12RootSignature* GetRootSignatureDissolve() { return GetInstance()->rootSignatureDissolve_.Get(); }
-	static ID3D12RootSignature* GetRootSignatureRandom() {return GetInstance()->rootSignatureRandom_.Get(); }
+	static ID3D12RootSignature* GetRootSignatureRandom() { return GetInstance()->rootSignatureRandom_.Get(); }
 	static ID3D12RootSignature* GetRootSignatureHSV() { return GetInstance()->rootSignatureHSV_.Get(); }
 	static ID3D12RootSignature* GetRootSignatureSkinning() { return GetInstance()->rootSignatureSkinning_.Get(); }
 	static ID3D12RootSignature* GetRootSignatureSkybox() { return GetInstance()->rootSignatureSkybox_.Get(); }
@@ -181,6 +182,15 @@ public:
 		IDxcUtils* dxcUtils,
 		IDxcCompiler3* dxcCompiler,
 		IDxcIncludeHandler* includeHandler);
+
+	// すでにコンパイルされたシェーダーはスキップするバージョン
+	IDxcBlob* CompilerShaderWithCache(
+		const std::wstring& filePath,
+		const wchar_t* profile,
+		IDxcUtils* dxcUtils,
+		IDxcCompiler3* dxcCompiler,
+		IDxcIncludeHandler* includeHandler
+	);
 private:
 	Microsoft::WRL::ComPtr < ID3D12PipelineState> graphicsPipelineState_[kCountOfBlendMode];
 	Microsoft::WRL::ComPtr < ID3D12PipelineState> graphicsPipelineStateParticle_[kCountOfBlendMode];
@@ -220,5 +230,7 @@ private:
 	Microsoft::WRL::ComPtr < ID3D12RootSignature> computeRootSignatureEmit_;
 	Microsoft::WRL::ComPtr < ID3D12RootSignature> computeRootSignatureUpdate_;
 	Microsoft::WRL::ComPtr < ID3D12RootSignature> computeRootSignatureUpdatePLLand_;
+
+	std::unordered_map<std::wstring, Microsoft::WRL::ComPtr<IDxcBlob>> shaderCache_;
 };
 
