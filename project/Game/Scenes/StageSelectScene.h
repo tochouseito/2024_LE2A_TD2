@@ -84,5 +84,10 @@ private:
 
 	// 現在選択しているステージ数
 	uint32_t currentStageNum_ = 1;
+
+
+	uint32_t clearTime_ = 0;
+	uint32_t clearTimeMinutes_[4]{};
+
 };
 
