@@ -58,6 +58,22 @@ void SceneManager::SetCurrentStageNum(const uint32_t& currentStageNumber) {
 	currentStageNumber_ = currentStageNumber;
 }
 
+void SceneManager::SetIsClear(const bool& isClear) {
+	isClear_ = isClear;
+}
+
+void SceneManager::SetClearTime(const uint32_t& clearTime) {
+	clearTime_ = clearTime;
+}
+
 uint32_t SceneManager::GetCurrentStageNumber() const {
 	return currentStageNumber_;
+}
+
+bool SceneManager::GetIsClear() const {
+	return isClear_;
+}
+
+uint32_t SceneManager::GetClearTime() const {
+	return clearTime_;
 }

@@ -58,11 +58,6 @@ void GameScene::Initialize() {
 
 	/*3D軸モデル*/
 
-	// メインカメラの生成
-	mainCamera_ = std::make_unique<MainCamera>();
-	mainCamera_->Initialize(Vector3(4.5f, 17.0f, -45.0f), &viewProjection_); // HACK : 動画提出用
-	mainCamera_->rotation_ = Vector3(0.0f, 0.0f, 0.0f); // HACK : 動画提出用
-
 	deltaTime_ = std::make_unique<DeltaTime>();
 	deltaTime_->Update();
 
@@ -164,6 +159,11 @@ void GameScene::Initialize() {
 
 	player_->Initialize(playerModels_, plAnimas_, &viewProjection_, playerPosition);
 	player_->SetMapChipField(mapChipField_.get());
+
+	// メインカメラの生成
+	mainCamera_ = std::make_unique<MainCamera>();
+	mainCamera_->Initialize(Vector3(playerPosition.x, playerPosition.y, -45.0f), &viewProjection_); // HACK : 動画提出用
+	mainCamera_->rotation_ = Vector3(0.0f, 0.0f, 0.0f); // HACK : 動画提出用
 
 	// Enemy
 	enemyModel_.reset(Model::LordModel("EnemySaw"));
