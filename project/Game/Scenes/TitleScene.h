@@ -5,8 +5,14 @@
 #include "Sprite.h"
 #include"Audio.h"
 
-class TitleScene :public BaseScene {
+class TitleScene:public BaseScene {
 public:
+
+	struct EaseState {
+		float t;
+		int direction;
+	};
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -32,10 +38,21 @@ public:
 	/// </summary>
 	void ChangeScene()override;
 
-	void SetSceneManager(SceneManager* sceneManager) override { sceneManager_ = sceneManager; }
+	void SetSceneManager(SceneManager* sceneManager) override {
+		sceneManager_ = sceneManager;
+	}
+
+	// イーズイン/アウトを行う関数
+	Vector3 EaseInOutBetweenTwoPoints(const Vector3& start, const Vector3& end, EaseState& state, float deltaTime, float speed);
 
 private:
 	SceneManager* sceneManager_ = nullptr;
+
+	// 状態を初期化
+	EaseState state = { 0.0f, 1 };
+
+	float deltaTime = 0.016f;
+	float speed = 0.5f;
 
 	ViewProjection viewProjection_;
 
