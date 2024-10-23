@@ -67,6 +67,10 @@ public:
 		return textureSize;
 	}
 
+	void SetPosition(const Vector3& position) {
+		translation_ = position;
+	}
+
 	void SetTexLeftTop(const Vector3& TexLeftTop) {
 		this->textureLeftTop = TexLeftTop;
 	}
