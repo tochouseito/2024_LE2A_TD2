@@ -1,6 +1,8 @@
 #pragma once
 
 #include"BaseScene.h"
+
+#include"Audio.h"
 class ResultScene :public BaseScene {
 private:
 	enum NextScene {
@@ -42,5 +44,7 @@ private:
 
 	uint32_t clearTime_ = 0;
 	uint32_t nextScene_ = kTitle;
+
+	Audio::SoundData fanfare;
 };
 

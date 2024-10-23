@@ -33,8 +33,8 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Finalize() {
-	
-	//audio_->SoundUnLord(&SoundData1);
+	Audio::GetInstance()->SoundStop(BGM);
+	audio_->SoundUnLord(&BGM);
 }
 
 void GameScene::Initialize() {
@@ -43,7 +43,8 @@ void GameScene::Initialize() {
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	audio_ = Audio::GetInstance();
-
+	BGM = audio_->SoundLordWave("./Resources/8.bit_.dub_.wav");
+	audio_->SoundPlayWave(audio_->GetXAudio2(),BGM);
 	// カメラ
 	viewProjection_.Initialize();
 

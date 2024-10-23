@@ -116,7 +116,7 @@ void Audio::SoundUnLord(SoundData* soundData)
 
 	soundData->pBuffer = 0;
 	soundData->bufferSize = 0;
-	soundData->wfex = {};
+ 	soundData->wfex = {};
 	soundData->pSourceVoice->DestroyVoice();
 	soundData->pSourceVoice = nullptr;
 }
