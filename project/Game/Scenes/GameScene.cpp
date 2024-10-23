@@ -30,7 +30,7 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Finalize() {
-	
+
 	//audio_->SoundUnLord(&SoundData1);
 }
 
@@ -223,6 +223,8 @@ void GameScene::Initialize() {
 	clearTime_ = 0;
 	startAnimationScale_ = kStartAnimationScale;
 	animationSubtractScale_ = 0.01f;
+
+	isPlayGoalAnimation_ = false;
 }
 
 void GameScene::Update() {
@@ -254,8 +256,17 @@ void GameScene::Update() {
 		countNumberSprite_->SetSize(Vector3(180.0f * startAnimationScale_, 180.0f * startAnimationScale_, 0.0f));
 		countNumberSprite_->SetTexLeftTop(Vector3(countNumberSprite_->GetTexSize().x * currentStartAnimationNumber_, 0.0f, 0.0f));
 		countNumberSprite_->Update();
-	} else {
+	} else if (!isPlayGoalAnimation_) {
 		clearTime_++;
+	}
+
+
+	if (isPlayGoalAnimation_) {
+		goalAnimationTimer_--;
+		mainCamera_->translation_.z += 0.1f;
+		if (goalAnimationTimer_ == 0) {
+			SceneManager::GetInstance()->ChangeScene("RESULT");
+		}
 	}
 
 	// もしゴールしていたら
@@ -264,9 +275,12 @@ void GameScene::Update() {
 		player_->SetIsGoal(true);
 		player_->SetPos(goal_->GetCenterPosition() - Vector3(0.0f, 1.0f, 0.0f)
 		);
-		//SceneManager::GetInstance()->ChangeScene("RESULT");
+		if (!isPlayGoalAnimation_) {
+			goalAnimationTimer_ = kGoalAnimationTime_;
+			isPlayGoalAnimation_ = true;
+		}
+		enemy_->SetIsGoalAnimation(isPlayGoalAnimation_);
 	} else if (!player_->GetIsAlive()) {
-		//SceneManager::GetInstance()->ChangeScene("RESULT");
 		SceneManager::GetInstance()->ChangeScene("RESULT");
 		uint32_t clearTime = sceneManager_->GetClearTime(sceneManager_->GetCurrentStageNumber());
 
@@ -402,16 +416,18 @@ void GameScene::Draw() {
 
 	}
 
-	switch (enemy_->GetBehavior()) {
-		case Enemy::Behavior::kRoot:
+	if (!isPlayGoalAnimation_) {
+		switch (enemy_->GetBehavior()) {
+			case Enemy::Behavior::kRoot:
 
-			break;
-		case Enemy::Behavior::kPreliminary:
-			enemyPreliminaryModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
-			break;
-		case Enemy::Behavior::kAttack:
-			enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
-			break;
+				break;
+			case Enemy::Behavior::kPreliminary:
+				enemyPreliminaryModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+				break;
+			case Enemy::Behavior::kAttack:
+				enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+				break;
+		}
 	}
 
 	collisionManager_->Draw(viewProjection_);
