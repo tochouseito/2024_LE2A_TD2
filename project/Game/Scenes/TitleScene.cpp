@@ -15,6 +15,14 @@ void TitleScene::Initialize() {
 	pressButtonSprite_ = std::make_unique<Sprite>();
 	pressButtonSprite_->Initialize({ 640.0f,512.0f,0.0f }, &viewProjection_, pressButtonTextureHandle_);
 	pressButtonSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
+
+	fadeTerxtureHandle_ = TextureManager::Load("./Resources/white.png");
+	fadeSprite_ = std::make_unique<Sprite>();
+	fadeSprite_->Initialize({ 640.0f,360.0f,0.0f }, &viewProjection_, fadeTerxtureHandle_);
+	fadeSprite_->SetSize(Vector3(1280.0f, 720.0f));
+	fadeSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
+	fadeSprite_->SetColor(color);
+
 }
 
 void TitleScene::Finalize() {}
@@ -42,6 +50,7 @@ void TitleScene::Update() {
 
 	titleLogoSprite_->Update();
 	pressButtonSprite_->Update();
+	fadeSprite_->Update();
 
 	viewProjection_.UpdateMatrix();
 }
@@ -49,6 +58,7 @@ void TitleScene::Update() {
 void TitleScene::Draw() {
 	titleLogoSprite_->Draw();
 	pressButtonSprite_->Draw();
+	//fadeSprite_->Draw();
 }
 
 void TitleScene::ChangeScene() {
