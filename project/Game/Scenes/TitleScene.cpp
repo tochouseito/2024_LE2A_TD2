@@ -75,7 +75,7 @@ void TitleScene::Update() {
 void TitleScene::Draw() {
 	titleLogoSprite_->Draw();
 	pressButtonSprite_->Draw();
-	fadeSprite_->Draw();
+	//fadeSprite_->Draw();
 }
 
 void TitleScene::ChangeScene() {
