@@ -77,6 +77,6 @@ private:
 	uint32_t clearTimeMinutes_[3][4]{};
 
 	bool isCleared_[3] = {};
-
+	Audio::SoundData titleBGM;
 };
 

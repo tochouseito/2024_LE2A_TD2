@@ -46,11 +46,22 @@ Audio::SoundData Audio::SoundLordWave(const char* filename)
 	/*Formatチャンクの読み込み*/
 	FormatChunk format = {};
 	/*チャンクヘッダーの確認*/
-	file.read((char*)&format, sizeof(ChunkHeader));
+	/*file.read((char*)&format, sizeof(ChunkHeader));
 	if (strncmp(format.chunk.id, "fmt ", 4) != 0) {
 		assert(0);
+	}*/
+	// fmt チャンクを探す
+	while (true) {
+		file.read(reinterpret_cast<char*>(&format.chunk), sizeof(ChunkHeader));
+		if (file.eof()) {
+			assert(0); // チャンクが見つからなかった場合
+		}
+		if (strncmp(format.chunk.id, "fmt ", 4) == 0) {
+			break; // fmt チャンクを見つけた
+		}
+		// 他のチャンクの場合、サイズ分だけ読み飛ばす
+		file.seekg(format.chunk.size, std::ios_base::cur);
 	}
-
 	/*チャンク本体の読み込み*/
 	assert(format.chunk.size <= sizeof(format.fmt));
 	file.read((char*)&format.fmt, format.chunk.size);
@@ -106,6 +117,8 @@ void Audio::SoundUnLord(SoundData* soundData)
 	soundData->pBuffer = 0;
 	soundData->bufferSize = 0;
 	soundData->wfex = {};
+	soundData->pSourceVoice->DestroyVoice();
+	soundData->pSourceVoice = nullptr;
 }
 
 void Audio::SoundPlayWave(IXAudio2* xAudio2,SoundData& soundData, bool loop)
@@ -136,10 +149,10 @@ void Audio::SoundPlayWave(IXAudio2* xAudio2,SoundData& soundData, bool loop)
 
 	if (loop) {
 		buf.LoopBegin = 0;
-		buf.LoopLength = XAUDIO2_LOOP_INFINITE; // 無限ループ設定
+		buf.LoopLength = 0; // 無限ループ設定
 		buf.LoopCount = XAUDIO2_LOOP_INFINITE;
 	}
-
+	soundData.pSourceVoice->FlushSourceBuffers();
 	result = soundData.pSourceVoice->SubmitSourceBuffer(&buf);
 	assert(SUCCEEDED(result));
 
