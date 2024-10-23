@@ -1,5 +1,5 @@
 #include "MyGame.h"
-
+#include"SrvManager.h"
 
 void MyGame::Initialize()
 {
@@ -22,7 +22,8 @@ void MyGame::Initialize()
 	//baseScene->Initialize();
 
 	/*最初のシーン生成*/
-	sceneManager->ChangeScene("SELECT");
+	sceneManager->ChangeScene("TITLE");
+	sceneManager->SetIndex(SrvManager::GetInstance()->GetSRVIndex());
 }
 
 

@@ -26,6 +26,7 @@ void ParticleManager::Initialize(ViewProjection* viewProjection, std::string tex
 	GraphicsPipelineState::GetInstance()->CreateGraphicsPipelineGPUParticle(DirectXCommon::GetInstance()->GetDevice());
 	GraphicsPipelineState::GetInstance()->CreateComputePipelineEmit(DirectXCommon::GetInstance()->GetDevice());
 	GraphicsPipelineState::GetInstance()->CreateComputePipelineUpdate(DirectXCommon::GetInstance()->GetDevice());
+	GraphicsPipelineState::GetInstance()->CreateComputePipelineUpdatePLLand(DirectXCommon::GetInstance()->GetDevice());
 	viewProjection_ = viewProjection;
 	gpuParticleGroup = new GPUParticleGroup();
 	/*リソースの作成*/
@@ -47,7 +48,7 @@ void ParticleManager::Initialize(ViewProjection* viewProjection, std::string tex
 	gpuParticleGroup->emitterSphere->frequencyTime = 0.0f;
 	gpuParticleGroup->emitterSphere->translate = Vector3(0.0f, 0.0f, 0.0f);
 	gpuParticleGroup->emitterSphere->radius = 1.0f;
-	gpuParticleGroup->emitterSphere->emit=1;
+	gpuParticleGroup->emitterSphere->emit = 0;// 最初はオフ
 	gpuParticleGroup->accelerationField.acceleration = { 15.0f,0.0f,0.0f };
 	gpuParticleGroup->accelerationField.area.min = { -1.0f,-1.0f,-1.0f };
 	gpuParticleGroup->accelerationField.area.max = { 1.0f,1.0f,1.0f };
@@ -125,11 +126,11 @@ void ParticleManager::Update()
 	// 射出間隔を上回ったら射出許可を出して時間を調整
 	if (gpuParticleGroup->emitterSphere->frequency <= gpuParticleGroup->emitterSphere->frequencyTime) {
 		gpuParticleGroup->emitterSphere->frequencyTime -= gpuParticleGroup->emitterSphere->frequency;
-		gpuParticleGroup->emitterSphere->emit = 1;
+		//gpuParticleGroup->emitterSphere->emit = 1;
 
 		// 射出間隔を上回ってないので、許可は出せない
 	} else {
-		gpuParticleGroup->emitterSphere->emit = 0;
+		//gpuParticleGroup->emitterSphere->emit = 0;
 	}
 
 }
@@ -291,14 +292,28 @@ void ParticleManager::DrawGPU()
 	barrier4.UAV.pResource = gpuParticleGroup->listResource.Get();
 	commandList->ResourceBarrier(1, &barrier4);
 
-	/*Update*/
-	commandList->SetComputeRootSignature(GraphicsPipelineState::GetInstance()->GetRootSignatureCSUpdate());
-	commandList->SetPipelineState(GraphicsPipelineState::GetInstance()->GetPipelineStateCSUpdate());
-	commandList->SetComputeRootDescriptorTable(0, gpuParticleGroup->particleUavHandle.second);
-	commandList->SetComputeRootConstantBufferView(1, gpuParticleGroup->frameResource.Get()->GetGPUVirtualAddress());
-	commandList->SetComputeRootDescriptorTable(2, gpuParticleGroup->listIndexUavHandle.second);
-	commandList->SetComputeRootDescriptorTable(3, gpuParticleGroup->listUavHandle.second);
-	commandList->Dispatch(1, 1, 1);
+	if (plLand) {
+		/*PlayerUpdate*/
+		commandList->SetComputeRootSignature(GraphicsPipelineState::GetInstance()->GetRootSignatureCSUpdatePLLand());
+		commandList->SetPipelineState(GraphicsPipelineState::GetInstance()->GetPipelineStateCSUpdatePLLand());
+		commandList->SetComputeRootDescriptorTable(0, gpuParticleGroup->particleUavHandle.second);
+		commandList->SetComputeRootConstantBufferView(1, gpuParticleGroup->frameResource.Get()->GetGPUVirtualAddress());
+		commandList->SetComputeRootDescriptorTable(2, gpuParticleGroup->listIndexUavHandle.second);
+		commandList->SetComputeRootDescriptorTable(3, gpuParticleGroup->listUavHandle.second);
+		commandList->Dispatch(1, 1, 1);
+		plLand = false;
+	}
+	else {
+		/*Update*/
+		commandList->SetComputeRootSignature(GraphicsPipelineState::GetInstance()->GetRootSignatureCSUpdate());
+		commandList->SetPipelineState(GraphicsPipelineState::GetInstance()->GetPipelineStateCSUpdate());
+		commandList->SetComputeRootDescriptorTable(0, gpuParticleGroup->particleUavHandle.second);
+		commandList->SetComputeRootConstantBufferView(1, gpuParticleGroup->frameResource.Get()->GetGPUVirtualAddress());
+		commandList->SetComputeRootDescriptorTable(2, gpuParticleGroup->listIndexUavHandle.second);
+		commandList->SetComputeRootDescriptorTable(3, gpuParticleGroup->listUavHandle.second);
+		commandList->Dispatch(1, 1, 1);
+	}
+	
 
 	// 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけばいい
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -426,4 +441,23 @@ std::list<ParticleManager::Particle> ParticleManager::Emit(const Emitter& emitte
 		particles.push_back(MakeParticles(randomEngine, emitter.worldTransform.translation_));
 	}
 	return particles;
+}
+
+void ParticleManager::SetEmit(bool flag, const Vector3& translate, bool Grav)
+{
+	if (flag&&!plLand) {
+		gpuParticleGroup->emitterSphere->emit = 1;
+		gpuParticleGroup->emitterSphere->translate = translate;
+		if (Grav) {
+			gpuParticleGroup->emitterSphere->translate.y += 0.5f;
+		} else
+		{
+			gpuParticleGroup->emitterSphere->translate.y -= 0.5f;
+		}
+		plLand = true;
+	} else
+	{
+		gpuParticleGroup->emitterSphere->emit = 0;
+		plLand = false;
+	}
 }

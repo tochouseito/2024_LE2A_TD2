@@ -13,6 +13,7 @@
 #include<assert.h>
 #include"ConvertString.h"
 #include"LightGroup.h"
+#include"ConvertString.h"
 Model::Model() {
 	material_ = new Material();
 	/*directionalLight_ = new DirectionalLight();
@@ -257,10 +258,12 @@ void Model::Draw(WorldTransform& worldTransform,const ViewProjection& viewProjec
 			commandList->SetGraphicsRootSignature(GraphicsPipelineState::GetRootSignatureSkinning());
 			commandList->SetPipelineState(GraphicsPipelineState::GetPipelineStateSkinning(current_blend));// PSOを設定
 			if (objectColor) {
-				commandList->SetGraphicsRootConstantBufferView(9, objectColor->GetResource()->GetGPUVirtualAddress());
+				//commandList->SetGraphicsRootConstantBufferView(9, objectColor->GetResource()->GetGPUVirtualAddress());
+				commandList->SetGraphicsRootConstantBufferView(8, objectColor_->GetResource()->GetGPUVirtualAddress());
 			} else
 			{
-				commandList->SetGraphicsRootConstantBufferView(9, objectColor_->GetResource()->GetGPUVirtualAddress());
+				//commandList->SetGraphicsRootConstantBufferView(9, objectColor_->GetResource()->GetGPUVirtualAddress());
+				commandList->SetGraphicsRootConstantBufferView(8, objectColor_->GetResource()->GetGPUVirtualAddress());
 			}
 		} else/*ボーンなし*/
 		{
@@ -310,7 +313,7 @@ void Model::Draw(WorldTransform& worldTransform,const ViewProjection& viewProjec
 			commandList->SetGraphicsRootDescriptorTable(1, worldTransform.GetSrvHandleGPU());
 			if (modelData_->bone) {
 				commandList->SetGraphicsRootDescriptorTable(7, skinCluster_->paletteSrvHandle.second);
-				commandList->SetGraphicsRootDescriptorTable(8, TextureManager::GetInstance()->GetTextureHandle(environmentTexture_));
+				//commandList->SetGraphicsRootDescriptorTable(8, TextureManager::GetInstance()->GetTextureHandle(environmentTexture_));
 			} else
 			{
 				//commandList->SetGraphicsRootDescriptorTable(7, TextureManager::GetInstance()->GetTextureHandle(textureHandle));
@@ -363,15 +366,16 @@ void Model::DrawSkybox(WorldTransform& worldTransform, ViewProjection& viewProje
 	commandList->SetGraphicsRootConstantBufferView(0, material_->GetMaterialResource()->GetGPUVirtualAddress());
 	commandList->DrawIndexedInstanced(static_cast<UINT>(36), 1, 0, 0, 0);
 }
-Model* Model::LordModel(const std::string& filename) {
+Model* Model::LordModel(const std::string& filename, bool IsAnima) {
 	Model* model = new Model();
-	model->modelData_= LoadModelFile("./Resources", filename);
+	model->modelData_ = LoadModelFile("./Resources", filename,IsAnima);
+
 	//model->modelData_.material.textureFilePath=TextureManager::GetInstance()->Load(model->modelData_.material.textureFilePath);
 	GraphicsPipelineState::GetInstance()->CreateGraphicsPipeline(DirectXCommon::GetInstance()->GetDevice());
 	GraphicsPipelineState::GetInstance()->CreateGraphicsPipelineSkinning(DirectXCommon::GetInstance()->GetDevice());
-	for (const std::string& name:model->modelData_->names) {
-		model->mesh_->SetDataVertices(static_cast<UINT>(model->modelData_->object[name].vertices.size()),name);
-		model->mesh_->CreateDateResource(model->modelData_->object[name].vertices.size(),name);
+	for (const std::string& name : model->modelData_->names) {
+		model->mesh_->SetDataVertices(static_cast<UINT>(model->modelData_->object[name].vertices.size()), name);
+		model->mesh_->CreateDateResource(model->modelData_->object[name].vertices.size(), name);
 		model->mesh_->CreateModelIndexResource(model->modelData_->object[name].indices.size(), name);
 		// 頂点データをリソースにコピー
 		std::memcpy(model->mesh_->GetData(name)
@@ -406,7 +410,7 @@ Model::Animation* Model::LordAnimationFile(const std::string& directoryPath, con
 {
 	Animation* animation=new Animation();// 今回作るアニメーション
 	Assimp::Importer importer;
-	std::string filePath = directoryPath + "/" + filename;
+	std::string filePath = directoryPath + "/" + filename + "/" + filename + ".gltf";
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
 	assert(scene->mNumAnimations != 0);// アニメーションがない
 	aiAnimation* animationAssimp = scene->mAnimations[0];// 最初のanimationだけ採用。複数対応予定
@@ -525,7 +529,8 @@ void Model::DrawCS(WorldTransform& worldTransform, ViewProjection& viewProjectio
 		commandList->SetGraphicsRootDescriptorTable(1, worldTransform.GetSrvHandleGPU());
 
 		//commandList->SetGraphicsRootDescriptorTable(7, TextureManager::GetInstance()->GetTextureHandle(textureHandle));
-		commandList->SetGraphicsRootDescriptorTable(7, TextureManager::GetInstance()->GetTextureHandle(environmentTexture_));
+		//commandList->SetGraphicsRootDescriptorTable(7, TextureManager::GetInstance()->GetTextureHandle(environmentTexture_));
+		commandList->SetGraphicsRootConstantBufferView(8, objectColor_->GetResource()->GetGPUVirtualAddress());
 		// 描画！(DrawCall/ドローコール)。３頂点で1つのインスタンス。インスタンスについては今後
 		//commandList->DrawInstanced(static_cast<UINT>(mesh_->GetDataVertices(name)), 1, 0, 0);
 		commandList->DrawIndexedInstanced(static_cast<UINT>(GetIndices(name)), 1, 0, 0, 0);
@@ -635,7 +640,7 @@ Model::Node Model::ReadNode(aiNode* node) {
 	}
 	return result;
 }
-Model::ModelData*  Model::LoadModelFile(const std::string& directoryPath, const std::string& filename)
+Model::ModelData*  Model::LoadModelFile(const std::string& directoryPath, const std::string& filename, bool IsAnima)
 {
 
 	// 1. 中で必要となる変数の宣言
@@ -649,7 +654,12 @@ Model::ModelData*  Model::LoadModelFile(const std::string& directoryPath, const 
 	//assert(file.is_open());//とりあえず開けなかったら止める
 	// assimp
 	Assimp::Importer importer;
-	std::string filePath = directoryPath + "/" + filename+"/"+filename+".obj";
+	std::string filePath;
+	if (IsAnima) {
+		filePath = directoryPath + "/" + filename + "/" + filename + ".gltf";
+	} else {
+		filePath = directoryPath + "/" + filename + "/" + filename + ".obj";
+	}
 	//const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_Triangulate | aiProcess_GenSmoothNormals);
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder|aiProcess_FlipUVs);
 	assert(scene->HasMeshes());// メッシュがないのは対応しない

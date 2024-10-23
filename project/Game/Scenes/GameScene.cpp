@@ -18,6 +18,15 @@ GameScene::~GameScene() {
 	delete particles_;
 	delete primitive_;
 	delete serial;
+	for (auto& model : playerModels_) {
+		delete model;
+	}
+	for (auto& plAnima : plAnimas_) {
+		delete plAnima;
+	}
+	for (auto& arrowModels : gravityArrowModels_) {
+		delete arrowModels;
+	}
 }
 
 void GameScene::Finalize() {
@@ -31,7 +40,6 @@ void GameScene::Initialize() {
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	audio_ = Audio::GetInstance();
-
 
 	// カメラ
 	viewProjection_.Initialize();
@@ -49,11 +57,6 @@ void GameScene::Initialize() {
 
 	/*3D軸モデル*/
 
-	// メインカメラの生成
-	mainCamera_ = std::make_unique<MainCamera>();
-	mainCamera_->Initialize(Vector3(4.5f, 17.0f, -45.0f), &viewProjection_); // HACK : 動画提出用
-	mainCamera_->rotation_ = Vector3(0.0f, 0.0f, 0.0f); // HACK : 動画提出用
-
 	deltaTime_ = std::make_unique<DeltaTime>();
 	deltaTime_->Update();
 
@@ -62,9 +65,14 @@ void GameScene::Initialize() {
 
 	///////////////////////////////////////////////////////////////////////////////////////
 
+
+	// 現在のステージ
+	currentStageNum_ = sceneManager_->GetCurrentStageNumber();
+	std::string str = std::to_string(currentStageNum_);
+
 	// MapChip
 	mapChipField_ = std::make_unique<MapChipField>();
-	mapChipField_->LoadMapChipCsv("Resources/Map2.csv");
+	mapChipField_->LoadMapChipCsv("Resources/Map" + str + ".csv");
 
 	// 針
 	upNeedleModel_.reset(Model::LordModel("UpNeedle"));
@@ -112,11 +120,11 @@ void GameScene::Initialize() {
 	enemyAttackWorldTransform_.Initialize();
 
 	// 矢印の生成
-	gravityArrowModel_.resize(2);
-	gravityArrowModel_[0].reset(Model::LordModel("GravityUpArrow"));
-	gravityArrowModel_[1].reset(Model::LordModel("GravityDownArrow"));
+	gravityArrowModels_.push_back(Model::LordModel("GravityUpArrow"));
+	gravityArrowModels_.push_back(Model::LordModel("GravityDownArrow"));
+	gravityArrowModels_.push_back(Model::LordModel("Background"));
 	gravityArrow_ = std::make_unique<GravityArrow>();
-	gravityArrow_->Initialize(gravityArrowModel_[0].get(), gravityArrowModel_[1].get(), &viewProjection_);
+	gravityArrow_->Initialize(gravityArrowModels_, &viewProjection_);
 
 	// 衝突マネージャの生成
 	collisionManager_ = std::make_unique<CollisionManager>();
@@ -124,6 +132,18 @@ void GameScene::Initialize() {
 
 	// Player
 	playerModel_.reset(Model::LordModel("Player"));
+	playerModels_.push_back(Model::LordModel("Idle", true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "Idle"));
+	playerModels_.push_back(Model::LordModel("Jump", true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "Jump"));
+	playerModels_.push_back(Model::LordModel("JumpLoop", true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "JumpLoop"));
+	playerModels_.push_back(Model::LordModel("JumpStart", true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "JumpStart"));
+	playerModels_.push_back(Model::LordModel("Land", true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "Land"));
+	playerModels_.push_back(Model::LordModel("Run", true));
+	plAnimas_.push_back(Model::LordAnimationFile("./Resources", "Run"));
 	player_ = std::make_unique<Player>();
 	// CSVからプレイヤーの開始位置を見つける
 	Vector3 playerPosition{};
@@ -136,8 +156,13 @@ void GameScene::Initialize() {
 		}
 	}
 
-	player_->Initialize(playerModel_.get(), &viewProjection_, playerPosition);
+	player_->Initialize(playerModels_, plAnimas_, &viewProjection_, playerPosition);
 	player_->SetMapChipField(mapChipField_.get());
+
+	// メインカメラの生成
+	mainCamera_ = std::make_unique<MainCamera>();
+	mainCamera_->Initialize(Vector3(playerPosition.x, playerPosition.y, -45.0f), &viewProjection_); // HACK : 動画提出用
+	mainCamera_->rotation_ = Vector3(0.0f, 0.0f, 0.0f); // HACK : 動画提出用
 
 	// Enemy
 	enemyModel_.reset(Model::LordModel("EnemySaw"));
@@ -177,17 +202,53 @@ void GameScene::Initialize() {
 		}
 	}
 	goal_->Initialize(goalModel_.get(), &viewProjection_, goalPosition);
+
+	isPlayStartAnimation_ = true;
+	sceneStartAnimationTimer_ = kSceneStartAnimationTime_;
+	currentStartNumber_ = 3;
+	player_->SetIsPlayStartAnimation(isPlayStartAnimation_);
+	enemy_->SetIsStartAnimation(isPlayStartAnimation_);
+
+	numberTextureHandle_ = TextureManager::Load("./Resources/GUI/numbers.png");
+	numberSprite_ = std::make_unique<Sprite>();
+	numberSprite_->Initialize({ 640.0f,360.0f,0.0f }, &viewProjection_, numberTextureHandle_);
+	numberSprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
+	numberSprite_->SetSize(Vector3(48.0f, 48.0f, 0.0f));
+	numberSprite_->SetTexSize(Vector3(48.0f, 48.0f, 0.0f));
+
 }
 
 void GameScene::Update() {
+	if (isPlayStartAnimation_) {
+		sceneStartAnimationTimer_--;
+		if (sceneStartAnimationTimer_ == 240) {
+			currentStartNumber_ = 3;
+		} else if (sceneStartAnimationTimer_ == 180) {
+			currentStartNumber_ = 2;
+		} else if (sceneStartAnimationTimer_ == 120) {
+			currentStartNumber_ = 1;
+		} else if (sceneStartAnimationTimer_ == 60) {
+			currentStartNumber_ = 0;
+		} else if (sceneStartAnimationTimer_ == 0) {
+			isPlayStartAnimation_ = false;
+			player_->SetIsPlayStartAnimation(isPlayStartAnimation_);
+			enemy_->SetIsStartAnimation(isPlayStartAnimation_);
+		}
+		numberSprite_->SetTexLeftTop(Vector3(numberSprite_->GetTexSize().x * currentStartNumber_, 0.0f, 0.0f));
+		numberSprite_->Update();
+	}
+
 	// もしゴールしていたら
 	if (goal_->GetIsGoal()) {
 		/*シーン切り替え依頼*/
+		SceneManager::GetInstance()->ChangeScene("RESULT");
+	} else if (!player_->GetIsAlive()) {
 		SceneManager::GetInstance()->ChangeScene("RESULT");
 	}
 
 	// player
 	player_->Update();
+	particleManager_->SetEmit(player_->IsLand(), player_->GetWorldPosition(), player_->GetIsGravityInvert());
 
 	// Enemy
 	enemy_->SetPlayerPos(player_->GetWorldPosition());
@@ -279,17 +340,7 @@ void GameScene::Draw() {
 
 	// エネミー
 	enemy_->Draw();
-	switch (enemy_->GetBehavior()) {
-	case Enemy::Behavior::kRoot:
 
-		break;
-	case Enemy::Behavior::kPreliminary:
-		enemyPreliminaryModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
-		break;
-	case Enemy::Behavior::kAttack:
-		enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
-		break;
-	}
 
 	// ゴール
 	goal_->Draw();
@@ -315,9 +366,26 @@ void GameScene::Draw() {
 
 	}
 
+	switch (enemy_->GetBehavior()) {
+	case Enemy::Behavior::kRoot:
+
+		break;
+	case Enemy::Behavior::kPreliminary:
+		enemyPreliminaryModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+		break;
+	case Enemy::Behavior::kAttack:
+		enemyAttackModel_->Draw(enemyAttackWorldTransform_, viewProjection_);
+		break;
+	}
+
 	collisionManager_->Draw(viewProjection_);
 
 	particleManager_->DrawGPU();
+
+
+	if (isPlayStartAnimation_) {
+		numberSprite_->Draw();
+	}
 
 }
 
@@ -402,15 +470,18 @@ void GameScene::EnemyAttack(const uint32_t& enemyAttackYIndex, const Enemy::Beha
 	case Enemy::Behavior::kRoot:
 		Vector3 playerWorldPosition = player_->GetWorldPosition();
 		enemy_->SetPreliminaryYIndex(mapChipField_->GetMapChipIndexSetByPosition(playerWorldPosition).yIndex);
+		player_->SetIsHitEnemyAttack(false);
 		break;
 	case Enemy::Behavior::kPreliminary:
-
+		player_->SetIsHitEnemyAttack(false);
 		break;
 	case Enemy::Behavior::kAttack:
 
 		if (AABBIntersects(playerAABB_, enemyAttackAABB_)) {
 			// 攻撃がヒットした時の処理
-			player_->SetIsAllive(false);
+			player_->SetIsHitEnemyAttack(true);
+		} else {
+			player_->SetIsHitEnemyAttack(false);
 		}
 		break;
 	}
@@ -424,5 +495,9 @@ bool GameScene::AABBIntersects(const AABB& a, const AABB& b) {
 
 	// すべての軸で重なっている場合に衝突と判断する
 	return xOverlap && yOverlap && zOverlap;
+}
+
+void GameScene::StartAnimation() {
+
 }
 

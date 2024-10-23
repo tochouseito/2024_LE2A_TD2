@@ -78,6 +78,7 @@ public:
 	// SRVインデックスの取得
 	uint32_t GetSrvIndex(const std::string& filePath);
 
+	void TexReset();
 private:
 	TextureManager() = default;
 	~TextureManager() = default;

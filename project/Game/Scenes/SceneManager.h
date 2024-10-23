@@ -1,7 +1,6 @@
 #pragma once
 #include"SceneFactory.h"
-class SceneManager
-{
+class SceneManager {
 public:
 	/// <summary>
 	/// シングルトンインスタンスの取得
@@ -37,6 +36,15 @@ public:
 	/*シーン切り替え*/
 	void ChangeScene(const std::string& sceneName);
 
+	void SetIndex(uint32_t index) { defaultIndex = index; }
+
+	void SetCurrentStageNum(const uint32_t& currentStageNumber);
+	void SetIsClear(const bool& isClear);
+	void SetClearTime(const uint32_t& clearTime);
+
+	uint32_t GetCurrentStageNumber()const;
+	bool GetIsClear()const;
+	uint32_t GetClearTime()const;
 
 private:
 	/*今のシーン*/
@@ -45,5 +53,17 @@ private:
 	BaseScene* nextScene_ = nullptr;
 	/*シーンファクトリー*/
 	AbstractSceneFactory* sceneFactory_ = nullptr;
+
+	uint32_t defaultIndex;
+
+	// 現在のステージ
+	uint32_t currentStageNumber_ = 1;
+
+	// クリアしたかどうか
+	bool isClear_ = false;
+
+	// クリア時間
+	uint32_t clearTime_ = 0;
+
 };
 

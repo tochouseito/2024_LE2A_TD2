@@ -47,6 +47,7 @@ public:
 	static ID3D12PipelineState* GetPipelineStateGPUParticle(uint32_t BlendMode) { return GetInstance()->graphicsPipelineStateGPUParticle_[BlendMode].Get(); }
 	static ID3D12PipelineState* GetPipelineStateCSEmit() { return GetInstance()->computePipelineStateEmit_.Get(); }
 	static ID3D12PipelineState* GetPipelineStateCSUpdate() { return GetInstance()->computePipelineStateUpdate_.Get(); }
+	static ID3D12PipelineState* GetPipelineStateCSUpdatePLLand() { return GetInstance()->computePipelineStateUpdatePLLand_.Get(); }
 
 	static ID3D12RootSignature* GetRootSignature() { return GetInstance()->rootSignature_.Get(); }
 	static ID3D12RootSignature* GetRootSignatureParticle() { return GetInstance()->rootSignatureParticle_.Get(); }
@@ -64,6 +65,7 @@ public:
 	static ID3D12RootSignature* GetRootSignatureGPUParticle() { return GetInstance()->rootSignatureGPUParticle_.Get(); }
 	static ID3D12RootSignature* GetRootSignatureCSEmit() { return GetInstance()->computeRootSignatureEmit_.Get(); }
 	static ID3D12RootSignature* GetRootSignatureCSUpdate() { return GetInstance()->computeRootSignatureUpdate_.Get(); }
+	static ID3D12RootSignature* GetRootSignatureCSUpdatePLLand() { return GetInstance()->computeRootSignatureUpdatePLLand_.Get(); }
 
 	/// <summary>
 	/// グラフィックスパイプラインの作成
@@ -151,6 +153,12 @@ public:
 	void CreateComputePipelineUpdate(ID3D12Device* device);
 
 	/// <summary>
+	/// ComputeShaderの作成
+	/// </summary>
+	/// <param name="device"></param>
+	void CreateComputePipelineUpdatePLLand(ID3D12Device* device);
+
+	/// <summary>
 	/// dxcCompilerを初期化
 	/// </summary>
 	void InitializeDxcCompiler();
@@ -190,6 +198,7 @@ private:
 	Microsoft::WRL::ComPtr < ID3D12PipelineState> graphicsPipelineStateGPUParticle_[kCountOfBlendMode];
 	Microsoft::WRL::ComPtr < ID3D12PipelineState> computePipelineStateEmit_;
 	Microsoft::WRL::ComPtr < ID3D12PipelineState> computePipelineStateUpdate_;
+	Microsoft::WRL::ComPtr < ID3D12PipelineState> computePipelineStateUpdatePLLand_;
 	//ID3D12PipelineState* graphicsPipelineState_;
 	Microsoft::WRL::ComPtr < IDxcUtils> dxcUtils_;
 	Microsoft::WRL::ComPtr < IDxcCompiler3> dxcCompiler_;
@@ -210,5 +219,6 @@ private:
 	Microsoft::WRL::ComPtr < ID3D12RootSignature> rootSignatureGPUParticle_;
 	Microsoft::WRL::ComPtr < ID3D12RootSignature> computeRootSignatureEmit_;
 	Microsoft::WRL::ComPtr < ID3D12RootSignature> computeRootSignatureUpdate_;
+	Microsoft::WRL::ComPtr < ID3D12RootSignature> computeRootSignatureUpdatePLLand_;
 };
 

@@ -90,6 +90,9 @@ public:
 
 	bool AABBIntersects(const AABB& a, const AABB& b);
 
+
+	void StartAnimation();
+
 private:
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -100,6 +103,9 @@ private:
 	// テクスチャハンドル
 	std::string textureHandle_[6]{};
 	std::string electricGaugeTex_;
+
+	std::string numberTextureHandle_;
+	std::unique_ptr<Sprite> numberSprite_;
 
 	Particle* particles_ = nullptr;
 	Sprite* sprite_ = nullptr;
@@ -138,6 +144,8 @@ private:
 	// Player
 	std::unique_ptr<Player> player_ = nullptr;
 	std::unique_ptr<Model> playerModel_ = nullptr;
+	std::vector < Model*> playerModels_;
+	std::vector<Model::Animation*> plAnimas_;
 
 	// Enemy
 	std::unique_ptr<Enemy> enemy_ = nullptr;
@@ -165,9 +173,6 @@ private:
 	std::vector<std::unique_ptr<PlayerBullet>> bullets_;
 	std::unique_ptr<Model> bulletModel_ = nullptr;
 
-
-	// 動画提出用
-
 	// 針
 	std::vector<std::unique_ptr<Needle>> needles_;
 
@@ -175,7 +180,7 @@ private:
 	std::unique_ptr<Model> downNeedleModel_ = nullptr;
 
 	std::unique_ptr<GravityArrow> gravityArrow_ = nullptr;
-	std::vector<std::unique_ptr<Model>> gravityArrowModel_;
+	std::vector<Model*> gravityArrowModels_;
 
 	// 衝突マネージャ
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
@@ -186,4 +191,16 @@ private:
 	AABB playerAABB_{};
 	// エネミーの攻撃判定AABB
 	AABB enemyAttackAABB_{};
+
+	uint32_t currentStageNum_ = 1;
+
+	// アニメーションの時間
+	const uint32_t kSceneStartAnimationTime_ = 240;
+	// アニメーションの現在タイマー
+	uint32_t sceneStartAnimationTimer_ = 0;
+
+	// アニメーション
+	bool isPlayStartAnimation_ = true;
+	// 
+	uint32_t currentStartNumber_ = 3;
 };

@@ -6,8 +6,7 @@
 struct ConstBufferDataSpriteWorldTransform {
 	Matrix4x4 matWorld; // ローカル → ワールド変換行列
 };
-class Sprite
-{
+class Sprite {
 public:
 	Sprite();
 	~Sprite();
@@ -49,7 +48,7 @@ public:
 
 	void SetSize(const Vector3& size) { this->size = size; }
 
-	const Vector3& GetAnchorPoint()const { anchorPoint; }
+	const Vector3& GetAnchorPoint()const { return anchorPoint; }
 
 	void SetAnchorPoint(const Vector3& anchorPoint) { this->anchorPoint = anchorPoint; }
 

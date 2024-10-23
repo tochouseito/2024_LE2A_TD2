@@ -9,6 +9,7 @@
 #include "Input.h"
 #include "Mymath.h"
 #include "numbers"
+#include"DirectXCommon.h"
 
 #include "CollisionManager/CollisionTypeIdDef.h"
 
@@ -18,8 +19,8 @@ Player::Player() = default;
 
 Player::~Player() = default;
 
-void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position) {
-	assert(model);
+void Player::Initialize(const std::vector<Model*>& models, const std::vector<Model::Animation*>& animas, ViewProjection* viewProjection, const Vector3& position) {
+	//assert(model);
 
 	// ファイル名を指定してテクスチャを読み込む
 	//textureHandle_ = textureHandel;
@@ -30,8 +31,14 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
 	worldTransform_.scale_ *= 0.5f;
 	// 3Dモデルの生成
-	model_ = model;
-
+	models_ = models;
+	animas_ = animas;
+	for (int i = 0; i < Animation::kCount; i++) {
+		skeletons_.push_back(models_[i]->CreateSkeleton(models_[i]->GetModelData()->rootNode));
+		for (std::string& name : models_[i]->GetModelData()->names) {
+			models_[i]->SetSkinCluster(models_[i]->CreateSkinCluster(DirectXCommon::GetInstance()->GetDevice(), skeletons_[i], models_[i]->GetModelData()->object[name]));
+		}
+	}
 	viewProjection_ = viewProjection;
 
 	// コライダーの設定
@@ -49,8 +56,9 @@ void Player::Update() {
 	CollisionMapInfo collisionMapInfo;
 	// 移動入力
 	// 設置状態
-
-	CharMove();
+	if (!isPlayStartAnimation_) {
+		CharMove();
+	}
 	// 移動量に速度の値をコピー
 	collisionMapInfo.movement = velocity_;
 	// 移動量を加味して衝突判定する
@@ -162,13 +170,42 @@ void Player::Update() {
 
 	// 行列を定数バッファに転送
 	//worldTransform_.TransferMatrix();
+
+	if (land) {
+		nowAnima_ = Animation::Land;
+		animationTime = 0.0f;
+		limitAnimaTime = (1.0f / 60.0f) * 8.0f;
+	}
+	if (limitAnimaTime < 0.0f) {
+		if (isRun) {
+			nowAnima_ = Animation::Run;
+		} else {
+			nowAnima_ = Animation::idle;
+		}
+		if (!onGround_) {
+			nowAnima_ = Animation::JumpLoop;
+		}
+	}
+	limitAnimaTime -= 1.0f / 60.0f;
+	animationTime += 1.0f / 60.0f;// 時刻を進める。1/60で固定してあるが、計測した時間を使って可変フレーム対応するほうが望ましい
+	animationTime = std::fmod(animationTime, animas_[nowAnima_]->duration);
+
+	models_[nowAnima_]->ApplyAnimation(skeletons_[nowAnima_], animas_[nowAnima_], animationTime);
+	models_[nowAnima_]->SkeletonUpdata(skeletons_[nowAnima_]);
+	models_[nowAnima_]->SkinClusterUpdata(models_[nowAnima_]->GetSkinCluster(), skeletons_[nowAnima_]);
+
 	worldTransform_.UpdateMatrix();
+
 }
 
 void Player::Draw() {
 	// 3Dモデルを描画
+	/*if (isAlive_) {
+		models_[nowAnima_]->Draw(worldTransform_, *viewProjection_);
+	}*/
 	if (isAlive_) {
-		model_->Draw(worldTransform_, *viewProjection_);
+		models_[nowAnima_]->ApplyCS();
+		models_[nowAnima_]->DrawCS(worldTransform_, *viewProjection_, "none");
 	}
 }
 
@@ -188,6 +225,15 @@ void Player::CharMove() {
 		bool keyboardMoveRight = Input::GetInstance()->PushKey(DIK_D);
 		bool controllerMoveLeft = stickX < -0.2f;
 		bool controllerMoveRight = stickX > 0.2f;
+
+		if (keyboardMoveLeft ||
+			keyboardMoveRight ||
+			controllerMoveLeft ||
+			controllerMoveRight) {
+			isRun = true;
+		} else {
+			isRun = false;
+		}
 
 		if (keyboardMoveLeft || keyboardMoveRight || controllerMoveLeft || controllerMoveRight) {
 			// 左右処理
@@ -225,7 +271,11 @@ void Player::CharMove() {
 			velocity_.y += acceleration.y;
 			velocity_.z += acceleration.z;
 			// 最大速度制限
-			velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed, kLimitRunSpeed);
+			if (isHitEnemyAttack_) {
+				velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed / 4.0f, kLimitRunSpeed / 4.0f);
+			} else {
+				velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed, kLimitRunSpeed);
+			}
 		} else {
 			// 非入力時は移動減衰をかける
 			velocity_.x *= (1.0f - kAttenuation);
@@ -325,7 +375,6 @@ void Player::OnGround(const CollisionMapInfo& info) {
 		onGround_ = false;
 	}
 
-
 	if (!onGround_) {// 空中状態
 		// 落下速度
 		velocity_.x += 0.0f;
@@ -356,6 +405,12 @@ void Player::OnGround(const CollisionMapInfo& info) {
 			onGround_ = true;
 		}
 	}
+	if (!preLand && onGround_) {
+		land = true;
+	} else {
+		land = false;
+	}
+	preLand = onGround_;
 }
 
 void Player::TurnControl() {
@@ -454,6 +509,14 @@ void Player::SetLandingTexture(const std::string& handle) {
 
 void Player::SetIsAllive(const bool& isAllive) {
 	isAlive_ = isAllive;
+}
+
+void Player::SetIsHitEnemyAttack(const bool& isHitEnemyAttack) {
+	isHitEnemyAttack_ = isHitEnemyAttack;
+}
+
+void Player::SetIsPlayStartAnimation(const bool& isStartAnimation) {
+	isPlayStartAnimation_ = isStartAnimation;
 }
 
 //void Player::OnCollision(const Enemy* enemy) {

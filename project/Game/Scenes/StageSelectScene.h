@@ -1,8 +1,12 @@
 #pragma once
 
+#include <memory>
+
+// 2D
+#include"Sprite.h"
+
 #include"BaseScene.h"
-class StageSelectScene:public BaseScene
-{
+class StageSelectScene :public BaseScene {
 public:
 	/// <summary>
 	/// 初期化
@@ -29,9 +33,52 @@ public:
 	/// </summary>
 	void ChangeScene()override;
 
-	void SetSceneManager(SceneManager* sceneManager) override{ sceneManager_ = sceneManager; }
+	void SetSceneManager(SceneManager* sceneManager) override { sceneManager_ = sceneManager; }
 
 private:
 	SceneManager* sceneManager_ = nullptr;
+
+	// カメラ
+	ViewProjection viewProjection_;
+
+	// セレクトシーンのテクスチャ
+	std::string selectSceneTextureHandle_;
+	std::unique_ptr<Sprite> selectSceneSprite_;
+
+	// 矢印
+	std::string selectAllowTextureHandle_;
+	std::unique_ptr<Sprite> selectAllowSceneSprite_;
+
+	// 数字
+	std::string numberTextureHandle_;
+	std::unique_ptr<Sprite> numberSprite_;
+
+	// 後ろのやつ
+	std::string baseTextureHandle_;
+	std::unique_ptr<Sprite> baseSprite_;
+
+	// 緑のやつ
+	std::string greenTextureHandle_;
+	std::unique_ptr<Sprite> greenSprite_;
+
+	// map1Thumb
+	std::string map1TextureHandle_;
+	std::unique_ptr<Sprite> map1Sprite_;
+
+	std::string map2TextureHandle_;
+	std::unique_ptr<Sprite> map2Sprite_;
+
+	std::string map3TextureHandle_;
+	std::unique_ptr<Sprite> map3Sprite_;
+
+
+	// 時間
+	float t = 0.0f;
+
+	// 最大ステージ数
+	const uint32_t kMaxStageNum_ = 3;
+
+	// 現在選択しているステージ数
+	uint32_t currentStageNum_ = 1;
 };
 

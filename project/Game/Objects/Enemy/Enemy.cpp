@@ -107,7 +107,11 @@ void Enemy::Move() {
 		velocity_.x += acceleration_;
 	}
 	// 移動量を加算
-	worldTransform_.translation_ += velocity_;
+	if (playerPos_.x > worldTransform_.translation_.x) {
+		worldTransform_.translation_ += velocity_;
+	} else {
+		worldTransform_.translation_ -= velocity_;
+	}
 	faceTransform_.translation_ = worldTransform_.translation_;
 
 	// 左目の位置からプレイヤーの方向を計算
@@ -125,6 +129,40 @@ void Enemy::Move() {
 	// 左目と右目の位置をプレイヤーの方向に調整
 	leftEyeTransform_.translation_ = leftEyePosition + dirToPlayerFromLeftEye;
 	rightEyeTransform_.translation_ = rightEyePosition + dirToPlayerFromRightEye;
+
+	// Y軸をプレイヤーに対して補間移動
+	FollowPlayerTranslateY();
+}
+
+void Enemy::AttackMove() {
+	// 移動量を加算
+	if (playerPos_.x > worldTransform_.translation_.x) {
+		// 通常のは半分の移動量を加算
+		worldTransform_.translation_ += velocity_ / 2.0f;
+	} else {
+		worldTransform_.translation_ -= velocity_ / 2.0f;
+	}
+	faceTransform_.translation_ = worldTransform_.translation_;
+
+	// 左目の位置からプレイヤーの方向を計算
+	Vector3 leftEyePosition = worldTransform_.translation_ + leftEyeOffset_;
+	Vector3 dirToPlayerFromLeftEye = playerPos_ - leftEyePosition;
+	dirToPlayerFromLeftEye = Normalize(dirToPlayerFromLeftEye);
+	dirToPlayerFromLeftEye *= 0.25f;
+
+	// 右目の位置からプレイヤーの方向を計算
+	Vector3 rightEyePosition = worldTransform_.translation_ + rightEyeOffset_;
+	Vector3 dirToPlayerFromRightEye = playerPos_ - rightEyePosition;
+	dirToPlayerFromRightEye = Normalize(dirToPlayerFromRightEye);
+	dirToPlayerFromRightEye *= 0.25f;
+
+	// 左目と右目の位置をプレイヤーの方向に調整
+	leftEyeTransform_.translation_ = leftEyePosition + dirToPlayerFromLeftEye;
+	rightEyeTransform_.translation_ = rightEyePosition + dirToPlayerFromRightEye;
+
+
+	// Y軸をプレイヤーに対して補間移動
+	FollowPlayerTranslateY();
 }
 
 void Enemy::OnCollision(Collider* other) {
@@ -184,16 +222,21 @@ void Enemy::BehaviorUpdate() {
 void Enemy::RootInitialize() {
 	// タイマーをリセット
 	behaviorTimer_ = 0;
+	// 速度をリセット
+	velocity_ = { 0.0f,0.0f,0.0f };
 }
 
 void Enemy::RootUpdate() {
-	// 移動処理
-	Move();
-
-	if (behaviorTimer_ < kRootTime_) {
-		behaviorTimer_++;
+	if (isStartAnimstion_) {
+		worldTransform_.rotation_.z -= 0.05f;
 	} else {
-		behaviorRequest_ = Behavior::kPreliminary;
+		// 移動処理
+		Move();
+		if (behaviorTimer_ < kRootTime_) {
+			behaviorTimer_++;
+		} else {
+			behaviorRequest_ = Behavior::kPreliminary;
+		}
 	}
 }
 
@@ -205,6 +248,9 @@ void Enemy::PreliminaryInitialize() {
 }
 
 void Enemy::PreliminaryUpdate() {
+	// 移動処理
+	Move();
+
 	if (behaviorTimer_ < kPreliminaryTime_) {
 		behaviorTimer_++;
 	} else {
@@ -218,6 +264,8 @@ void Enemy::AttackInitialize() {
 }
 
 void Enemy::AttackUpdate() {
+	// 攻撃時は少し遅めの移動速度
+	AttackMove();
 	if (behaviorTimer_ < kAttackTime_) {
 		behaviorTimer_++;
 	} else {
@@ -225,8 +273,18 @@ void Enemy::AttackUpdate() {
 	}
 }
 
-void Enemy::SetPlayerPos(const Vector3 newPlayerPos) {
+void Enemy::SetPlayerPos(const Vector3& newPlayerPos) {
 	playerPos_ = newPlayerPos;
+}
+
+void Enemy::FollowPlayerTranslateY() {
+	worldTransform_.translation_.y = FollowTarget(worldTransform_.translation_.y, playerPos_.y, 0.05f);
+}
+
+float Enemy::FollowTarget(float currentValue, float targetValue, float speed) {
+	float newValue = currentValue + (targetValue - currentValue) * speed;
+
+	return newValue;
 }
 
 uint32_t Enemy::GetAttackYIndex()const {
@@ -239,4 +297,8 @@ Enemy::Behavior Enemy::GetBehavior() const {
 
 void Enemy::SetPreliminaryYIndex(const uint32_t& yIndex) {
 	preliminaryYIndex_ = yIndex;
+}
+
+void Enemy::SetIsStartAnimation(const bool& isStartAnimation) {
+	isStartAnimstion_ = isStartAnimation;
 }
