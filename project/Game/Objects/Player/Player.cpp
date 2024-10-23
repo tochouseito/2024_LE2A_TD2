@@ -52,6 +52,8 @@ void Player::Initialize(const std::vector<Model*>& models, const std::vector<Mod
 	// 半径を設定
 	SetRadius(0.25f);
 
+	isAlive_ = true;
+
 	SetTypeID(static_cast<uint32_t>(CollisionTypeIdDef::kPlayer));
 }
 
@@ -62,8 +64,11 @@ void Player::Update() {
 	CollisionMapInfo collisionMapInfo;
 	// 移動入力
 	// 設置状態
-	if (!isPlayStartAnimation_ && !isGoal_) {
+	if (!isPlayStartAnimation_ && !isGoal_ && isAlive_) {
 		CharMove();
+	}
+	if (!isAlive_) {
+		velocity_ = { 0.0f,0.0f,0.0f };
 	}
 
 	if (!isGoal_) {
@@ -223,10 +228,9 @@ void Player::Draw() {
 		models_[nowAnima_]->Draw(worldTransform_, *viewProjection_);
 	}*/
 	if (isAlive_) {
-
+		models_[nowAnima_]->ApplyCS();
+		models_[nowAnima_]->DrawCS(worldTransform_, *viewProjection_, "none");
 	}
-	models_[nowAnima_]->ApplyCS();
-	models_[nowAnima_]->DrawCS(worldTransform_, *viewProjection_, "none");
 }
 
 void Player::SetIsGoal(const bool newIsGoal) {

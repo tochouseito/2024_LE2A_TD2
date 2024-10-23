@@ -339,8 +339,9 @@ void GameScene::Update() {
 		sceneManager_->SetIsCleared(true, sceneManager_->GetCurrentStageNumber());
 		sceneManager_->SetIsClear(true);
 	} else if (!player_->GetIsAlive()) {
-		SceneManager::GetInstance()->ChangeScene("SELECT");
 		sceneManager_->SetIsClear(false);
+		isTransition_ = true;
+
 	}
 
 	// player
