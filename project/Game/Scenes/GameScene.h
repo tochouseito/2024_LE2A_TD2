@@ -232,6 +232,10 @@ private:
 	std::unique_ptr<Sprite> transitionSprite_ = nullptr;
 	Color color = { 0.0f,0.0f,0.0f,1.0f };
 
+	// チュートリアル
+	std::string howtoPlayTextureHandle;
+	std::unique_ptr<Sprite> howtoPlaySprite_ = nullptr;
+
 
 	Vector3 transitionPos = { 0.0f,0.0f,0.0f };
 	Vector3 endPos = { 640.f,360.0f,0.0f };

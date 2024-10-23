@@ -245,6 +245,12 @@ void GameScene::Initialize() {
 	transitionSprite_->SetColor(color);
 
 	transitionTimer_ = 0.0f;
+
+	howtoPlayTextureHandle = TextureManager::Load("./Resources/GUI/buttonHint.png");
+	howtoPlaySprite_ = std::make_unique<Sprite>();
+	howtoPlaySprite_->Initialize(Vector3(640.0f, 360.0f, 0.0f), &viewProjection_, howtoPlayTextureHandle);
+	howtoPlaySprite_->SetAnchorPoint(Vector3(0.5f, 0.5f, 0.0f));
+
 }
 
 void GameScene::Update() {
@@ -349,6 +355,9 @@ void GameScene::Update() {
 	goal_->Update();
 
 	transitionSprite_->Update();
+
+	// 
+	howtoPlaySprite_->Update();
 
 
 	// カメラ移動
@@ -477,6 +486,8 @@ void GameScene::Draw() {
 	collisionManager_->Draw(viewProjection_);
 
 	particleManager_->DrawGPU();
+
+	howtoPlaySprite_->Draw();
 
 
 	if (isPlayStartAnimation_) {
